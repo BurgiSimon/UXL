@@ -4,9 +4,9 @@
 Each session directory holds the session's output (index.html) and its transcript
 (session.jsonl from `claude -p ... --output-format stream-json --verbose`).
 
-  python3 tools/build_demo.py --without <dir> --with <dir> [--prompt PROMPT.txt]
+  python3 tools/build_demo.py --without <dir> --with <dir> [--prompt PROMPT.txt] [--slug fernwheel]
 
-Writes into docs/fernwheel/:
+Writes into docs/<slug>/ (default docs/fernwheel/):
   without-uxl/index.html, with-uxl/index.html      the two pages, unmodified
   screens/<a|b>-<viewport>[-annotated].png          uxl_audit renders
   reports/<a|b>-audit.md, <a|b>-lint.md             scanner reports
@@ -22,7 +22,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPTS = os.path.join(ROOT, "skills", "ux-lawyer", "scripts")
-OUT = os.path.join(ROOT, "docs", "fernwheel")
+OUT = os.path.join(ROOT, "docs", "fernwheel")  # overridden by --slug
 LAWS = ["Aesthetic-Usability", "Choice Overload", "Chunking", "Cognitive Bias", "Cognitive Load", "Doherty", "Fitts",
         "Flow", "Goal-Gradient", "Hick", "Jakob", "Common Region", "Proximity", "Prägnanz", "Similarity",
         "Uniform Connectedness", "Mental Model", "Miller", "Occam", "Active User", "Pareto", "Parkinson", "Peak-End",
@@ -30,7 +30,7 @@ LAWS = ["Aesthetic-Usability", "Choice Overload", "Chunking", "Cognitive Bias", 
 
 
 def session_stats(path):
-    tools, skills, result, text = [], [], {}, ""
+    tools, skills, agents, result, text = [], [], [], {}, ""
     for line in open(path, encoding="utf-8"):
         try:
             ev = json.loads(line)
@@ -42,6 +42,8 @@ def session_stats(path):
                     tools.append(c["name"])
                     if c["name"] == "Skill":
                         skills.append(c.get("input", {}).get("skill", ""))
+                    if c["name"] in ("Agent", "Task"):
+                        agents.append(c.get("input", {}).get("subagent_type", "general-purpose"))
         elif ev.get("type") == "result":
             result = ev
             text = ev.get("result", "") or ""
@@ -49,6 +51,7 @@ def session_stats(path):
     return {
         "tool_calls": len(tools),
         "skills_used": skills,
+        "agents_used": agents,
         "duration_s": round((result.get("duration_ms") or 0) / 1000),
         "turns": result.get("num_turns"),
         "cost_usd": result.get("total_cost_usd"),
@@ -67,7 +70,10 @@ def main():
     ap.add_argument("--without", required=True)
     ap.add_argument("--with", dest="with_", required=True)
     ap.add_argument("--prompt", default=None)
+    ap.add_argument("--slug", default="fernwheel", help="output folder under docs/")
     args = ap.parse_args()
+    global OUT
+    OUT = os.path.join(ROOT, "docs", args.slug)
 
     for d in ("screens", "reports"):
         os.makedirs(os.path.join(OUT, d), exist_ok=True)
