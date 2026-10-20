@@ -1,0 +1,22 @@
+[
+  {"query": "ok so i'm building a little saas for dog groomers (next.js + tailwind) and i need the booking page. customers pick a service, a groomer, a time slot and pay a deposit. can you build it? most of them will book from their phones", "should_trigger": true},
+  {"query": "our landing page at app/(marketing)/page.tsx converts like 1.2% to signup and my cofounder thinks the hero is confusing. can you take a look and make it better?", "should_trigger": true},
+  {"query": "The settings screen in our Vue 3 admin panel is a mess, 40+ toggles on one page. Restructure it so people can actually find stuff.", "should_trigger": true},
+  {"query": "make this responsive pls, it looks horrible on my iphone: src/components/PricingTable.jsx", "should_trigger": true},
+  {"query": "Review the checkout flow in /web/checkout for usability issues before we launch on Friday. Don't change code yet, just tell me what's wrong and how bad it is.", "should_trigger": true},
+  {"query": "I need a dashboard page for our fleet-tracking webapp showing vehicles, alerts and fuel usage. React + shadcn. Mostly used on desktop, but managers check it on their phones too", "should_trigger": true},
+  {"query": "why do you think people abandon our signup form? it asks for email, password, confirm password, first name, last name, company, role, phone, country, how did you hear about us, and a captcha", "should_trigger": true},
+  {"query": "Build a portfolio website for a wedding photographer as a single html file. Should feel premium and elegant and work on mobile.", "should_trigger": true},
+  {"query": "Our mobile nav is a hamburger with 11 links and nobody uses half of them. Is this a Hick's law thing? Redo the nav in our Astro site.", "should_trigger": true},
+  {"query": "can you add empty states, loading skeletons and error handling to the project list in components/ProjectList.tsx? right now it just shows a blank area while loading", "should_trigger": true},
+  {"query": "Write a Python script that scrapes product prices from three e-commerce sites and writes them to a CSV every hour", "should_trigger": false},
+  {"query": "Our Next.js build fails with 'Module not found: Can't resolve @/lib/utils' after I moved tsconfig.json into /config. Fix the path aliases.", "should_trigger": false},
+  {"query": "Set up Playwright e2e tests for our login flow that check a user can sign in with valid credentials and sees an error with a wrong password", "should_trigger": false},
+  {"query": "Convert the POST handler in api/orders.ts to use a Prisma transaction so the stock decrement and order insert stay consistent", "should_trigger": false},
+  {"query": "Write a 1200-word blog post for our company blog about the history of the Laws of UX and why Jon Yablonski wrote the book", "should_trigger": false},
+  {"query": "Write vitest unit tests for the formatCurrency and parseDate helpers in src/utils/format.ts, including edge cases for negative numbers and invalid dates", "should_trigger": false},
+  {"query": "Design a Postgres schema for a multi-tenant project management app with workspaces, projects, tasks, comments and role-based permissions", "should_trigger": false},
+  {"query": "Create a GitHub Actions workflow that runs eslint and our jest suite on every PR and deploys main to Vercel", "should_trigger": false},
+  {"query": "explain the difference between css grid and flexbox with a couple of examples, I'm prepping for a frontend interview tomorrow", "should_trigger": false},
+  {"query": "Translate locales/en.json into German and French, keep all the keys and interpolation placeholders like {{count}} intact", "should_trigger": false}
+]
