@@ -12,6 +12,7 @@ const mod = await import(pathToFileURL(req.resolve("playwright")).href);
 const chromium = (mod.chromium ? mod : mod.default).chromium;
 
 const DOCS = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "docs", "lumenvale");
+let nightsHeight = null;
 const pages = [
   { key: "a", file: `${DOCS}/without-uxl/index.html`, nights: "#nights", book: "#nights [data-book]", dialog: "dialog#book",
     steps: [], submit: "[data-book-submit]", close: "[data-book-done] [data-book-close]" },
@@ -27,7 +28,7 @@ const hideFixed = () => {
 };
 
 const browser = await chromium.launch();
-for (const p of pages) {
+for (const p of [...pages].reverse()) {  // B first: its recommended night sets the crop height for both
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
   const page = await ctx.newPage();
   await page.goto(pathToFileURL(p.file).href, { waitUntil: "load" });
@@ -37,9 +38,14 @@ for (const p of pages) {
   const nights = page.locator(p.nights).first();
   await nights.scrollIntoViewIfNeeded();
   await page.waitForTimeout(400);
-  const box = await nights.boundingBox();  // the first 1,200 px of the list: intro, filter and the first rows
-  const top = box.y + (await page.evaluate(() => scrollY));
-  await page.screenshot({ path: `${DOCS}/screens/${p.key}-mobile-nights.png`, fullPage: true, clip: { x: 0, y: top, width: 390, height: 1200 } });
+  // the rows, from the first night down to the recommended one (B) or the same height (A), 760–1100 px
+  const rows = await page.evaluate(() => {
+    const first = document.querySelector("#nights .night:not([hidden])").getBoundingClientRect();
+    const feat = document.querySelector("#nights .night.is-featured")?.getBoundingClientRect();
+    return { top: first.top + scrollY - 16, bottom: feat ? feat.bottom + scrollY + 16 : 0 };
+  });
+  nightsHeight ??= Math.min(1100, Math.max(760, Math.round(rows.bottom - rows.top)));
+  await page.screenshot({ path: `${DOCS}/screens/${p.key}-mobile-nights.png`, fullPage: true, clip: { x: 0, y: rows.top, width: 390, height: nightsHeight } });
   await page.evaluate(() => document.querySelectorAll("body *").forEach((el) => { if (el.style.visibility === "hidden") el.style.visibility = ""; }));
   const btn = page.locator(p.book).first();
   await btn.scrollIntoViewIfNeeded();
