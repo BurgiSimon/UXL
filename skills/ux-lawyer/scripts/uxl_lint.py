@@ -670,7 +670,10 @@ def check_markup(src: Source, tags: List[Tag], out: Collector, project: dict):
 
         # ---------- non-interactive click handlers
         if lname in ("div", "span", "li", "img", "p", "td", "tr", "section", "article", "svg", "i"):
-            if any(k in a for k in ("onclick", "@click", "v-on:click", "on:click")) and "role" not in a:
+            handler = next((a[k] for k in ("onclick", "@click", "v-on:click", "on:click") if k in a), None)
+            is_backdrop = "aria-hidden" in a or re.search(r"backdrop|overlay|scrim", cls) or \
+                re.search(r"close|dismiss|hide|setOpen\(\s*false|stopPropagation", handler or "", re.I)
+            if handler is not None and "role" not in a and not is_backdrop:
                 out.add(src, "div-button", t.start, f"<{t.name}> has a click handler but no role/keyboard support")
 
         # ---------- Tailwind hover-only reveals
@@ -752,7 +755,9 @@ def check_markup(src: Source, tags: List[Tag], out: Collector, project: dict):
         if re.search(r"footer|social|legal|breadcrumb|admin", name):
             continue
         count = _count_array_objects(text, m.end() - 1)
-        if count > 7 and re.search(r"(href|path|to|url)\s*:", text[m.end(): m.end() + 4000]):
+        body = text[m.end(): m.end() + 4000]
+        grouped = re.search(r"\b(section|group|category|tier|priority|primary|children|items)\s*:", body)
+        if count > 7 and re.search(r"(href|path|to|url)\s*:", body) and not grouped:
             out.add(src, "nav-overload", m.start(), f"Navigation array `{m.group(1)}` defines {count} top-level items")
 
     check_scripts(src, out, project)

@@ -133,6 +133,20 @@ class Snippets(unittest.TestCase):
         rep = lint_snippet("a.css", ".spinner { animation: spin 1200ms linear infinite; }")
         self.assertNotIn("slow-animation", rules(rep))
 
+    def test_backdrop_click_is_not_div_button(self):
+        rep = lint_snippet("a.tsx", '<div aria-hidden className="fixed inset-0 bg-black/40" onClick={onClose} />')
+        self.assertNotIn("div-button", rules(rep))
+
+    def test_grouped_nav_array_not_overloaded(self):
+        items = ",\n".join(f'  {{ label: "L{i}", href: "/{i}", section: "s{i % 3}" }}' for i in range(14))
+        rep = lint_snippet("a.tsx", f"const NAV_ITEMS = [\n{items}\n];\nexport const X = () => <nav />;")
+        self.assertNotIn("nav-overload", rules(rep))
+
+    def test_flat_nav_array_overloaded(self):
+        items = ",\n".join(f'  {{ label: "L{i}", href: "/{i}" }}' for i in range(10))
+        rep = lint_snippet("a.tsx", f"const navItems = [\n{items}\n];\nexport const X = () => <nav />;")
+        self.assertIn("nav-overload", rules(rep))
+
     def test_list_rules(self):
         buf = io.StringIO()
         with redirect_stdout(buf):
