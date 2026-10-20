@@ -1,0 +1,14 @@
+{
+  "name": "uxl",
+  "owner": { "name": "BurgiSimon", "url": "https://github.com/BurgiSimon" },
+  "description": "UXL (UX Lawyer): the 30 Laws of UX as a skill, commands and auditor for AI coding agents.",
+  "plugins": [
+    {
+      "name": "uxl",
+      "source": "./",
+      "description": "Build, audit and fix web UIs for desktop and mobile with the 30 Laws of UX (lawsofux.com).",
+      "category": "design",
+      "keywords": ["ux", "design", "laws-of-ux", "audit", "mobile"]
+    }
+  ]
+}

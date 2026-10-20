@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate skill (frontmatter, 30 laws, links, check ids, plugin manifests)
+        run: python3 tools/validate_skill.py
+      - name: Adapters are up to date
+        run: python3 tools/build_adapters.py --check
+      - name: Linter unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Audit script syntax
+        run: node --check skills/ux-lawyer/scripts/uxl_audit.mjs
+      - name: Install Playwright Chromium
+        run: npm i --no-save playwright@1 && npx playwright install --with-deps chromium
+      - name: Runtime audit smoke test (good page must be clean, bad page must fail)
+        run: |
+          node skills/ux-lawyer/scripts/uxl_audit.mjs tests/fixtures/good/index.html --out /tmp/uxl-good --fail-on minor
+          if node skills/ux-lawyer/scripts/uxl_audit.mjs evals/fixtures/shopco-checkout/checkout.html --out /tmp/uxl-bad --fail-on major; then
+            echo "expected the bad checkout to fail"; exit 1; fi

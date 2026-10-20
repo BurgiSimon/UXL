@@ -1,0 +1,195 @@
+/* ==========================================================================
+   UXL tokens: a drop-in starting point that encodes the UXL statutes.
+   Every value is backed by a Law of UX (§ ids refer to lawsofux.com laws, see SKILL.md).
+   Use as-is for new projects, or map the values onto an existing design system.
+   ========================================================================== */
+
+:root {
+  /* ---- Spacing: 4px base. Inner < outer: grouping by proximity (§L13), consistency (§L15) */
+  --space-0: 0;
+  --space-1: 4px;   /* icon ↔ label */
+  --space-2: 8px;   /* label ↔ input, related controls (also the minimum target gap, §L07) */
+  --space-3: 12px;
+  --space-4: 16px;  /* field ↔ field, card padding (mobile), page gutter (mobile) */
+  --space-5: 20px;
+  --space-6: 24px;  /* group ↔ group, card padding (desktop) */
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px; /* section ↔ section (mobile) */
+  --space-16: 64px;
+  --space-24: 96px; /* section ↔ section (desktop) */
+
+  /* ---- Type: 16px base, ratio ~1.25. Readability lowers load (§L05); a scale gives hierarchy (§L14, §L01) */
+  --font-sans: "Inter Tight", "Geist", "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Newsreader", "Source Serif 4", Georgia, serif;
+  --font-mono: "JetBrains Mono", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --text-xs: 0.75rem;    /* 12px, the floor: captions, meta */
+  --text-sm: 0.875rem;   /* 14px: secondary text (desktop) */
+  --text-base: 1rem;     /* 16px: body, inputs (prevents iOS zoom, §L08) */
+  --text-lg: 1.125rem;   /* 18px: lede, comfortable body on marketing pages */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);    /* 32 → 44px */
+  --text-5xl: clamp(2.5rem, 1.6rem + 3.8vw, 3.75rem);  /* 40 → 60px, hero */
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --measure: 65ch;       /* 45–75 characters per line */
+
+  /* ---- Targets: §L07 Fitts's Law */
+  --target-min: 44px;    /* touch minimum */
+  --target-lg: 48px;     /* primary actions on mobile */
+  --target-dense: 32px;  /* pointer-only dense desktop UI; never below 24px */
+  --target-gap: 8px;
+
+  /* ---- Shape & depth: few, consistent values (§L15, §L14) */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --shadow-1: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.08);
+  --shadow-2: 0 4px 8px -2px rgb(16 24 40 / 0.08), 0 2px 4px -2px rgb(16 24 40 / 0.05);
+  --shadow-3: 0 16px 32px -8px rgb(16 24 40 / 0.16), 0 6px 12px -6px rgb(16 24 40 / 0.08);
+
+  /* ---- Motion: fast enough to keep the Doherty threshold (§L06), gentle on attention (§L25) */
+  --dur-instant: 100ms;  /* press feedback */
+  --dur-fast: 150ms;     /* hover, small state changes, exits */
+  --dur-base: 220ms;     /* enters, expands */
+  --dur-slow: 300ms;     /* large surfaces: sheets, drawers */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);   /* entering */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);        /* exiting */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---- Color roles: one accent reserved for the primary action (§L28), tinted neutrals (§L01).
+     Swap --accent-* for the brand; keep contrast >= 4.5:1 for text, >= 3:1 for UI parts. */
+  --bg: #fbfaf8;
+  --surface: #ffffff;
+  --surface-2: #f3f1ed;
+  --border: #e3dfd8;
+  --border-strong: #8a8378; /* 3.6:1: input borders need >= 3:1 (WCAG 1.4.11) */
+  --text: #1d1b18;
+  --text-muted: #5c574f;   /* 6.9:1 on --bg */
+  --text-subtle: #77716a;  /* 4.6:1 on --bg: the lightest allowed for text */
+  --accent: #0f6b5c;       /* deep teal: 6.4:1 with white text */
+  --accent-hover: #0b574b;
+  --accent-contrast: #ffffff;
+  --accent-soft: #e2f1ed;
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+  --success: #067647;
+  --success-soft: #e7f6ee;
+  --warning: #b54708;
+  --warning-soft: #fef4e6;
+  --focus: #1f6feb;
+  --overlay: rgb(20 18 15 / 0.48);
+
+  /* ---- Layout */
+  --container: 1200px;
+  --container-wide: 1440px;
+  --gutter: var(--space-4);
+  --header-h: 64px;
+  --z-dropdown: 1000; --z-sticky: 1100; --z-overlay: 1300; --z-modal: 1400; --z-toast: 1500;
+
+  color-scheme: light;
+}
+
+@media (min-width: 768px) { :root { --gutter: var(--space-6); } }
+
+/* Dark theme: same roles, re-tuned for contrast */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12110f; --surface: #1b1a17; --surface-2: #24221e; --border: #34312b; --border-strong: #736d63;
+    --text: #f2efe9; --text-muted: #b8b2a8; --text-subtle: #948e84;
+    --accent: #3fbfa6; --accent-hover: #5fd0b9; --accent-contrast: #0b1f1b; --accent-soft: #143530;
+    --danger: #f97066; --danger-soft: #3a1714; --success: #47cd89; --success-soft: #0f2e1f;
+    --warning: #fdb022; --warning-soft: #33240b; --focus: #6ea8fe; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12110f; --surface: #1b1a17; --surface-2: #24221e; --border: #34312b; --border-strong: #736d63;
+  --text: #f2efe9; --text-muted: #b8b2a8; --text-subtle: #948e84;
+  --accent: #3fbfa6; --accent-hover: #5fd0b9; --accent-contrast: #0b1f1b; --accent-soft: #143530;
+  --danger: #f97066; --danger-soft: #3a1714; --success: #47cd89; --success-soft: #0f2e1f;
+  --warning: #fdb022; --warning-soft: #33240b; --focus: #6ea8fe; color-scheme: dark;
+}
+
+/* ==========================================================================
+   Base layer: the statutes as defaults
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 400 var(--text-base)/var(--leading-normal) var(--font-sans);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 { line-height: var(--leading-tight); text-wrap: balance; margin: 0 0 var(--space-3); }
+p, li { text-wrap: pretty; }
+p { max-width: var(--measure); }
+img, video, svg { max-width: 100%; height: auto; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }   /* links look like links, §L15 */
+
+/* Visible focus for keyboard users (§L24, §L11) */
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+/* Targets (§L07): buttons and controls reach the touch minimum */
+button, .btn, [role="button"], input, select, textarea { font: inherit; }
+button, .btn, [role="button"], input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select {
+  min-height: var(--target-min);
+}
+input, select, textarea { font-size: max(16px, 1rem); }   /* no zoom-on-focus (§L08) */
+button, a, label, summary { touch-action: manipulation; }
+
+/* Buttons: one primary per view (§L28) */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  padding: 0 var(--space-5); border-radius: var(--radius-md); border: 1px solid transparent;
+  font-weight: 600; text-decoration: none; cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-standard), transform var(--dur-instant) var(--ease-standard),
+              box-shadow var(--dur-fast) var(--ease-standard);
+}
+.btn:active { transform: translateY(1px); }                                        /* < 100ms feedback, §L06 */
+.btn-primary { background: var(--accent); color: var(--accent-contrast); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+.btn-ghost { background: transparent; color: var(--text); }
+.btn[aria-busy="true"] { pointer-events: none; opacity: 0.8; }
+
+/* Icon button: small glyph, 44px hit area (§L07) */
+.icon-btn { position: relative; display: inline-grid; place-items: center; inline-size: var(--target-min); block-size: var(--target-min); border-radius: var(--radius-full); }
+
+/* Form field: label above, hint and error below (§L29, §L13) */
+.field { display: grid; gap: var(--space-2); }
+.field + .field { margin-top: var(--space-4); }
+.field label { font-weight: 600; }
+.field .hint { color: var(--text-muted); font-size: var(--text-sm); }
+.field .error { color: var(--danger); font-size: var(--text-sm); }
+.input {
+  width: 100%; padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--text);
+}
+.input[aria-invalid="true"] { border-color: var(--danger); }
+
+/* Skeleton for loads > ~300ms (§L06) */
+.skeleton { background: linear-gradient(90deg, var(--surface-2), var(--border), var(--surface-2)); background-size: 200% 100%;
+  animation: uxl-shimmer 1.4s linear infinite; border-radius: var(--radius-sm); color: transparent; }
+@keyframes uxl-shimmer { to { background-position: -200% 0; } }
+
+/* Reduced motion (§L25) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* Layout helpers */
+.container { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; }
+.stack > * + * { margin-top: var(--space-4); }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Mobile thumb-zone action bar (§L07) */
+.action-bar { position: sticky; bottom: 0; z-index: var(--z-sticky); display: flex; gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(8px); border-top: 1px solid var(--border); }
+.action-bar .btn-primary { flex: 1; min-height: var(--target-lg); }
+@media (min-width: 768px) { .action-bar { position: static; padding: 0; background: none; border: 0; backdrop-filter: none; } .action-bar .btn-primary { flex: 0 0 auto; } }

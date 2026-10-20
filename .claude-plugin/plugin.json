@@ -1,0 +1,10 @@
+{
+  "name": "uxl",
+  "version": "1.0.0",
+  "description": "UX Lawyer: build, audit and fix websites and web apps for desktop and mobile with the 30 Laws of UX (lawsofux.com). Includes the ux-lawyer skill, the /uxl:build, /uxl:audit, /uxl:fix and /uxl:law commands, and a ux-auditor agent with static and Playwright audit scripts.",
+  "author": { "name": "BurgiSimon", "url": "https://github.com/BurgiSimon" },
+  "homepage": "https://github.com/BurgiSimon/UXL",
+  "repository": "https://github.com/BurgiSimon/UXL",
+  "license": "MIT",
+  "keywords": ["ux", "ui", "design", "laws-of-ux", "usability", "accessibility", "mobile", "responsive", "audit", "frontend"]
+}

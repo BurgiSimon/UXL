@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+node_modules/
+uxl-report/
+uxl-report-*/
+*-workspace/
+.DS_Store
+adapters/claude-ai/*.zip
+dist/

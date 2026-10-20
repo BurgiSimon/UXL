@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign up · Plantly</title>
+  <link rel="stylesheet" href="good.css">
+</head>
+<body>
+  <header class="header">
+    <a href="/" class="logo"><img src="/logo.svg" alt="Plantly home" width="120" height="32"></a>
+    <nav aria-label="Main">
+      <a href="/plants">Plants</a>
+      <a href="/care">Care guides</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/login">Log in</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>Start your plant journal</h1>
+    <p class="lede">Takes about a minute. No card needed.</p>
+
+    <form id="signup" novalidate>
+      <fieldset>
+        <legend>Your account</legend>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="new-password" required aria-describedby="pw-hint">
+          <p id="pw-hint" class="hint">At least 8 characters.</p>
+        </div>
+      </fieldset>
+      <label class="check"><input type="checkbox" name="tips"> Send me monthly care tips</label>
+      <button type="submit" class="btn btn-primary">Create account</button>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById('signup');
+    const status = form.querySelector('.status');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = form.querySelector('button[type=submit]');
+      button.setAttribute('aria-busy', 'true');
+      status.textContent = 'Creating your account…';
+      const response = await fetch('/api/signup', { method: 'POST', body: new FormData(form) });
+      button.removeAttribute('aria-busy');
+      status.textContent = response.ok ? 'Welcome aboard! Check your inbox.' : 'We could not create your account. Please try again.';
+    });
+  </script>
+</body>
+</html>
