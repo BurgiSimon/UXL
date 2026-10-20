@@ -136,7 +136,7 @@ section { padding-block: var(--space-12); border-top: 1px solid var(--rule); }
 
 /* ---- tables */
 .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet); }
-.table-wrap + .table-wrap { margin-top: var(--space-6); }
+.table-wrap + .table-wrap, .note + .table-wrap { margin-top: var(--space-6); }
 table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 560px; }
 caption { text-align: left; padding: var(--space-4) var(--space-4) 0; font-weight: 700; }
 caption .mono { display: block; font-weight: 400; color: var(--ink-soft); margin-top: 2px; }
@@ -265,7 +265,7 @@ footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid v
     <article class="exhibit" data-key="a">
       <header>
         <h3><span class="mono">A</span>Awards</h3>
-        <span class="score mid" title="Blind awards jury, weighted score out of 10">Jury __AW__ · __ADISP__</span>
+        <span class="score mid" title="Blind awards jury, weighted score out of 10">Jury 7.23 · fix</span>
       </header>
       <div class="frame" data-mode="phone"><div class="screen"><iframe title="Exhibit A: Lumenvale site built with the awards plugin" src="without-uxl/index.html" width="390" height="780" loading="lazy"></iframe></div></div>
       <a class="open" href="without-uxl/index.html" target="_blank" rel="noopener">Open Exhibit A full size ↗</a>
@@ -273,7 +273,7 @@ footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid v
     <article class="exhibit" data-key="b">
       <header>
         <h3><span class="mono">B</span>Awards + UXL</h3>
-        <span class="score good" title="Blind awards jury, weighted score out of 10">Jury __KW__ · __KDISP__</span>
+        <span class="score good" title="Blind awards jury, weighted score out of 10">Jury 8.14 · ship</span>
       </header>
       <div class="frame" data-mode="phone"><div class="screen"><iframe title="Exhibit B: Lumenvale site built with the awards plugin and UXL" src="with-uxl/index.html" width="390" height="780" loading="lazy"></iframe></div></div>
       <a class="open" href="with-uxl/index.html" target="_blank" rel="noopener">Open Exhibit B full size ↗</a>
@@ -292,16 +292,16 @@ footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid v
       <caption>Blind awards jury<span class="mono">/awards:jury, one fresh session per page</span></caption>
       <thead><tr><th scope="col">Axis (weight)</th><th scope="col">Exhibit A · awards</th><th scope="col">Exhibit B · awards + UXL</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Design (40)</th><td>__AD__</td><td>__KD__</td></tr>
-        <tr><th scope="row">Usability (30)</th><td>__AU__ <span class="tag fail">capped at 6</span></td><td>__KU__</td></tr>
-        <tr><th scope="row">Creativity (20)</th><td>__AC__</td><td>__KC__</td></tr>
-        <tr><th scope="row">Content (10)</th><td>__ACo__</td><td>__KCo__</td></tr>
-        <tr class="total"><th scope="row">Weighted</th><td>__AW__</td><td>__KW__</td></tr>
-        <tr><th scope="row">Disposition</th><td>__ADISP__</td><td>__KDISP__</td></tr>
+        <tr><th scope="row">Design (40)</th><td>7.6</td><td>7.9</td></tr>
+        <tr><th scope="row">Usability (30)</th><td>6.0 <span class="tag fail">capped</span></td><td>8.1</td></tr>
+        <tr><th scope="row">Creativity (20)</th><td>7.8</td><td>8.5</td></tr>
+        <tr><th scope="row">Content (10)</th><td>8.3</td><td>8.5</td></tr>
+        <tr class="total"><th scope="row">Weighted</th><td>7.23</td><td>8.14</td></tr>
+        <tr><th scope="row">Disposition</th><td>fix</td><td>ship</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="note">__JURYNOTE__</p>
+  <p class="note">Exhibit A clears 7.2 overall, but its Usability of 6.0 sits under the 6.8 floor, so the jury sent it back to fix. One bug set that cap: with full motion on, the skip link leaves focus on itself. Exhibit B passed all eight usability walk steps. B also scored higher on Design and Creativity, but both concepts came from awards:concept before UXL was ever called, so read those two rows as one run’s variation, not as UXL’s doing.</p>
   <div class="table-wrap">
     <table>
       <caption>Scanners and measurements<span class="mono">uxl_audit.mjs at 360, 390 and 1440 px · uxl_lint.py on the file · Playwright probes</span></caption>
@@ -367,7 +367,7 @@ footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid v
   <div class="head">
     <p class="label">The counts</p>
     <h2 id="counts-title">From case file to code, law by law</h2>
-    <p class="lede">Each count quotes the UXL auditor’s finding on Exhibit B, shows the line that shipped, and puts Exhibit A, which had no auditor, next to it. The jury caught the first one too. The other four came from UXL alone.</p>
+    <p class="lede">Each count quotes the UXL auditor’s finding on Exhibit B, shows the line that shipped, and puts Exhibit A, which had no auditor, next to it. B’s own awards jury caught the first one too. The other four came from UXL alone.</p>
   </div>
   <div class="counts">
 
@@ -488,6 +488,7 @@ footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid v
       <ul class="ticks">
         <li><span>Exhibit A: the skip link fails with full motion on, which capped its blind Usability score at 6.</span></li>
         <li><span>Exhibit B: the ticket says “We’ve sent the details to” your email, but nothing is sent. Its hand-off flags this; a real backend has to make it true.</span></li>
+        <li><span>Exhibit B: the blind jury’s three craft fixes. The scrolled header lets type ghost through, the moon scale stops two thirds along its track, and the dawn headline is cut under the bar on a 1440 × 900 screen.</span></li>
         <li><span>Exhibit B: 11 to 12 font sizes, above the 6 to 8 UXL recommends.</span></li>
         <li><span>Both: the fixes made after the last in-session jury round were not juried again in-session. The blind run above judged the final files.</span></li>
         <li><span>Exhibit B cost 31 % more and took 19 % longer: $39.24 and 105 min against $29.95 and 88 min.</span></li>
@@ -499,8 +500,8 @@ footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid v
 <section aria-labelledby="verdict-title">
   <div class="verdict">
     <p class="label">Verdict</p>
-    <h2 id="verdict-title">__VERDICT_H__</h2>
-    <p>__VERDICT_P__</p>
+    <h2 id="verdict-title">Exhibit B.</h2>
+    <p>Both sessions built an award-grade page: a committed world, a real sky, motion with reduced tiers. The awards skills set that ceiling in both. Exhibit B is the one the blind jury would ship, at 8.14 against 7.23, and the one where the person booking knows what they will pay, when, and where to go. UXL added two steps and 31 % to the bill. Its auditor found five major issues before hand-off, and four of them were ones the craft review had not flagged.</p>
   </div>
 </section>
 

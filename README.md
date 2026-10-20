@@ -58,7 +58,7 @@ UXL is built to work alongside other skills. In the second case, both sessions r
 |---|---|---|
 | First phone screen | <img src="docs/lumenvale/screens/a-mobile.png" width="260" alt="Exhibit A first phone screen: Stay until the stars arrive, with a Choose your night button"> | <img src="docs/lumenvale/screens/b-mobile.png" width="260" alt="Exhibit B first phone screen: One night, exposed, over star trails, with the next dark night and a Book button"> |
 | Booking on a phone | <img src="docs/lumenvale/screens/a-mobile-booking.png" width="260" alt="Exhibit A booking sheet with a Hold 2 seats button"> | <img src="docs/lumenvale/screens/b-mobile-booking.png" width="260" alt="Exhibit B booking step 1 of 2, total with pay on the night"> |
-| Blind awards jury (weighted · Usability) | __README_A_JURY__ | __README_B_JURY__ |
+| Blind awards jury (weighted · Usability) | 7.23 · Usability 6.0 · "fix" | **8.14** · Usability 8.1 · "ship" |
 | UXL runtime audit | 90 / 100 | **96 / 100** |
 | Filled Book buttons in the nights list | 16 of 16 | **1 of 27**, on the recommended night |
 | Says when you pay | no | **yes**, on both booking steps and the ticket |
