@@ -133,7 +133,7 @@ If the request is underspecified, make sensible assumptions, state them in the b
 - Otherwise start from `assets/uxl-tokens.css` (or the Tailwind v4 `@theme` version in `assets/uxl-theme.tailwind.css`). It covers the spacing scale, type scale, target sizes, radii, motion, focus ring and color roles with a single accent. See `references/design-tokens.md` for the values and how to choose a palette and type pairing with character.
 
 ### 4. Compose mobile-first, then enhance for desktop
-- Build the 360–390 px layout first: single column, thumb-zone actions, bottom nav for apps, no hover dependence. Then add breakpoints for tablet and desktop: multi-column, persistent side nav, hover affordances, keyboard shortcuts, denser data. See `references/platform-mobile.md` and `references/platform-desktop.md`.
+- Build the 360–390 px layout first: single column, thumb-zone actions, bottom nav for apps, no hover dependence. Labels must fit at 360 px without truncating. Then add breakpoints for tablet and desktop: multi-column, persistent side nav, hover affordances, keyboard shortcuts, denser data. See `references/platform-mobile.md` and `references/platform-desktop.md`.
 - Apply the Gestalt laws for hierarchy: proximity first, common region (cards and panels) second, similarity for consistency, and one Von Restorff accent for the primary action.
 - Before building a specific component (nav, hero, form, checkout, pricing, table, dashboard, modal, onboarding…), check `references/component-playbook.md` for its law-backed spec.
 
@@ -141,6 +141,7 @@ If the request is underspecified, make sensible assumptions, state them in the b
 - Wire feedback for every action: pressed, pending, success, failure.
 - Implement loading (skeleton), empty, error and success states for every async view, plus form validation per the statutes.
 - Add the time-savers: autofill, sensible defaults, remembered choices, keyboard submit.
+- Persisted UI state (collapsed sidebar, theme, drafts) must not flash or break server rendering. Render a neutral default that matches the server, then apply the stored state, ideally before first paint (§L06, §L14).
 
 ### 6. Journey polish (§L23 Peak-End, §L09 Goal-Gradient, §L30 Zeigarnik, §L01)
 - Design the peak (the moment value is delivered) and the end (confirmation or success screen). Add tasteful micro-interactions there. Smooth out the worst moments: errors, waits, empty results.
@@ -148,7 +149,7 @@ If the request is underspecified, make sensible assumptions, state them in the b
 
 ### 7. Verify before you call it done
 - **Static scan:** `python3 <skill-dir>/scripts/uxl_lint.py <src-dir-or-files>`. Fix every critical and major finding, or justify it.
-- **Runtime scan,** when you can serve the page: `node <skill-dir>/scripts/uxl_audit.mjs <url-or-html-file> --out uxl-report`. It checks mobile and desktop viewports and writes `report.md` plus annotated screenshots. **Look at the screenshots.** Many problems only show visually. It needs Playwright; if it's unavailable, say so and skip, and don't fake results.
+- **Runtime scan,** when you can serve the page: `node <skill-dir>/scripts/uxl_audit.mjs <url-or-html-file> --out uxl-report`. It checks mobile and desktop viewports (add `--viewports small,mobile,desktop` for a 360 px check) and writes `report.md` plus annotated screenshots. **Look at the screenshots.** Many problems only show visually. It needs Playwright; if it's unavailable, say so and skip, and don't fake results.
 - **Exercise the main flow once:** the happy path and one failure path (e.g. submit invalid, then valid). Use a short Playwright script or manual clicks. This catches the interaction bugs that scans can't see.
 - Walk `assets/checklist.md` mentally for the screens you built.
 - **Keep verification proportionate.** Run each scanner, fix, then re-run once. Don't loop on minor findings or build elaborate test harnesses for a simple page.
@@ -156,7 +157,7 @@ If the request is underspecified, make sensible assumptions, state them in the b
 - `<skill-dir>` is the directory containing this SKILL.md (in Claude Code: `${CLAUDE_SKILL_DIR}`).
 
 ### 8. Hand-off note
-End with a short **"UX decisions"** list of no more than 8 bullets, each one concrete decision plus its citation. For example: "Sticky full-width 'Start free trial' button in the mobile thumb zone (§L07 Fitts)". This shows the user the reasoning without a lecture. Mention any statute you deliberately broke and why.
+End with a short **"UX decisions"** list of no more than 8 bullets, each one concrete decision plus its citation. For example: "Sticky full-width 'Start free trial' button in the mobile thumb zone (§L07 Fitts)". This shows the user the reasoning without a lecture. Mention any statute you deliberately broke and why. Respect the format and length the user asked for: a "short" CHANGES.md means about 10–25 lines, not a report.
 
 ## Audit & Fix mode
 

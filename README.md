@@ -161,12 +161,31 @@ node skills/ux-lawyer/scripts/uxl_audit.mjs http://localhost:3000 http://localho
 
 **Static: `uxl_lint.py`** (31 rules). Each finding names its law(s), points to a `file:line` and gives a remedy. Examples: `small-target`, `placeholder-as-label`, `input-font-small`, `nav-overload`, `multiple-primary-cta`, `async-no-feedback`, `focus-outline-removed`, `hover-only`, `div-button`, `form-long`, `autocomplete-missing`, `dark-pattern-urgency`, `dark-pattern-precheck`, `dark-pattern-confirmshaming`, `reduced-motion-missing`, `font-size-sprawl` and more (`--list-rules`). Supports `--format text|md|json`, `--fail-on major` for CI, and `uxl-ignore <rule>` comments.
 
-**Runtime: `uxl_audit.mjs`** (19 checks). Renders each page in Chromium at mobile (390×844, touch) and desktop (1440×900). It measures real tap-target sizes and spacing, WCAG contrast, body and input font sizes, horizontal overflow, nav item counts, filled CTAs in the first screen, the h1, FCP/LCP/CLS, keyboard focus visibility, labels, form length, font and color sprawl, viewport/zoom settings and autoplaying media. Output: `report.md`, `report.json`, a first-screen screenshot per viewport, and a **full-page annotated screenshot** with each violation outlined and labelled.
+**Runtime: `uxl_audit.mjs`** (19 checks). Renders each page in Chromium at mobile (390×844, touch) and desktop (1440×900), plus an optional small phone (360×740, `--viewports small,mobile,desktop`). It measures real tap-target sizes and spacing, WCAG contrast, body and input font sizes, horizontal overflow, nav item counts, filled CTAs in the first screen, the h1, FCP/LCP/CLS, keyboard focus visibility, labels, form length, font and color sprawl, viewport/zoom settings and autoplaying media. Output: `report.md`, `report.json`, a first-screen screenshot per viewport, and a **full-page annotated screenshot** with each violation outlined and labelled.
 
 <!-- BENCHMARK:START -->
 ## Benchmark
 
-Benchmark results appear here after the eval run (see `evals/`).
+UXL was built with Anthropic's **skill-creator** loop. Each realistic task ran in a fresh agent **with** and **without** the skill. Outputs were graded by the UXL scanners and an independent grader agent, including a blind side-by-side comparison. The skill was then revised and re-run. Results with the current version (iteration 2, Claude Opus 5.5):
+
+| Task | With UXL | Without | Static score | Runtime score |
+|---|---|---|---|---|
+| Build a landing page + email signup (single HTML file, phone + desktop) | **13/13** | 11/13 | 100 vs 89 | 100 vs 89 |
+| Fix a broken e-commerce checkout (bad mobile UX, dark patterns) | **15/15** | 14/15 | 98 vs 94 | 100 vs 100 |
+| Redesign a 14-item SaaS sidebar for desktop + mobile (React + Tailwind) | **9/9** | 8/9 | 100 vs 90 | n/a (TSX) |
+| **Total** | **100%** | 89% | | |
+
+How to read this honestly: the baseline (the same strong model without UXL) is already good. On the functional assertions, UXL scores **34/34** and the baseline **33/34**. Most of the gap is the law-citation assertion, which UXL asks for by design. The differences that matter:
+
+- **The last mile.** Without UXL, the baseline still shipped a 29px footer link on mobile and scored 89–94 on the static scanner. UXL runs scored 98–100. In the nav redesign, the baseline used 36px icon-only rows on touch tablets and read `localStorage` during render (an SSR hydration mismatch). A blind grader **chose the UXL design in both iterations**.
+- **Reasoning on the record.** UXL runs hand off a "UX decisions" list that cites the laws, so a reviewer can see why each choice was made.
+- **Evidence.** UXL runs measure before → after. The checkout went from 63 static and 25 runtime findings to 1 deliberate exception and 0.
+
+**Cost:** UXL runs used about 1.7× the tokens and about 1.5× the wall time. The extra goes on verification: scanning, then exercising the main flow, which caught real interaction bugs in most runs. Iteration 2 already cut overhead by 18% (time) and 12% (tokens) versus iteration 1 without losing quality.
+
+**Triggering:** the skill description loads UXL for **10/10** realistic UI requests and **0/10** near-misses such as scraping, CI, schemas and translations (`evals/trigger_eval.py`, 2 runs each).
+
+Raw data: [`evals/results/`](evals/results/) · prompts and assertions: [`evals/evals.json`](evals/evals.json) · grader: [`evals/grade.py`](evals/grade.py).
 <!-- BENCHMARK:END -->
 
 ## Repository layout

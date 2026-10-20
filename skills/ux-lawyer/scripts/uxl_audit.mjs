@@ -54,6 +54,10 @@ const RULES = {
 };
 
 const VIEWPORTS = {
+  small: {
+    viewport: { width: 360, height: 740 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true,
+    userAgent: "Mozilla/5.0 (Linux; Android 14; Pixel 7a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36",
+  },
   mobile: {
     viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true,
     userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
@@ -90,7 +94,7 @@ const HELP = `UXL runtime auditor ${VERSION}: Laws of UX checks on rendered page
 
 Options:
   --out <dir>            output directory (default: uxl-report)
-  --viewports <list>     mobile,desktop (default both)
+  --viewports <list>     small (360x740), mobile (390x844), desktop (1440x900); default mobile,desktop
   --wait <ms>            extra settle time after load (default 800)
   --no-screenshots       skip screenshots
   --fail-on <severity>   exit 1 if any finding >= minor|major|critical (CI)
@@ -621,7 +625,7 @@ function renderMd(pages, sc) {
 async function main() {
   const opts = parseArgs(process.argv.slice(2));
   if (opts.help || !opts.targets.length) { console.log(HELP); process.exit(opts.help ? 0 : 2); }
-  for (const v of opts.viewports) if (!VIEWPORTS[v]) { console.error(`Unknown viewport "${v}" (use mobile,desktop)`); process.exit(2); }
+  for (const v of opts.viewports) if (!VIEWPORTS[v]) { console.error(`Unknown viewport "${v}" (use small, mobile, desktop)`); process.exit(2); }
   const pw = await loadPlaywright();
   if (!pw) {
     console.error("UXL audit needs Playwright. Install it in the project:\n  npm i -D playwright && npx playwright install chromium\n(or @playwright/test). Then re-run. Static checks are still available via uxl_lint.py.");
