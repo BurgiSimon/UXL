@@ -31,6 +31,7 @@ LAWS = ["Aesthetic-Usability", "Choice Overload", "Chunking", "Cognitive Bias", 
 
 def session_stats(path):
     tools, skills, agents, result, text = [], [], [], {}, ""
+    duration_ms, turns, out_tokens = 0, 0, 0
     for line in open(path, encoding="utf-8"):
         try:
             ev = json.loads(line)
@@ -44,18 +45,20 @@ def session_stats(path):
                         skills.append(c.get("input", {}).get("skill", ""))
                     if c["name"] in ("Agent", "Task"):
                         agents.append(c.get("input", {}).get("subagent_type", "general-purpose"))
-        elif ev.get("type") == "result":
+        elif ev.get("type") == "result":  # a session woken by background tasks emits several; sum them
+            duration_ms += ev.get("duration_ms") or 0
+            turns += ev.get("num_turns") or 0
+            out_tokens += (ev.get("usage") or {}).get("output_tokens") or 0
             result = ev
             text = ev.get("result", "") or ""
-    usage = result.get("usage", {}) or {}
     return {
         "tool_calls": len(tools),
         "skills_used": skills,
         "agents_used": agents,
-        "duration_s": round((result.get("duration_ms") or 0) / 1000),
-        "turns": result.get("num_turns"),
-        "cost_usd": result.get("total_cost_usd"),
-        "output_tokens": usage.get("output_tokens"),
+        "duration_s": round(duration_ms / 1000),
+        "turns": turns,
+        "cost_usd": result.get("total_cost_usd"),  # already cumulative for the session
+        "output_tokens": out_tokens,
         "final_message": text,
         "laws_cited": sorted({law for law in LAWS if law.lower() in text.lower()}),
     }

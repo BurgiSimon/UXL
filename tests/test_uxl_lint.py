@@ -177,6 +177,15 @@ class Snippets(unittest.TestCase):
         rep = lint_snippet("a.html", "<form id=f></form><script>f.onsubmit=()=>{ // TODO: fetch('/api/x')\n show(); }</script>")
         self.assertNotIn("async-no-feedback", rules(rep))
 
+    def test_ends_in_prose_is_not_urgency(self):
+        rep = lint_snippet("a.html", "<p>Every row ends in the same filled button.</p>")
+        self.assertNotIn("dark-pattern-urgency", rules(rep))
+
+    def test_countdown_copy_is_urgency(self):
+        for copy in ("Sale ends in 2 hours", 'Deal ends in <span id="t">09:59</span>'):
+            rep = lint_snippet("a.html", f"<p>{copy}</p>")
+            self.assertIn("dark-pattern-urgency", rules(rep), copy)
+
     def test_menu_toggle_ignored_by_audit_is_documented(self):
         self.assertIn("isToggle", open(os.path.join(ROOT, "skills", "ux-lawyer", "scripts", "uxl_audit.mjs")).read())
 

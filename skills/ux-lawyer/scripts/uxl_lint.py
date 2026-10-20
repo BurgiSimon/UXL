@@ -906,7 +906,7 @@ def check_scripts(src: Source, out: Collector, project: dict):
 
     # dark patterns (copy-level heuristics)
     visible = re.sub(r"<script\b.*?</script>|<style\b.*?</style>", lambda mm: re.sub(r"[^\n]", " ", mm.group(0)), text, flags=re.S | re.I)
-    m = re.search(r"\b(only|just)\s+(<[^>]+>\s*)?\d+\s*(<[^>]+>\s*)?(left|remaining|in stock)|offer ends|ends in\b|\bhurry\b|selling fast|\d+\s+(people|others)\s+(are\s+)?(viewing|looking|watching)", visible, re.I)
+    m = re.search(r"\b(only|just)\s+(<[^>]+>\s*)?\d+\s*(<[^>]+>\s*)?(left|remaining|in stock)|offer ends|ends in\s+(<[^>]+>\s*)?(\d|a few\b|one\b|two\b|three\b|minutes\b|hours\b|days\b)|\bhurry\b|selling fast|\d+\s+(people|others)\s+(are\s+)?(viewing|looking|watching)", visible, re.I)
     if m:
         out.add(src, "dark-pattern-urgency", m.start(), f'Urgency copy: "{m.group(0)[:50]}"')
     m = re.search(r"no,?\s*thanks?,?\s*i\s*(don'?t|do not)\s*(like|want|need|care)|i\s*(don'?t|do not)\s*(like|want)\s*(saving|money|discounts|deals|to save)|i\s*('?m|am)\s*not interested in (saving|being|getting)|i\s*prefer\s*(to\s*)?pay(ing)?\s*full", visible, re.I)

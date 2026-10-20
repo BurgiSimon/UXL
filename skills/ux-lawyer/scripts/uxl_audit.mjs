@@ -152,8 +152,13 @@ function measure(cfg) {
     if (el) out.marks.push({ rule, severity, rect: absRect(el) });
   };
   const absRect = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height }; };
+  // display: contents has no box of its own; measure what it contains (e.g. an <h1> wrapping animated lines)
+  const boxOf = (el) => {
+    if (getComputedStyle(el).display !== "contents") return el.getBoundingClientRect();
+    const range = document.createRange(); range.selectNodeContents(el); return range.getBoundingClientRect();
+  };
   const visible = (el) => {
-    const r = el.getBoundingClientRect();
+    const r = boxOf(el);
     if (r.width < 1 || r.height < 1) return false;
     const cs = getComputedStyle(el);
     if (cs.visibility === "hidden" || cs.display === "none" || Number(cs.opacity) === 0) return false;
@@ -410,7 +415,7 @@ function measure(cfg) {
   const h1s = [...document.querySelectorAll("h1")].filter(visible);
   out.metrics.h1 = h1s.length;
   if (!h1s.length) add("no-h1", "minor", "No visible <h1>: the page's purpose is not stated as its first, strongest element", "");
-  else if (h1s[0].getBoundingClientRect().top > vh) add("no-h1", "minor", `The <h1> starts below the first screen (${Math.round(h1s[0].getBoundingClientRect().top)}px)`, sel(h1s[0]), h1s[0]);
+  else if (boxOf(h1s[0]).top > vh) add("no-h1", "minor", `The <h1> starts below the first screen (${Math.round(boxOf(h1s[0]).top)}px)`, sel(h1s[0]), h1s[0]);
 
   // ---- media
   const loudVideos = [...document.querySelectorAll("video")].filter((v) => (v.autoplay || !v.paused) && !v.muted);
