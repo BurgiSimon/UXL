@@ -42,6 +42,11 @@ class CleanFixtures(unittest.TestCase):
         self.assertEqual(rep["findings"], [], rep["findings"])
         self.assertEqual(rep["score"], 100)
 
+    def test_audit_edge_fixture_has_no_findings(self):
+        # grouped nav, focus ring on wrapper, repeated identical CTA, honeypot field
+        _, rep = lint(os.path.join(FIX, "audit-edge"))
+        self.assertEqual(rep["findings"], [], rep["findings"])
+
     def test_good_react_has_no_findings(self):
         _, rep = lint(os.path.join(FIX, "react-good"))
         self.assertEqual(rep["findings"], [], rep["findings"])
@@ -146,6 +151,19 @@ class Snippets(unittest.TestCase):
         items = ",\n".join(f'  {{ label: "L{i}", href: "/{i}" }}' for i in range(10))
         rep = lint_snippet("a.tsx", f"const navItems = [\n{items}\n];\nexport const X = () => <nav />;")
         self.assertIn("nav-overload", rules(rep))
+
+    def test_repeated_same_primary_action_ok(self):
+        btn = '<a href="#signup" class="btn btn-primary">Get early access</a>'
+        rep = lint_snippet("a.html", f"<header>{btn}</header><main>{btn}</main><footer>{btn}</footer>")
+        self.assertNotIn("multiple-primary-cta", rules(rep))
+
+    def test_honeypot_field_ignored(self):
+        rep = lint_snippet("a.html", '<div class="hp" aria-hidden="true"><label>Leave empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>')
+        self.assertFalse(rules(rep) & {"input-type-generic", "autocomplete-missing", "input-unlabeled"})
+
+    def test_postal_code_with_autocomplete_ok(self):
+        rep = lint_snippet("a.html", '<label for="z">Postal code</label><input id="z" name="zip" type="text" autocomplete="postal-code">')
+        self.assertNotIn("input-type-generic", rules(rep))
 
     def test_list_rules(self):
         buf = io.StringIO()

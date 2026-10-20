@@ -27,6 +27,6 @@ jobs:
         run: npm i --no-save playwright@1 && npx playwright install --with-deps chromium
       - name: Runtime audit smoke test (good page must be clean, bad page must fail)
         run: |
-          node skills/ux-lawyer/scripts/uxl_audit.mjs tests/fixtures/good/index.html --out /tmp/uxl-good --fail-on minor
+          node skills/ux-lawyer/scripts/uxl_audit.mjs tests/fixtures/good/index.html tests/fixtures/audit-edge/index.html --out /tmp/uxl-good --fail-on minor
           if node skills/ux-lawyer/scripts/uxl_audit.mjs evals/fixtures/shopco-checkout/checkout.html --out /tmp/uxl-bad --fail-on major; then
             echo "expected the bad checkout to fail"; exit 1; fi

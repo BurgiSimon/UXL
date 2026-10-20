@@ -587,6 +587,7 @@ def check_markup(src: Source, tags: List[Tag], out: Collector, project: dict):
 
     primary_count = 0
     primary_first = None
+    primary_labels = set()
 
     for idx, t in enumerate(tags):
         if t.closing:
@@ -596,7 +597,7 @@ def check_markup(src: Source, tags: List[Tag], out: Collector, project: dict):
         lname = t.lname
 
         # ---------- fields
-        if is_field(t):
+        if is_field(t) and not (a.get("tabindex", "").strip("{}'\" ") == "-1" or _inside_hidden(tags, idx)):  # skip honeypots
             key = field_key(t)
             spread = "{...}" in a
             itype = a.get("type", "text").strip("{}'\" ").lower()
@@ -618,8 +619,10 @@ def check_markup(src: Source, tags: List[Tag], out: Collector, project: dict):
                         want = 'type="email"'
                     elif re.search(r"phone|\btel\b|mobile", key):
                         want = 'type="tel"'
-                    elif re.search(r"zip|postal|postcode|otp|\bcode\b|pin\b", key):
+                    elif re.search(r"otp|\bcode\b|pin\b", key):
                         want = 'inputmode="numeric" (keep type=text)'
+                    elif re.search(r"zip|postal|postcode", key) and "autocomplete" not in a:
+                        want = 'autocomplete="postal-code" (inputmode="numeric" only if every supported country uses digit-only codes)'
                     elif re.search(r"amount|price|quantity|\bqty\b|\bage\b", key):
                         want = 'inputmode="decimal" or "numeric"'
                     elif re.search(r"\burl\b|website", key):
@@ -648,6 +651,9 @@ def check_markup(src: Source, tags: List[Tag], out: Collector, project: dict):
                     or re.search(r"^\W*contained\W*$", a.get("variant", "")):
                 primary_count += 1
                 primary_first = primary_first if primary_first is not None else t.start
+                c = find_close(tags, idx) if not t.self_closing else None
+                label = re.sub(r"<[^>]+>|\s+", " ", text[t.end: tags[c].start]).strip().lower() if c is not None else a.get("value", "")
+                primary_labels.add(label or f"@{t.start}")
             # disabled-submit
             dis = a.get("disabled", "")
             if dis and re.search(r"!\s*[\w.]*(valid|isvalid|canSubmit|complete|filled|ready)|invalid|errors?\b|!\s*\w*\.length|===\s*['\"]{2}", dis, re.I) \
@@ -746,8 +752,9 @@ def check_markup(src: Source, tags: List[Tag], out: Collector, project: dict):
                 elif fields > 15 and not stepped:
                     out.add(src, "form-long", t.start, f"<form> with {fields} fields on one page", severity="minor")
 
-    if primary_count >= 3:
-        out.add(src, "multiple-primary-cta", primary_first or 0, f"{primary_count} primary-styled actions in one file/view")
+    if primary_count >= 3 and len(primary_labels) >= 2:  # the same action repeated down a long page is fine
+        out.add(src, "multiple-primary-cta", primary_first or 0,
+                f"{primary_count} primary-styled actions ({len(primary_labels)} different) in one file/view")
 
     # ---------- data-driven nav arrays
     for m in re.finditer(r"(?:const|let|var)\s+(\w*(?:nav|menu|links|tabs)\w*)\s*(?::[^=\n]+)?=\s*\[", text, re.I):
@@ -774,6 +781,25 @@ def _norm_hex(h: str) -> str:
     return h[:7]
 
 
+def _inside_hidden(tags: List[Tag], idx: int) -> bool:
+    """True if an ancestor element is aria-hidden / hidden (e.g. a honeypot wrapper)."""
+    depth = 0
+    for k in range(idx - 1, max(-1, idx - 40), -1):
+        t = tags[k]
+        if t.self_closing:
+            continue
+        if t.closing:
+            depth += 1
+            continue
+        if depth:
+            depth -= 1
+            continue
+        a = t.attrs
+        if a.get("aria-hidden", "").strip("{}'\" ") in ("true", "") and "aria-hidden" in a or "hidden" in a:
+            return True
+    return False
+
+
 def _inside(tags: List[Tag], idx: int, name: str) -> bool:
     depth = 0
     for k in range(idx - 1, -1, -1):
@@ -790,6 +816,12 @@ def _inside(tags: List[Tag], idx: int, name: str) -> bool:
 
 
 def _count_top_links(inner: List[Tag]) -> int:
+    """Top-level choices in a nav. Labelled groups (headings, summary, aria-expanded toggles) count once each."""
+    heads = [i for i, t in enumerate(inner) if not t.closing and (re.fullmatch(r"h[2-6]", t.lname) or t.lname == "summary"
+             or t.attrs.get("role", "").strip("'\"") == "heading" or "aria-expanded" in t.attrs)]
+    if len(heads) >= 2:
+        before = sum(1 for t in inner[: heads[0]] if not t.closing and (t.lname == "a" or t.name in ("Link", "NavLink")))
+        return before + len(heads)
     depth = 0
     count = 0
     for t in inner:

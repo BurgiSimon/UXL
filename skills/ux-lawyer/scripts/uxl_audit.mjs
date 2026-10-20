@@ -359,8 +359,22 @@ function measure(cfg) {
     const r = nv.getBoundingClientRect();
     const bottomBar = isMobile && (cs.position === "fixed" || cs.position === "sticky") && r.bottom >= vh - 4;
     const limit = bottomBar ? 5 : 7;
-    if (items.length > limit) {
-      add("nav-overload", "major", `${bottomBar ? "Bottom tab bar" : "Navigation"} shows ${items.length} items at once (limit ${limit})`, `${sel(nv)}: ${items.slice(0, 12).map(text).join(" · ")}`, nv);
+    // Labelled groups (heading / aria-expanded toggle / role=group) count as ONE choice each (§L03 chunking)
+    const groups = new Set();
+    for (const h of nv.querySelectorAll("h2,h3,h4,h5,h6,[role=heading],[aria-expanded],[role=group],summary,legend")) {
+      if (!visible(h)) continue;
+      let c = h.parentElement;
+      while (c && c !== nv && items.filter((i) => c.contains(i) && i !== h).length < 2) c = c.parentElement;
+      if (c && c !== nv) groups.add(c);
+    }
+    const outer = [...groups].filter((g) => ![...groups].some((o) => o !== g && o.contains(g)));
+    const ungrouped = items.filter((i) => !outer.some((g) => g.contains(i)));
+    const choices = ungrouped.length + outer.length;
+    out.metrics.navChoices = Math.max(out.metrics.navChoices || 0, choices);
+    if (choices > limit) {
+      add("nav-overload", "major", `${bottomBar ? "Bottom tab bar" : "Navigation"} presents ${choices} top-level choices (limit ${limit})` + (outer.length ? ` (${outer.length} groups + ${ungrouped.length} ungrouped)` : ""), `${sel(nv)}: ${items.slice(0, 12).map(text).join(" · ")}`, nv);
+    } else if (items.length > 20) {
+      add("nav-overload", "minor", `Navigation shows ${items.length} links at once (grouped into ${outer.length} sections); consider collapsing rarely used groups`, sel(nv));
     }
   }
 
@@ -378,10 +392,11 @@ function measure(cfg) {
     if (c >= 2 || sat > 60) filled.push({ el, c });
   }
   out.metrics.filledCtasAboveFold = filled.length;
-  if (filled.length >= 3) {
+  const distinct = new Set(filled.map((f) => text(f.el).toLowerCase())).size;  // the same action repeated is not competition
+  if (filled.length >= 3 && distinct >= 2) {
     add("cta-competition", "major", `${filled.length} high-emphasis (filled) actions compete in the first screen`, filled.slice(0, 6).map((f) => `"${text(f.el)}"`).join(", "));
     for (const f of filled) out.marks.push({ rule: "cta-competition", severity: "major", rect: absRect(f.el) });
-  } else if (filled.length === 2 && isMobile) {
+  } else if (filled.length === 2 && distinct === 2 && isMobile) {
     add("cta-competition", "minor", `2 filled actions share the first screen; make sure one clearly dominates`, filled.map((f) => `"${text(f.el)}"`).join(", "));
   }
 
@@ -509,15 +524,27 @@ async function auditPage(browser, url, vpName, opts, outDir) {
   if (!vp.isMobile) {
     const invisible = [];
     const seen = new Set();
+    // Freeze transitions so focused vs. blurred styles can be compared instantly
+    await page.addStyleTag({ content: "*,*::before,*::after{transition:none!important;animation:none!important}" });
     await page.evaluate(() => { window.scrollTo(0, 0); if (document.activeElement) document.activeElement.blur(); });
     for (let i = 0; i < 14; i++) {
       await page.keyboard.press("Tab");
       const focused = await page.evaluate(focusState);
       if (!focused || seen.has(focused.sel + focused.text)) continue;
       seen.add(focused.sel + focused.text);
-      const blurred = await page.evaluate(() => { const el = document.activeElement; const cs = getComputedStyle(el); const s = [cs.outlineStyle, cs.outlineWidth, cs.outlineColor, cs.boxShadow, cs.borderColor, cs.backgroundColor, cs.textDecorationLine, cs.color]; el.blur(); const b = getComputedStyle(el); const sig = [b.outlineStyle, b.outlineWidth, b.outlineColor, b.boxShadow, b.borderColor, b.backgroundColor, b.textDecorationLine, b.color].join("|"); el.focus(); return sig; });
+      // Compare the element AND its two nearest ancestors (indicators drawn via :focus-within count)
+      const changed = await page.evaluate(() => {
+        const el = document.activeElement;
+        const sigOf = (n) => { if (!n || n.nodeType !== 1) return ""; const c = getComputedStyle(n); return [c.outlineStyle, c.outlineWidth, c.outlineColor, c.boxShadow, c.borderColor, c.backgroundColor, c.textDecorationLine, c.color].join("|"); };
+        const chain = [el, el.parentElement, el.parentElement && el.parentElement.parentElement];
+        const before = chain.map(sigOf).join("#");
+        el.blur();
+        const after = chain.map(sigOf).join("#");
+        el.focus();
+        return before !== after;
+      });
       const hasOutline = !/^none\|/.test(focused.sig) && !/\|0px\|/.test(focused.sig.split("|").slice(0, 3).join("|") + "|");
-      if (focused.visibleRect && blurred === focused.sig && !hasOutline) invisible.push(focused);
+      if (focused.visibleRect && !changed && !hasOutline) invisible.push(focused);
     }
     res.metrics.focusChecked = seen.size;
     if (invisible.length) {
