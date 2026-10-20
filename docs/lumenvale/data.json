@@ -1,0 +1,459 @@
+{
+  "prompt": "We're Lumenvale, a (fictional) dark-sky observatory high in the Swiss Alps. We run guided stargazing nights for small groups of 12: CHF 48 for adults, CHF 24 for kids under 16, with an optional private telescope session for CHF 30. Build our website as a single self-contained index.html: inline all CSS and JS. Libraries like GSAP, Lenis or Three.js are fine, but install them from npm and inline them, because the page can't load anything from a CDN. Google Fonts are OK, but no external images, so draw everything with CSS, SVG, canvas or WebGL. It should be award-worthy, the kind of site that wins Site of the Day, and tell the story of a night at Lumenvale. It needs our upcoming nights with the moon phase and seats left, and a way to book tickets for a night. It has to work great on phones and desktop.",
+  "exhibits": {
+    "a": {
+      "label": "without-uxl",
+      "lint": {
+        "score": 94,
+        "counts": {
+          "critical": 0,
+          "major": 0,
+          "minor": 4
+        },
+        "findings": [
+          {
+            "rule": "slow-animation",
+            "severity": "minor",
+            "message": "transition: fill 1.2s var(--ease-theme)",
+            "citation": "§L06 Doherty Threshold, §L08 Flow",
+            "line": 558
+          },
+          {
+            "rule": "slow-animation",
+            "severity": "minor",
+            "message": "transition: transform 1.2s var(--ease-out-expo) 0.2s",
+            "citation": "§L06 Doherty Threshold, §L08 Flow",
+            "line": 563
+          },
+          {
+            "rule": "tiny-text",
+            "severity": "minor",
+            "message": "font-size: 0.6875rem on `.rail a`",
+            "citation": "§L01 Aesthetic-Usability Effect, §L05 Cognitive Load",
+            "line": 519
+          },
+          {
+            "rule": "tiny-text",
+            "severity": "minor",
+            "message": "font-size: 0.625rem on `.rail a`",
+            "citation": "§L01 Aesthetic-Usability Effect, §L05 Cognitive Load",
+            "line": 545
+          }
+        ]
+      },
+      "audit": {
+        "score": 90,
+        "counts": {
+          "critical": 0,
+          "major": 0,
+          "minor": 7
+        },
+        "viewports": {
+          "small": {
+            "findings": [
+              {
+                "rule": "text-too-small",
+                "severity": "minor",
+                "message": "Most body text renders at 15px on mobile",
+                "evidence": "35% of characters",
+                "citation": "§L01 Aesthetic-Usability Effect, §L05 Cognitive Load"
+              },
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "11 distinct font sizes in use",
+                "evidence": "12, 13, 14, 15, 16, 17, 18, 20, 22, 32, 43.2, 44",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              },
+              {
+                "rule": "cta-competition",
+                "severity": "minor",
+                "message": "2 filled actions share the first screen; make sure one clearly dominates",
+                "evidence": "\"Book a night\", \"Choose your night\"",
+                "citation": "§L28 Von Restorff Effect, §L10 Hick's Law"
+              }
+            ],
+            "metrics": {
+              "targets": 31,
+              "smallTargets": 0,
+              "scrollWidth": 360,
+              "bodyFontSize": 15,
+              "fontSizes": [
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                20,
+                22,
+                32,
+                43.2,
+                44
+              ],
+              "fontFamilies": [
+                "familjen grotesk",
+                "martian mono"
+              ],
+              "textColors": 4,
+              "navChoices": 6,
+              "filledCtasAboveFold": 2,
+              "h1": 1,
+              "perf": {
+                "lcp": 96,
+                "cls": 4.413862764791819e-05,
+                "fcp": 96,
+                "ttfb": 0.20000000018626451,
+                "domContentLoaded": 284.5,
+                "loadMs": 1323
+              }
+            }
+          },
+          "mobile": {
+            "findings": [
+              {
+                "rule": "text-too-small",
+                "severity": "minor",
+                "message": "Most body text renders at 15px on mobile",
+                "evidence": "35% of characters",
+                "citation": "§L01 Aesthetic-Usability Effect, §L05 Cognitive Load"
+              },
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "12 distinct font sizes in use",
+                "evidence": "12, 13.0691, 14, 15, 16, 16.085, 17, 17.15, 18, 20, 22, 32, 44, 46.8",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              },
+              {
+                "rule": "cta-competition",
+                "severity": "minor",
+                "message": "2 filled actions share the first screen; make sure one clearly dominates",
+                "evidence": "\"Book a night\", \"Choose your night\"",
+                "citation": "§L28 Von Restorff Effect, §L10 Hick's Law"
+              }
+            ],
+            "metrics": {
+              "targets": 31,
+              "smallTargets": 0,
+              "scrollWidth": 390,
+              "bodyFontSize": 15,
+              "fontSizes": [
+                12,
+                13.0691,
+                14,
+                15,
+                16,
+                16.085,
+                17,
+                17.15,
+                18,
+                20,
+                22,
+                32,
+                44,
+                46.8
+              ],
+              "fontFamilies": [
+                "familjen grotesk",
+                "martian mono"
+              ],
+              "textColors": 4,
+              "navChoices": 6,
+              "filledCtasAboveFold": 2,
+              "h1": 1,
+              "perf": {
+                "lcp": 80,
+                "cls": 3.132097450122932e-05,
+                "fcp": 80,
+                "ttfb": 1.199999999254942,
+                "domContentLoaded": 271.19999999925494,
+                "loadMs": 1315
+              }
+            }
+          },
+          "desktop": {
+            "findings": [
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "14 distinct font sizes in use",
+                "evidence": "12, 14, 15, 15.4375, 15.84, 16, 17, 18, 19, 20.1601, 22, 23.04, 27.9994, 56.0002, 112",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 31,
+              "smallTargets": 0,
+              "scrollWidth": 1440,
+              "bodyFontSize": 15,
+              "fontSizes": [
+                12,
+                14,
+                15,
+                15.4375,
+                15.84,
+                16,
+                17,
+                18,
+                19,
+                20.1601,
+                22,
+                23.04,
+                27.9994,
+                56.0002,
+                112
+              ],
+              "fontFamilies": [
+                "familjen grotesk",
+                "martian mono"
+              ],
+              "textColors": 4,
+              "navChoices": 6,
+              "filledCtasAboveFold": 2,
+              "h1": 1,
+              "perf": {
+                "lcp": 124,
+                "cls": 0.004638263433427641,
+                "fcp": 124,
+                "ttfb": 0,
+                "domContentLoaded": 273.90000000037253,
+                "loadMs": 1314
+              },
+              "focusChecked": 14
+            }
+          }
+        }
+      },
+      "session": {
+        "tool_calls": 407,
+        "skills_used": [
+          "awards:craft",
+          "awards:concept",
+          "awards:system",
+          "awards:structure",
+          "awards:stack",
+          "awards:motion",
+          "awards:webgl",
+          "awards:jury",
+          "awards:ship",
+          "awards:jury"
+        ],
+        "agents_used": [],
+        "duration_s": 5290,
+        "turns": 180,
+        "cost_usd": 29.950563000000017,
+        "output_tokens": 249197,
+        "final_message": "I've built the site: one self-contained `index.html` (366 KB, about 151 KB gzipped). It loads nothing from the network, works offline, and I checked it at every width from 320 px up to 1440 px.\n\n**What it is**\n- **The idea is \"red torch\".** The page is lit the way an observatory is lit at night: everything is in red, which doesn't ruin night vision. The only other colours on the page are the stars.\n- **The story is one night told by the clock.** Behind the page is a live sky that starts at about 40 stars at 19:40 and fills to about 4,000 by 20:40 as your eyes \"adapt\" while you scroll. The chapters are 19:40 lights out, 20:10 thirty minutes in the dark, 21:00 the Moon, 21:45 without a telescope, 22:30 inside the dome, 00:45 choose your night, and 01:15 lights on. The mountain ridge with the dome drops away as you look up and returns at the end, when the hut light switches on.\n- **The sky is real.** About 14,000 stars plus the Milky Way, projected for 46.49° N, with Cassiopeia, Andromeda and the Pleiades in their actual places. It's hand-written WebGL. Without WebGL it falls back to a 2D canvas, and without any canvas the page still reads fully.\n- **Moon dial.** In the 21:00 chapter you turn a lunar-month dial and watch moonlight wash out the sky, from about 4,000 stars down to about 410.\n- **Upcoming nights.** The next 16 Wednesday, Friday and Saturday nights are calculated from today's date. Each row shows the meeting time, the moon drawn at its real phase, when the Moon rises or sets, how many stars to expect, and the 12 seats as 12 dots. Every night gets its own line, such as \"Orion clears the ridge at 21:30\". A \"Dark nights only\" filter narrows the list.\n- **Booking.** Choose adults (CHF 48) and children under 16 (CHF 24), optionally add the private telescope session (CHF 30 per party), and the total updates live. It works by keyboard and opens as a bottom sheet on phones.\n- **Accessibility.** It has a skip link and a reduced-motion version, and it works with keyboard only.\n\n**Things you should know**\n- **Booking is a demo.** There's no backend, so the confirmation says plainly that nothing was sent or charged and the seats are only marked as taken in that browser. You'll need a real booking system before launch.\n- **Fonts.** I embedded the two fonts (Familjen Grotesk and Martian Mono, both open-licence) inside the file instead of linking Google Fonts, so nothing loads from outside.\n- **Invented details.** Everything except your prices is made up and needs your real values: the 2,340 m altitude, coordinates, the Alp Lumen bus stop, shuttle times, telescope specs, the cancellation rule, \"children from age 6\" and the seat counts. The moon phases, moonrise and moonset, and the Orion and Sirius times are real calculations.\n- **I made the creative choices without you.** You weren't available, so I picked the \"red torch\" direction myself from three candidates.\n\n**Award review**\nAn independent review scored it twice against Site of the Day criteria. The first round said \"fix\" (7.26); the second gave this verdict:\n\n```\ndisposition: ship\nDesign 7.5 · Usability 7.0 · Creativity 7.7 · Content 7.8 — weighted 7.42\n```\n\nSite of the Day territory starts at 7.2 with no score under 6.8, and this reviewer scores about 0.7 stricter than the real jury. The reviewer said no specific source site could be named from the first screen.\n\nThe second round also listed five remaining items, two of them bugs my fixes had introduced: a hidden booking error message and a page jump on broken links. I fixed all five and checked them in the browser, but the review process allows only two rounds, so those last fixes haven't been re-reviewed. That's why the \"Shipped\" box in AWARDS.md is still unticked. I can run a third round if you want it.\n\n**Not tested yet:** all screenshots came from a headless browser using software graphics, so smoothness on a real mid-range phone still needs one hands-on check before launch.\n\nFiles are in the project folder:\n- `index.html` (the site)\n- `build.mjs` (rebuilds it from `src/`)\n- `AWARDS.md` (the build contract)\n- `DESIGN.md` (fonts, colours, components)\n- `.awards/jury/2026-10-20.md` (first review)\n- `.awards/jury/2026-10-20-verdict.md` (second review)\n- `.awards/ship/2026-10-20.md` (ship report)",
+        "laws_cited": []
+      },
+      "bytes": 366306
+    },
+    "b": {
+      "label": "with-uxl",
+      "lint": {
+        "score": 94,
+        "counts": {
+          "critical": 0,
+          "major": 1,
+          "minor": 1
+        },
+        "findings": [
+          {
+            "rule": "multiple-primary-cta",
+            "severity": "major",
+            "message": "6 primary-styled actions (5 different) in one file/view",
+            "citation": "§L28 Von Restorff Effect, §L10 Hick's Law",
+            "line": 212
+          },
+          {
+            "rule": "slow-animation",
+            "severity": "minor",
+            "message": "transition: background-color .9s var(--ease-theme), ",
+            "citation": "§L06 Doherty Threshold, §L08 Flow",
+            "line": 154
+          }
+        ]
+      },
+      "audit": {
+        "score": 96,
+        "counts": {
+          "critical": 0,
+          "major": 0,
+          "minor": 3
+        },
+        "viewports": {
+          "small": {
+            "findings": [
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "11 distinct font sizes in use",
+                "evidence": "12, 14, 15, 17, 18, 20, 22, 28, 36, 40, 52",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 27,
+              "smallTargets": 0,
+              "scrollWidth": 360,
+              "bodyFontSize": 17,
+              "fontSizes": [
+                12,
+                14,
+                15,
+                17,
+                18,
+                20,
+                22,
+                28,
+                36,
+                40,
+                52
+              ],
+              "fontFamilies": [
+                "public sans",
+                "hubot sans"
+              ],
+              "textColors": 4,
+              "navChoices": 1,
+              "filledCtasAboveFold": 1,
+              "h1": 1,
+              "perf": {
+                "lcp": 164,
+                "cls": 0,
+                "fcp": 164,
+                "ttfb": 0,
+                "domContentLoaded": 143.70000000018626,
+                "loadMs": 1320
+              }
+            }
+          },
+          "mobile": {
+            "findings": [
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "11 distinct font sizes in use",
+                "evidence": "12, 14, 15, 17, 18, 20, 22, 28, 36, 40, 52",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 27,
+              "smallTargets": 0,
+              "scrollWidth": 390,
+              "bodyFontSize": 17,
+              "fontSizes": [
+                12,
+                14,
+                15,
+                17,
+                18,
+                20,
+                22,
+                28,
+                36,
+                40,
+                52
+              ],
+              "fontFamilies": [
+                "public sans",
+                "hubot sans"
+              ],
+              "textColors": 4,
+              "navChoices": 1,
+              "filledCtasAboveFold": 1,
+              "h1": 1,
+              "perf": {
+                "lcp": 160,
+                "cls": 0,
+                "fcp": 160,
+                "ttfb": 0.09999999962747097,
+                "domContentLoaded": 140.5,
+                "loadMs": 1322
+              }
+            }
+          },
+          "desktop": {
+            "findings": [
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "12 distinct font sizes in use",
+                "evidence": "12, 14, 15, 17, 18, 20, 20.9995, 28, 31.9997, 87.9998, 110, 150",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 33,
+              "smallTargets": 0,
+              "scrollWidth": 1440,
+              "bodyFontSize": 14,
+              "fontSizes": [
+                12,
+                14,
+                15,
+                17,
+                18,
+                20,
+                20.9995,
+                28,
+                31.9997,
+                87.9998,
+                110,
+                150
+              ],
+              "fontFamilies": [
+                "public sans",
+                "hubot sans"
+              ],
+              "textColors": 4,
+              "navChoices": 7,
+              "filledCtasAboveFold": 1,
+              "h1": 1,
+              "perf": {
+                "lcp": 200,
+                "cls": 4.223230934927983e-05,
+                "fcp": 200,
+                "ttfb": 0.10000000055879354,
+                "domContentLoaded": 155.6000000005588,
+                "loadMs": 1319
+              },
+              "focusChecked": 14
+            }
+          }
+        }
+      },
+      "session": {
+        "tool_calls": 434,
+        "skills_used": [
+          "awards:craft",
+          "awards:concept",
+          "awards:system",
+          "awards:structure",
+          "uxl:ux-lawyer",
+          "awards:stack",
+          "awards:motion",
+          "awards:webgl",
+          "awards:jury",
+          "awards:jury",
+          "awards:ship"
+        ],
+        "agents_used": [
+          "uxl:ux-auditor"
+        ],
+        "duration_s": 6303,
+        "turns": 204,
+        "cost_usd": 39.237263599999984,
+        "output_tokens": 284607,
+        "final_message": "Lumenvale is built as one self-contained `index.html` (466 KB, 226 KB gzipped). Fonts, GSAP and Lenis came from npm and are inlined, and nothing loads from a CDN. There are no images; everything is drawn with SVG, Canvas or WebGL.\n\n**The idea.** The page is a long-exposure photograph of one night. It opens on the finished photo of the next dark night you can book: real catalogue stars leaving trails around the pole star above an Alpine ridge, with \"One night, exposed.\" over it. The first scroll rewinds it to blue hour, and the night then plays forward as you read:\n- **Lights out:** the page switches to red light while your eyes adapt, with a live count of visible stars.\n- **Without a telescope:** Polaris, the Andromeda Galaxy and the Pleiades are marked on the sky.\n- **Through the telescope:** a Saturn eyepiece view and the CHF 30 private session.\n- **The moon decides:** a slider washes the trails out, from 1,874 visible stars at new moon to 237 at full moon.\n- **Choose your night:** the calendar and booking.\n- **Dawn:** the photo is printed as a negative on pale paper.\n\n**Nights, moon and seats.** The schedule is three nights a week plus every new moon, worked out from the visitor's own date. Moon phase, moonrise and moonset, and twilight times are calculated for 46.5° N, so each row says things like \"Moon sets 19:32\" and gets a \"Dark sky\" tag when it qualifies. Each row also shows 12 seat marks and a filter for dark-sky nights. Booking is a two-step dialog:\n1. Pick seats: adults CHF 48, under-16s CHF 24, optional private telescope session +CHF 30. Seats can't exceed what's left, and children need an adult.\n2. Enter name, email and an optional mobile number.\n\nIt ends on a ticket with a reference number and an \"Add to calendar\" file. It works by keyboard and by touch, and becomes a bottom sheet on phones.\n\n**Review results.** The independent juror's final verdict, quoted unchanged:\n```\ndisposition: ship\nDesign 7.6 · Usability 7.8 · Creativity 8.0 · Content 8.3 — weighted 7.81\n```\nIts developer scores were 8.0 / 7.6 / 7.6 / 7.9 / 8.0. Asked what a visitor remembers, it said: \"A long-exposure photograph of the night sky — cream star trails wheeling around the pole above a black mountain ridge — with 'One night, exposed.' across it and a red button that books Saturday 31 October, 3 of 12 seats left.\"\n\nThe juror's first, hero-only pass said \"rebuild\", because the opening screen showed an almost empty sky. I rebuilt the opening around the finished photo. After the \"ship\" verdict I applied all of its fixes and the UX audit's 5 major issues, then re-checked:\n- The automated quality audit finds nothing, and the UX scan scores 96/100.\n- On a throttled connection (1.6 Mbps, 4× slower CPU) the page shows its main content in 2.25–2.28 s, with no layout shift.\n- Captures show no console errors, both booking flows were tested, and the no-WebGL fallback works.\n\nThose fixes haven't had a second jury pass. The build used its two review rounds, so it's marked \"back to jury\" rather than \"shipped\"; I can run that pass if you want it.\n\n**Before this goes live:**\n- Booking has no backend. It saves to the visitor's browser, and the confirmation says an email was sent, which doesn't happen yet. Holding seats, sending emails and the weather texts all need a server.\n- Seat counts are made up, as is everything about the fictional observatory: address, telescope, guide details. The footer says so.\n- The social sharing image, canonical link and sitemap need your real web address.\n- Smoothness of the sky animation on a real mid-range phone hasn't been measured; screenshots here came from a software renderer. Give it one real-phone pass.\n\n**Main UX decisions:**\n- One filled Book button per screen; on phones it sits in a bottom bar within thumb reach.\n- The hero offers a specific night with its moon and seats, and prices are shown upfront.\n- The calendar uses one term, \"dark sky\", throughout, with a two-option filter and 4 more weeks behind a \"Show more\" button.\n- The dialog shows step progress, a running total that says \"pay on the night\", inline errors, and moves focus to the first problem.\n- The ticket answers where to meet, what to bring and what happens if it's cloudy.\n- Reduced motion shows a settled sky per chapter instead of animating, and everything shown in the sky is also in the page text.\n\nFiles are in `/tmp/claude-0/-home-user-UXL/017f873b-ae09-56bf-82eb-b832c77cca0a/scratchpad/demo2-runs/with-uxl/`:\n- `index.html`\n- `404.html`\n- `AWARDS.md`\n- `DESIGN.md`\n- `.awards/jury/2026-10-20-2.md`\n- `.awards/ship/2026-10-20.md`\n- `.awards/captures/20261020T214703-ship-2/manifest.json`\n\nSource is in `src/`; rebuild with `npm run build`. I can also publish the page as a private link if you'd like to share it.",
+        "laws_cited": [
+          "Flow"
+        ]
+      },
+      "bytes": 477523
+    }
+  }
+}

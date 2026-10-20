@@ -8,7 +8,7 @@ An Agent Skill and Claude Code plugin that makes Claude Code, Codex, Cursor, Gem
 design, build, audit and fix websites and web apps **for desktop and mobile** by applying the
 [Laws of UX](https://lawsofux.com). Every decision cites the law behind it, backed by evidence from static and runtime scanners.
 
-[Demo](#demo-the-fernwheel-case) · [Install](#install) · [Use](#use-it) · [The 30 laws](#the-30-laws) · [Scanners](#the-scanners) · [Benchmark](#benchmark) · [Contributing](CONTRIBUTING.md)
+[Demo](#demo-the-fernwheel-case) · [Demo 2: with awards](#demo-2-the-lumenvale-case-uxl-with-awards) · [Install](#install) · [Use](#use-it) · [The 30 laws](#the-30-laws) · [Scanners](#the-scanners) · [Benchmark](#benchmark) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -49,6 +49,22 @@ One prompt, two fresh Claude Code sessions, one difference. We asked both sessio
 | Time · cost | 6 min · $1.42 | 12 min · $2.91 |
 
 Both pages look launch-ready in a screenshot. Only one of them holds up under a thumb. **[See the full case with both pages live →](docs/index.html)** The showcase is in `docs/` (GitHub Pages-ready) and is built with `tools/build_demo.py`. It's one run per condition, so treat it as an illustration, not a statistic. The [benchmark](#benchmark) covers repeated evals.
+
+## Demo 2: the Lumenvale case, UXL with awards
+
+UXL is built to work alongside other skills. In the second case, both sessions ran the [awards](https://github.com/BurgiSimon/awards) plugin, a pipeline of skills built to win Site of the Day, on the same model at effort xhigh. The prompt asks for an *"award-worthy"* site for Lumenvale, a fictional dark-sky observatory in the Swiss Alps, with upcoming nights, moon phases, seats left and booking. Session B also had UXL. It called the skill on its own right after `awards:structure`, ran the `ux-auditor` agent before shipping, and handed the auditor's case file to `awards:ship`.
+
+| | Exhibit A · awards | Exhibit B · awards + UXL |
+|---|---|---|
+| First phone screen | <img src="docs/lumenvale/screens/a-mobile.png" width="260" alt="Exhibit A first phone screen: Stay until the stars arrive, with a Choose your night button"> | <img src="docs/lumenvale/screens/b-mobile.png" width="260" alt="Exhibit B first phone screen: One night, exposed, over star trails, with the next dark night and a Book button"> |
+| Booking on a phone | <img src="docs/lumenvale/screens/a-mobile-booking.png" width="260" alt="Exhibit A booking sheet with a Hold 2 seats button"> | <img src="docs/lumenvale/screens/b-mobile-booking.png" width="260" alt="Exhibit B booking step 1 of 2, total with pay on the night"> |
+| Blind awards jury (weighted · Usability) | __README_A_JURY__ | __README_B_JURY__ |
+| UXL runtime audit | 90 / 100 | **96 / 100** |
+| Filled Book buttons in the nights list | 16 of 16 | **1 of 27**, on the recommended night |
+| Says when you pay | no | **yes**, on both booking steps and the ticket |
+| Time · cost | 88 min · $29.95 | 105 min · $39.24 |
+
+Awards gave both pages the concept, the WebGL sky and the motion. UXL's auditor booked seats in a real browser and found 5 major issues the craft review had mostly missed, each fixed before hand-off. **[See the Lumenvale case with both pages live →](docs/lumenvale/index.html)** One run per condition, again: an illustration, not a statistic.
 
 ## What you get
 
@@ -182,7 +198,7 @@ node skills/ux-lawyer/scripts/uxl_audit.mjs http://localhost:3000 http://localho
 <!-- BENCHMARK:START -->
 ## Benchmark
 
-UXL was built with Anthropic's **skill-creator** loop. Each realistic task ran in a fresh agent **with** and **without** the skill. Outputs were graded by the UXL scanners and an independent grader agent, including a blind side-by-side comparison. The skill was then revised and re-run. Results with the current version (iteration 2, Claude Opus 5.5):
+UXL was built with Anthropic's **skill-creator** loop. Each realistic task ran in a fresh agent **with** and **without** the skill. Outputs were graded by the UXL scanners and an independent grader agent, including a blind side-by-side comparison. The skill was then revised and re-run. Results with the current version (iteration 2):
 
 | Task | With UXL | Without | Static score | Runtime score |
 |---|---|---|---|---|

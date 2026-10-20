@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Demo 2, "The Lumenvale case" (`docs/lumenvale/`): UXL working alongside the awards plugin. Both sessions ran the awards pipeline; session B also called UXL before building and ran the `ux-auditor` agent before shipping. Both pages are live, with a blind awards jury, scanner evidence and the UX case file traced into the shipped code.
+- `tools/build_demo.py`: `--slug` for more than one demo; records sub-agents; sums duration, turns and output tokens across all result events of a session that background tasks woke more than once.
+- `tools/demo_evidence_lumenvale.mjs`: phone captures of the nights list, the booking dialog and the confirmation, plus where keyboard focus lands after booking.
+- Auditor: elements with `display: contents` (an `h1` wrapping animated lines, say) are measured by their contents, so such a heading no longer reads as missing or off-screen.
+- Linter: "ends in" counts as urgency copy only before a time ("ends in 2 hours", a countdown), not in ordinary prose.
+
 ## 1.0.0 (2026-10-20)
 
 First release.
