@@ -22,6 +22,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPTS = os.path.join(ROOT, "skills", "ux-lawyer", "scripts")
 DELIVERABLES = {1: ["index.html"], 2: ["checkout.html", "styles.css"], 3: ["AppShell.tsx"]}
 SEV = {"minor": 0, "major": 1, "critical": 2}
+OUTS = ""  # set per run
+LAW_NAMES = ["Aesthetic-Usability", "Choice Overload", "Chunking", "Cognitive Bias", "Cognitive Load", "Doherty",
+             "Fitts", "Flow", "Goal-Gradient", "Hick", "Jakob", "Common Region", "Proximity", "Prägnanz", "Similarity",
+             "Uniform Connectedness", "Mental Model", "Miller", "Occam", "Active User", "Pareto", "Parkinson",
+             "Peak-End", "Postel", "Selective Attention", "Serial Position", "Tesler", "Von Restorff",
+             "Working Memory", "Zeigarnik"]
 
 
 def run_lint(files):
@@ -85,6 +91,14 @@ def grade_assertion(a, lint, audit):
     if t == "lint+audit":
         hits = lint_hits(lint, a["rules"]) + audit_hits(audit, a["rules"])
         return (not hits), "uxl_lint+uxl_audit: none of " + ", ".join(a["rules"]) if not hits else describe(hits)
+    if t == "doc-laws":
+        found = set()
+        for name in a["files"]:
+            path = os.path.join(OUTS, name)
+            if os.path.exists(path):
+                text = open(path, encoding="utf-8").read().lower()
+                found |= {law for law in LAW_NAMES if law.lower() in text or law.lower().replace("'s", "") in text}
+        return len(found) >= a["min"], f"{len(found)} distinct laws named in {', '.join(a['files'])}" + (f": {', '.join(sorted(found)[:8])}" if found else "")
     if t == "audit-score":
         if audit is None:
             return False, "Runtime audit could not run"
@@ -110,6 +124,8 @@ def main():
             for run in sorted(d for d in os.listdir(cdir) if d.startswith("run-")):
                 rdir = os.path.join(cdir, run)
                 outs = os.path.join(rdir, "outputs")
+                global OUTS
+                OUTS = outs
                 files = [os.path.join(outs, f) for f in DELIVERABLES[eid]]
                 lint = run_lint(files)
                 audit = None
@@ -144,9 +160,7 @@ def main():
                     "uxl": {"lint_score": (lint or {}).get("score"), "lint_counts": (lint or {}).get("counts"),
                             "audit_score": (audit or {}).get("score"), "audit_counts": (audit or {}).get("counts")},
                 }
-                tpath = os.path.join(rdir, "timing.json")
-                if os.path.exists(tpath):
-                    grading["timing"] = json.load(open(tpath))
+                # timing.json stays a sibling file: the skill-creator aggregator reads time + tokens from it
                 json.dump(grading, open(os.path.join(rdir, "grading.json"), "w"), indent=2)
                 print(f"{eval_dir:34} {config:14} {run}: {passed}/{len(expectations)}  lint={grading['uxl']['lint_score']} audit={grading['uxl']['audit_score']}")
 

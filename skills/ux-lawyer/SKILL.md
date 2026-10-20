@@ -66,6 +66,7 @@ These are UXL's non-negotiable defaults, each backed by a law. Apply them withou
 
 **Targets and reach (§L07 Fitts, §L11 Jakob)**
 - Interactive targets ≥ 44×44 px (24 px absolute floor). ≥ 8 px between separate targets. Icon buttons get an expanded hit area.
+- Size by **input type, not screen width**: tablets and touch laptops are touch devices at desktop widths. Dense 32–36 px rows are only allowed under `@media (pointer: fine)`. Keep 44 px under `(pointer: coarse)`.
 - On mobile, primary actions sit in the thumb zone: end of flow, sticky bottom bar, full-width.
 
 **Speed and feedback (§L06 Doherty, §L08 Flow)**
@@ -148,7 +149,10 @@ If the request is underspecified, make sensible assumptions, state them in the b
 ### 7. Verify before you call it done
 - **Static scan:** `python3 <skill-dir>/scripts/uxl_lint.py <src-dir-or-files>`. Fix every critical and major finding, or justify it.
 - **Runtime scan,** when you can serve the page: `node <skill-dir>/scripts/uxl_audit.mjs <url-or-html-file> --out uxl-report`. It checks mobile and desktop viewports and writes `report.md` plus annotated screenshots. **Look at the screenshots.** Many problems only show visually. It needs Playwright; if it's unavailable, say so and skip, and don't fake results.
+- **Exercise the main flow once:** the happy path and one failure path (e.g. submit invalid, then valid). Use a short Playwright script or manual clicks. This catches the interaction bugs that scans can't see.
 - Walk `assets/checklist.md` mentally for the screens you built.
+- **Keep verification proportionate.** Run each scanner, fix, then re-run once. Don't loop on minor findings or build elaborate test harnesses for a simple page.
+- **The scanners are evidence, not the verdict.** They are heuristics. If a finding contradicts a deliberate, law-backed decision, keep the decision and say why in the hand-off, for example a 14-item sidebar grouped into labelled sections (§L03).
 - `<skill-dir>` is the directory containing this SKILL.md (in Claude Code: `${CLAUDE_SKILL_DIR}`).
 
 ### 8. Hand-off note
@@ -162,8 +166,8 @@ Use this for existing projects. Full procedure, per-law audit questions and seve
 2. **Static scan:** `python3 <skill-dir>/scripts/uxl_lint.py <src> --format md`. Treat findings as leads to verify, because heuristics can misfire.
 3. **Runtime scan** if the app can run: start it, then `node <skill-dir>/scripts/uxl_audit.mjs <url> --out uxl-report` (add more URLs for key routes). Read `report.md` and **view the annotated screenshots** for both viewports.
 4. **Manual law sweep:** for each critical screen, go through the per-law questions in `references/workflow-audit.md`. Scripts catch roughly a third of real issues. Hierarchy, wording, flow, mental-model and peak-end problems need judgment.
-5. **Case file:** write findings using `assets/report-template.md`. Rank them critical → major → minor. Each finding cites the law (§), the evidence (`file:line`, a screenshot, or a measured value), the user impact, and the remedy.
-6. **Fix,** if the user asked to fix, improve or redesign. If they only asked for a review, deliver the case file and offer to fix. Fix critical, then major, within the project's existing stack and design system. Keep diffs focused. Re-run the scans and report before → after (for example, "tap-target violations 23 → 0").
+5. **Case file:** rank findings critical → major → minor. Each finding cites the law (§), the evidence (`file:line`, a screenshot, or a measured value), the user impact, and the remedy. If the user asked for a **review/audit**, the case file is the deliverable: use `assets/report-template.md`. If they asked you to **fix**, don't write a separate report. Put the top findings with their § citations into your hand-off or changelog, and spend the effort on the fixes.
+6. **Fix,** if the user asked to fix, improve or redesign. If they only asked for a review, deliver the case file and offer to fix. Fix critical, then major, within the project's existing stack and design system. Keep diffs focused. Re-run the scans once and report before → after (for example, "tap-target violations 23 → 0"). Exercise the fixed flow (happy path + one failure) before handing off.
 
 Severity: **critical** blocks a task or excludes users (untappable, unreadable, data loss, no feedback on payment). **major** slows or confuses a key flow, a real conversion or retention risk. **minor** is polish and consistency.
 

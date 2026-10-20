@@ -17,6 +17,7 @@ These are UXL's non-negotiable defaults, each backed by a law. Apply them withou
 
 **Targets and reach (§L07 Fitts, §L11 Jakob)**
 - Interactive targets ≥ 44×44 px (24 px absolute floor). ≥ 8 px between separate targets. Icon buttons get an expanded hit area.
+- Size by **input type, not screen width**: tablets and touch laptops are touch devices at desktop widths. Dense 32–36 px rows are only allowed under `@media (pointer: fine)`. Keep 44 px under `(pointer: coarse)`.
 - On mobile, primary actions sit in the thumb zone: end of flow, sticky bottom bar, full-width.
 
 **Speed and feedback (§L06 Doherty, §L08 Flow)**

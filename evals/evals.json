@@ -8,18 +8,113 @@
       "expected_output": "A polished, responsive single-file landing page with one clear primary CTA, an accessible email signup with loading/success/error states, touch-friendly targets, readable type, and a short list of UX decisions citing the laws.",
       "files": [],
       "assertions": [
-        {"id": "viewport-ok", "text": "Has a responsive viewport meta tag and does not disable zoom", "type": "lint", "rules": ["viewport-missing", "zoom-disabled"]},
-        {"id": "no-critical-static", "text": "Static UXL scan reports zero critical findings", "type": "lint-severity", "severity": "critical", "max": 0},
-        {"id": "few-major-static", "text": "Static UXL scan reports at most 1 major finding", "type": "lint-severity", "severity": "major", "max": 1},
-        {"id": "labelled-email", "text": "Email field has a real label (not placeholder-only), type=email and autocomplete=email", "type": "lint", "rules": ["placeholder-as-label", "input-unlabeled", "autocomplete-missing", "input-type-generic"]},
-        {"id": "mobile-targets", "text": "No tap targets below 44px on the mobile render (runtime)", "type": "audit", "viewport": "mobile", "rules": ["tap-target-size"]},
-        {"id": "mobile-inputs-16px", "text": "Form inputs are >= 16px on mobile (no iOS zoom) and no horizontal overflow", "type": "audit", "viewport": "mobile", "rules": ["input-zoom", "horizontal-overflow"]},
-        {"id": "contrast-ok", "text": "No major contrast failures at either viewport", "type": "audit", "rules": ["contrast"], "severity_at_least": "major"},
-        {"id": "single-primary-cta", "text": "No competing filled CTAs in the first screen (cta-competition not major)", "type": "audit", "rules": ["cta-competition"], "severity_at_least": "major"},
-        {"id": "focus-visible", "text": "Keyboard focus is visible on desktop", "type": "audit", "viewport": "desktop", "rules": ["focus-invisible"]},
-        {"id": "submit-states", "text": "Signup shows a pending state while submitting and a success confirmation afterwards", "type": "manual"},
-        {"id": "reduced-motion", "text": "If animations/transitions exist, prefers-reduced-motion is handled", "type": "lint", "rules": ["reduced-motion-missing"]},
-        {"id": "explains-decisions", "text": "Final response explains key UX decisions (ideally citing the laws)", "type": "manual"}
+        {
+          "id": "viewport-ok",
+          "text": "Has a responsive viewport meta tag and does not disable zoom",
+          "type": "lint",
+          "rules": [
+            "viewport-missing",
+            "zoom-disabled"
+          ]
+        },
+        {
+          "id": "no-critical-static",
+          "text": "Static UXL scan reports zero critical findings",
+          "type": "lint-severity",
+          "severity": "critical",
+          "max": 0
+        },
+        {
+          "id": "few-major-static",
+          "text": "Static UXL scan reports at most 1 major finding",
+          "type": "lint-severity",
+          "severity": "major",
+          "max": 1
+        },
+        {
+          "id": "labelled-email",
+          "text": "Email field has a real label (not placeholder-only), type=email and autocomplete=email",
+          "type": "lint",
+          "rules": [
+            "placeholder-as-label",
+            "input-unlabeled",
+            "autocomplete-missing",
+            "input-type-generic"
+          ]
+        },
+        {
+          "id": "mobile-targets",
+          "text": "No tap targets below 44px on the mobile render (runtime)",
+          "type": "audit",
+          "viewport": "mobile",
+          "rules": [
+            "tap-target-size"
+          ]
+        },
+        {
+          "id": "mobile-inputs-16px",
+          "text": "Form inputs are >= 16px on mobile (no iOS zoom) and no horizontal overflow",
+          "type": "audit",
+          "viewport": "mobile",
+          "rules": [
+            "input-zoom",
+            "horizontal-overflow"
+          ]
+        },
+        {
+          "id": "contrast-ok",
+          "text": "No major contrast failures at either viewport",
+          "type": "audit",
+          "rules": [
+            "contrast"
+          ],
+          "severity_at_least": "major"
+        },
+        {
+          "id": "single-primary-cta",
+          "text": "No competing filled CTAs in the first screen (cta-competition not major)",
+          "type": "audit",
+          "rules": [
+            "cta-competition"
+          ],
+          "severity_at_least": "major"
+        },
+        {
+          "id": "focus-visible",
+          "text": "Keyboard focus is visible on desktop",
+          "type": "audit",
+          "viewport": "desktop",
+          "rules": [
+            "focus-invisible"
+          ]
+        },
+        {
+          "id": "submit-states",
+          "text": "Signup shows a pending state while submitting and a success confirmation afterwards",
+          "type": "manual"
+        },
+        {
+          "id": "reduced-motion",
+          "text": "If animations/transitions exist, prefers-reduced-motion is handled",
+          "type": "lint",
+          "rules": [
+            "reduced-motion-missing"
+          ]
+        },
+        {
+          "id": "explains-decisions",
+          "text": "Final response explains key UX decisions (ideally citing the laws)",
+          "type": "manual"
+        },
+        {
+          "id": "cites-laws",
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "type": "doc-laws",
+          "files": [
+            "RESPONSE.md"
+          ],
+          "min": 3
+        }
       ]
     },
     {
@@ -27,22 +122,139 @@
       "name": "shopco-checkout-fix",
       "prompt": "Our checkout page converts terribly on mobile and customers keep complaining. The files are checkout.html and styles.css. Please fix it. Keep the same tech (plain HTML/CSS/vanilla JS, no frameworks). Give me the improved checkout.html and styles.css plus a short CHANGES.md explaining what you changed.",
       "expected_output": "A fixed checkout: zoom allowed, labelled fields with autocomplete and right input types, 16px inputs, 44px targets, grouped/stepped form with progress, single primary action, inline validation, loading state, no dark patterns, visible focus; CHANGES.md with reasons.",
-      "files": ["evals/fixtures/shopco-checkout/checkout.html", "evals/fixtures/shopco-checkout/styles.css"],
+      "files": [
+        "evals/fixtures/shopco-checkout/checkout.html",
+        "evals/fixtures/shopco-checkout/styles.css"
+      ],
       "assertions": [
-        {"id": "zoom-allowed", "text": "Pinch-zoom is no longer disabled", "type": "lint", "rules": ["zoom-disabled"]},
-        {"id": "labels", "text": "Every field has a real label (no placeholder-only or unlabeled fields)", "type": "lint", "rules": ["placeholder-as-label", "input-unlabeled"]},
-        {"id": "autofill-types", "text": "Fields use autocomplete and correct input types/inputmode", "type": "lint", "rules": ["autocomplete-missing", "input-type-generic"]},
-        {"id": "dark-patterns-removed", "text": "Fake urgency, pre-checked paid add-on and confirmshaming are all removed", "type": "lint", "rules": ["dark-pattern-urgency", "dark-pattern-precheck", "dark-pattern-confirmshaming"]},
-        {"id": "no-native-alert", "text": "No alert()/confirm() interruptions; submit not disabled-until-valid", "type": "lint", "rules": ["native-dialog-interrupt", "disabled-submit"]},
-        {"id": "async-feedback", "text": "Order submission shows a pending/loading state", "type": "lint", "rules": ["async-no-feedback"]},
-        {"id": "mobile-targets", "text": "No tap-target-size violations of major/critical severity on mobile (runtime)", "type": "audit", "viewport": "mobile", "rules": ["tap-target-size"], "severity_at_least": "major"},
-        {"id": "mobile-inputs-16px", "text": "No input zoom (inputs >= 16px) on mobile (runtime)", "type": "audit", "viewport": "mobile", "rules": ["input-zoom"]},
-        {"id": "focus-visible", "text": "Keyboard focus is visible (runtime, desktop)", "type": "audit", "viewport": "desktop", "rules": ["focus-invisible"]},
-        {"id": "nav-trimmed", "text": "Checkout no longer shows a 12-item navigation (nav-overload gone)", "type": "audit", "rules": ["nav-overload"]},
-        {"id": "single-primary", "text": "No major CTA competition at either viewport", "type": "audit", "rules": ["cta-competition"], "severity_at_least": "major"},
-        {"id": "form-structured", "text": "Form is grouped (fieldsets) or stepped with progress (form-long / form-load gone)", "type": "lint+audit", "rules": ["form-long", "form-load"]},
-        {"id": "audit-score", "text": "Runtime audit score >= 80", "type": "audit-score", "min": 80},
-        {"id": "changes-md", "text": "CHANGES.md exists and explains the changes", "type": "manual"}
+        {
+          "id": "zoom-allowed",
+          "text": "Pinch-zoom is no longer disabled",
+          "type": "lint",
+          "rules": [
+            "zoom-disabled"
+          ]
+        },
+        {
+          "id": "labels",
+          "text": "Every field has a real label (no placeholder-only or unlabeled fields)",
+          "type": "lint",
+          "rules": [
+            "placeholder-as-label",
+            "input-unlabeled"
+          ]
+        },
+        {
+          "id": "autofill-types",
+          "text": "Fields use autocomplete and correct input types/inputmode",
+          "type": "lint",
+          "rules": [
+            "autocomplete-missing",
+            "input-type-generic"
+          ]
+        },
+        {
+          "id": "dark-patterns-removed",
+          "text": "Fake urgency, pre-checked paid add-on and confirmshaming are all removed",
+          "type": "lint",
+          "rules": [
+            "dark-pattern-urgency",
+            "dark-pattern-precheck",
+            "dark-pattern-confirmshaming"
+          ]
+        },
+        {
+          "id": "no-native-alert",
+          "text": "No alert()/confirm() interruptions; submit not disabled-until-valid",
+          "type": "lint",
+          "rules": [
+            "native-dialog-interrupt",
+            "disabled-submit"
+          ]
+        },
+        {
+          "id": "async-feedback",
+          "text": "Order submission shows a pending/loading state",
+          "type": "lint",
+          "rules": [
+            "async-no-feedback"
+          ]
+        },
+        {
+          "id": "mobile-targets",
+          "text": "No tap-target-size violations of major/critical severity on mobile (runtime)",
+          "type": "audit",
+          "viewport": "mobile",
+          "rules": [
+            "tap-target-size"
+          ],
+          "severity_at_least": "major"
+        },
+        {
+          "id": "mobile-inputs-16px",
+          "text": "No input zoom (inputs >= 16px) on mobile (runtime)",
+          "type": "audit",
+          "viewport": "mobile",
+          "rules": [
+            "input-zoom"
+          ]
+        },
+        {
+          "id": "focus-visible",
+          "text": "Keyboard focus is visible (runtime, desktop)",
+          "type": "audit",
+          "viewport": "desktop",
+          "rules": [
+            "focus-invisible"
+          ]
+        },
+        {
+          "id": "nav-trimmed",
+          "text": "Checkout no longer shows a 12-item navigation (nav-overload gone)",
+          "type": "audit",
+          "rules": [
+            "nav-overload"
+          ]
+        },
+        {
+          "id": "single-primary",
+          "text": "No major CTA competition at either viewport",
+          "type": "audit",
+          "rules": [
+            "cta-competition"
+          ],
+          "severity_at_least": "major"
+        },
+        {
+          "id": "form-structured",
+          "text": "Form is grouped (fieldsets) or stepped with progress (form-long / form-load gone)",
+          "type": "lint+audit",
+          "rules": [
+            "form-long",
+            "form-load"
+          ]
+        },
+        {
+          "id": "audit-score",
+          "text": "Runtime audit score >= 80",
+          "type": "audit-score",
+          "min": 80
+        },
+        {
+          "id": "changes-md",
+          "text": "CHANGES.md exists and explains the changes",
+          "type": "manual"
+        },
+        {
+          "id": "cites-laws",
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "type": "doc-laws",
+          "files": [
+            "CHANGES.md",
+            "RESPONSE.md"
+          ],
+          "min": 3
+        }
       ]
     },
     {
@@ -52,14 +264,58 @@
       "expected_output": "An AppShell with grouped/chunked desktop sidebar, mobile bottom tab bar of 3–5 primary destinations plus 'More', active-state with aria-current, labelled icons, 44px touch targets, keyboard and focus support, optional search/command palette.",
       "files": [],
       "assertions": [
-        {"id": "file-exists", "text": "AppShell.tsx exists and NOTES.md exists", "type": "manual"},
-        {"id": "grouped-sidebar", "text": "Desktop navigation groups the 14 items into labelled sections or primary vs secondary tiers (chunking)", "type": "manual"},
-        {"id": "mobile-bottom-bar", "text": "Mobile uses a bottom tab bar (or equivalent) with 3–5 primary destinations, the rest in 'More'/sheet", "type": "manual"},
-        {"id": "touch-targets", "text": "Mobile nav items are >= 44px tall (e.g. h-11/min-h-11/h-12/h-14/h-16 or py giving >= 44px)", "type": "manual"},
-        {"id": "aria-current", "text": "Active item marked with aria-current=\"page\" and nav landmarks have aria-labels", "type": "manual"},
-        {"id": "labels-with-icons", "text": "Nav items show text labels with icons (no icon-only primary nav on mobile)", "type": "manual"},
-        {"id": "keyboard-focus", "text": "Interactive elements are real buttons/links with visible focus styles (focus-visible:ring or similar)", "type": "manual"},
-        {"id": "lint-clean", "text": "Static UXL scan of AppShell.tsx reports zero critical and zero major findings", "type": "lint-severity", "severity": "major", "max": 0}
+        {
+          "id": "file-exists",
+          "text": "AppShell.tsx exists and NOTES.md exists",
+          "type": "manual"
+        },
+        {
+          "id": "grouped-sidebar",
+          "text": "Desktop navigation groups the 14 items into labelled sections or primary vs secondary tiers (chunking)",
+          "type": "manual"
+        },
+        {
+          "id": "mobile-bottom-bar",
+          "text": "Mobile uses a bottom tab bar (or equivalent) with 3–5 primary destinations, the rest in 'More'/sheet",
+          "type": "manual"
+        },
+        {
+          "id": "touch-targets",
+          "text": "Mobile nav items are >= 44px tall (e.g. h-11/min-h-11/h-12/h-14/h-16 or py giving >= 44px)",
+          "type": "manual"
+        },
+        {
+          "id": "aria-current",
+          "text": "Active item marked with aria-current=\"page\" and nav landmarks have aria-labels",
+          "type": "manual"
+        },
+        {
+          "id": "labels-with-icons",
+          "text": "Nav items show text labels with icons (no icon-only primary nav on mobile)",
+          "type": "manual"
+        },
+        {
+          "id": "keyboard-focus",
+          "text": "Interactive elements are real buttons/links with visible focus styles (focus-visible:ring or similar)",
+          "type": "manual"
+        },
+        {
+          "id": "lint-clean",
+          "text": "Static UXL scan of AppShell.tsx reports zero critical and zero major findings",
+          "type": "lint-severity",
+          "severity": "major",
+          "max": 0
+        },
+        {
+          "id": "cites-laws",
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "type": "doc-laws",
+          "files": [
+            "NOTES.md",
+            "RESPONSE.md"
+          ],
+          "min": 3
+        }
       ]
     }
   ]
