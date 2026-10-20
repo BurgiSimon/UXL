@@ -964,8 +964,10 @@ def check_css(src: Source, out: Collector, project: dict):
                 elif v.strip() in ("x-small", "xx-small", "smaller") and re.search(r"input|select|textarea", sel):
                     out.add(src, "input-font-small", r.offset + off, f"font-size: {v} on form control `{_sel(sel)}`")
             # small targets
-            if re.search(r"(^|[\s,>+~])(button|a)\b(?![-\w])|\.(btn|button|icon-btn|icon-button|close|chip|tab|nav-link|menu-item)\b|\[role=.?button", sel) \
-                    and ":not(" not in sel and "::" not in sel:
+            # only selectors whose *subject* (last compound) is the clickable element, not `.btn svg`
+            subjects = [re.split(r"[\s>+~]+", part.strip())[-1] for part in sel.split(",") if part.strip()]
+            if any(re.search(r"^(button|a)\b(?![-\w])|\.(btn|button|icon-btn|icon-button|close|chip|tab|nav-link|menu-item)\b|\[role=.?button", subj)
+                   for subj in subjects) and ":not(" not in sel and "::" not in sel:
                 heights = [to_px(v) for v, _ in decl(body, "height")] + [to_px(v) for v, _ in decl(body, "block-size")]
                 mins = [to_px(v) for v, _ in decl(body, "min-height")] + [to_px(v) for v, _ in decl(body, "min-block-size")]
                 heights = [h for h in heights if h]

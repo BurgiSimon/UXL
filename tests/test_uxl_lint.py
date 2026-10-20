@@ -165,6 +165,14 @@ class Snippets(unittest.TestCase):
         rep = lint_snippet("a.html", '<label for="z">Postal code</label><input id="z" name="zip" type="text" autocomplete="postal-code">')
         self.assertNotIn("input-type-generic", rules(rep))
 
+    def test_icon_inside_button_not_small_target(self):
+        rep = lint_snippet("a.css", ".btn { min-height: 48px; }\n.btn svg { width: 20px; height: 20px; }")
+        self.assertNotIn("small-target", rules(rep))
+
+    def test_small_button_still_flagged(self):
+        rep = lint_snippet("a.css", ".toolbar .btn { height: 28px; }")
+        self.assertIn("small-target", rules(rep))
+
     def test_list_rules(self):
         buf = io.StringIO()
         with redirect_stdout(buf):
