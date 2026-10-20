@@ -91,6 +91,7 @@ def main():
         run(["node", os.path.join(SCRIPTS, "uxl_audit.mjs"), page, "--viewports", "small,mobile,desktop", "--out", audit_dir])
         audit = json.load(open(os.path.join(audit_dir, "report.json"), encoding="utf-8"))
         md = open(os.path.join(audit_dir, "report.md"), encoding="utf-8").read().replace("file://" + OUT + "/", "")
+        md = md.replace(f"`{label}-index-", f"`screens/{key}-")  # match the renamed screenshots
         open(os.path.join(OUT, "reports", f"{key}-audit.md"), "w", encoding="utf-8").write(md)
         for f in os.listdir(audit_dir):
             if f.endswith(".png"):  # uxl_audit names renders <label>-index-<viewport>[-annotated].png

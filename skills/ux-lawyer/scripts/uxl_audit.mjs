@@ -383,7 +383,9 @@ function measure(cfg) {
   }
 
   // ---- CTA competition in the first screen (Von Restorff)
-  const btnLike = all.filter((el) => el.matches("button, a, input[type=submit], [role=button]") && !el.closest("nav, header nav, footer"));
+  // Menu/disclosure toggles are controls, not calls to action
+  const isToggle = (el) => el.hasAttribute("aria-expanded") || el.hasAttribute("aria-haspopup") || /^(open |close )?(menu|navigation)$/i.test(text(el)) || /menu|nav/i.test(el.getAttribute("aria-controls") || "");
+  const btnLike = all.filter((el) => el.matches("button, a, input[type=submit], [role=button]") && !el.closest("nav, header nav, footer") && !isToggle(el));
   const filled = [];
   for (const el of btnLike) {
     const r = el.getBoundingClientRect();
@@ -429,7 +431,8 @@ function carouselSignature(sels) {
 
 function focusState() {
   const el = document.activeElement;
-  if (!el || el === document.body) return null;
+  // Focus inside an iframe belongs to the embedded document; the parent can't measure its indicator
+  if (!el || el === document.body || el.tagName === "IFRAME") return null;
   const cs = getComputedStyle(el);
   const r = el.getBoundingClientRect();
   const sig = [cs.outlineStyle, cs.outlineWidth, cs.outlineColor, cs.boxShadow, cs.borderColor, cs.backgroundColor, cs.textDecorationLine, cs.color].join("|");

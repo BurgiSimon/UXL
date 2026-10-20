@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fernwheel: E-bike subscriptions in Zurich, Berlin & Amsterdam</title>
+<meta name="description" content="Subscribe to a premium e-bike from €39/month. Insurance, repairs and a replacement bike within 48 hours included. Now in Zurich, Berlin and Amsterdam.">
+<meta name="theme-color" content="#0f2a22">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230f2a22'/%3E%3Ccircle cx='10' cy='19' r='5' fill='none' stroke='%23c8f53c' stroke-width='2.4'/%3E%3Ccircle cx='22' cy='19' r='5' fill='none' stroke='%23c8f53c' stroke-width='2.4'/%3E%3Cpath d='M10 19l5-8h5l2 8' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0f2a22;
+    --ink-2:#1d4034;
+    --ink-soft:#4a6158;
+    --cream:#f6f2e9;
+    --paper:#fffdf8;
+    --line:#e3dccd;
+    --lime:#c8f53c;
+    --lime-deep:#a6d81c;
+    --coral:#ff6b4a;
+    --sky:#bfe3ff;
+    --ok:#1f8a4c;
+    --err:#c4361b;
+    --radius:22px;
+    --radius-sm:14px;
+    --shadow:0 1px 2px rgba(15,42,34,.06),0 12px 40px -12px rgba(15,42,34,.18);
+    --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+    --body:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --wrap:1180px;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{margin:0;font-family:var(--body);font-size:17px;line-height:1.6;color:var(--ink);background:var(--cream);overflow-x:clip;-webkit-font-smoothing:antialiased}
+  img,svg{display:block;max-width:100%}
+  a{color:inherit}
+  h1,h2,h3{font-family:var(--display);line-height:1.05;letter-spacing:-.02em;margin:0}
+  p{margin:0}
+  .wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 20px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+  :focus-visible{outline:3px solid var(--coral);outline-offset:3px;border-radius:6px}
+  .skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;z-index:100;text-decoration:none}
+  .skip:focus{top:12px}
+
+  /* Buttons */
+  .btn{--bg:var(--ink);--fg:#fff;display:inline-flex;align-items:center;justify-content:center;gap:.5em;padding:15px 24px;border-radius:999px;border:0;background:var(--bg);color:var(--fg);font:600 16px/1 var(--body);text-decoration:none;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,background .2s;white-space:nowrap;min-height:50px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px rgba(15,42,34,.5)}
+  .btn:active{transform:translateY(0)}
+  .btn-lime{--bg:var(--lime);--fg:var(--ink)}
+  .btn-ghost{--bg:transparent;--fg:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+  .btn-ghost:hover{box-shadow:inset 0 0 0 2px var(--ink),0 10px 24px -10px rgba(15,42,34,.35)}
+  .btn svg{width:18px;height:18px}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+  .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--coral)}
+  .section{padding:96px 0}
+  .section-head{max-width:680px;margin-bottom:48px}
+  .section-head h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
+  .section-head p{margin-top:16px;color:var(--ink-soft);font-size:18px}
+
+  /* Nav */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(246,242,233,.82);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
+  .nav.scrolled{border-bottom-color:var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font:800 23px/1 var(--display);letter-spacing:-.03em;text-decoration:none}
+  .logo-mark{width:36px;height:36px;flex:none}
+  section[id],.field,.faq details{scroll-margin-top:88px}
+  .nav-links{display:flex;align-items:center;gap:6px;list-style:none;margin:0;padding:0}
+  .nav-links a{display:block;padding:10px 14px;border-radius:999px;text-decoration:none;font-weight:500;font-size:15px;transition:background .2s}
+  .nav-links a:hover{background:rgba(15,42,34,.07)}
+  .nav-cta{display:flex;gap:10px;align-items:center}
+  .nav-cta .btn{padding:12px 20px;min-height:44px;font-size:15px}
+  .menu-btn{display:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--ink);color:#fff;cursor:pointer;align-items:center;justify-content:center}
+  .menu-btn span{position:relative;width:18px;height:2px;background:currentColor;border-radius:2px;transition:background .2s}
+  .menu-btn span::before,.menu-btn span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:currentColor;border-radius:2px;transition:transform .25s}
+  .menu-btn span::before{top:-6px}.menu-btn span::after{top:6px}
+  .menu-open .menu-btn span{background:transparent}
+  .menu-open .menu-btn span::before{transform:translateY(6px) rotate(45deg)}
+  .menu-open .menu-btn span::after{transform:translateY(-6px) rotate(-45deg)}
+
+  /* Hero */
+  .hero{position:relative;padding:56px 0 40px}
+  .hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+  .hero h1{font-size:clamp(46px,7.6vw,96px);font-weight:800;letter-spacing:-.04em;margin-top:18px}
+  .hero h1 .hl{position:relative;white-space:nowrap;z-index:0}
+  .hero h1 .hl::after{content:"";position:absolute;left:-4px;right:-6px;bottom:.08em;height:.36em;background:var(--lime);z-index:-1;border-radius:6px;transform:skew(-8deg) scaleX(0);transform-origin:left;animation:swipe .9s .4s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes swipe{to{transform:skew(-8deg) scaleX(1)}}
+  .hero-lede{margin-top:22px;font-size:clamp(18px,2vw,21px);color:var(--ink-soft);max-width:520px}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:22px;margin-top:36px;padding-top:26px;border-top:1px solid var(--line)}
+  .hero-meta div{display:flex;flex-direction:column}
+  .hero-meta strong{font:800 28px/1 var(--display);letter-spacing:-.02em}
+  .hero-meta span{font-size:14px;color:var(--ink-soft);margin-top:6px}
+
+  .hero-art{position:relative;aspect-ratio:1/1;max-width:600px;width:100%;margin-left:auto}
+  .hero-blob{position:absolute;inset:4%;border-radius:46% 54% 50% 50%/52% 46% 54% 48%;background:radial-gradient(circle at 30% 25%,#e6ffa0 0%,var(--lime) 45%,var(--lime-deep) 100%);animation:morph 14s ease-in-out infinite}
+  @keyframes morph{50%{border-radius:56% 44% 42% 58%/44% 58% 42% 56%;transform:rotate(8deg)}}
+  .hero-sun{position:absolute;width:22%;aspect-ratio:1;border-radius:50%;background:var(--coral);top:8%;right:6%;box-shadow:0 0 0 14px rgba(255,107,74,.15)}
+  .bike{position:absolute;left:2%;right:2%;bottom:16%;width:96%}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .bike-shadow{position:absolute;left:12%;right:12%;bottom:13%;height:5%;border-radius:50%;background:rgba(15,42,34,.22);filter:blur(6px)}
+  .speed-lines line{stroke:var(--ink);stroke-width:5;stroke-linecap:round;opacity:.0;animation:dash 1.6s ease-in-out infinite}
+  .speed-lines line:nth-child(2){animation-delay:.3s}.speed-lines line:nth-child(3){animation-delay:.6s}
+  @keyframes dash{0%{opacity:0;transform:translateX(30px)}40%{opacity:.8}100%{opacity:0;transform:translateX(-30px)}}
+  .badge{position:absolute;background:var(--paper);border-radius:18px;padding:12px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;font-size:14px;line-height:1.3;animation:float 6s ease-in-out infinite}
+  .badge b{display:block;font-size:15px}
+  .badge small{color:var(--ink-soft)}
+  .badge .ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+  .badge-1{left:-2%;top:14%}
+  .badge-2{right:-2%;bottom:6%;animation-delay:-3s}
+  @keyframes float{50%{transform:translateY(-10px)}}
+
+  /* Marquee */
+  .marquee{background:var(--ink);color:var(--cream);overflow:hidden;padding:18px 0;margin-top:40px}
+  .marquee-track{display:flex;gap:48px;width:max-content;animation:scroll 32s linear infinite}
+  .marquee-track span{display:flex;align-items:center;gap:48px;font:700 22px/1 var(--display);letter-spacing:-.01em;white-space:nowrap}
+  .marquee-track span::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--lime)}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* Included */
+  .included{background:var(--paper)}
+  .features{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .feature{background:var(--cream);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;gap:14px;transition:transform .3s ease}
+  .feature:hover{transform:translateY(-6px)}
+  .feature .ico{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--ink);color:var(--lime)}
+  .feature .ico svg{width:28px;height:28px}
+  .feature h3{font-size:24px;margin-top:6px}
+  .feature p{color:var(--ink-soft);font-size:16px}
+  .feature.hot{background:var(--ink);color:var(--cream)}
+  .feature.hot p{color:#b9cbc3}
+  .feature.hot .ico{background:var(--lime);color:var(--ink)}
+  .feature .big{font:800 54px/1 var(--display);letter-spacing:-.04em;color:var(--lime);margin-top:auto}
+
+  /* Steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:step}
+  .step{position:relative;padding:32px 28px 28px;border-radius:var(--radius);border:2px solid var(--ink);background:var(--cream)}
+  .step::before{counter-increment:step;content:"0" counter(step);font:800 15px/1 var(--display);display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--lime);margin-bottom:22px}
+  .step h3{font-size:26px}
+  .step p{color:var(--ink-soft);margin-top:10px}
+
+  /* Plans */
+  .plans-sec{background:var(--ink);color:var(--cream);position:relative;overflow:hidden}
+  .plans-sec .eyebrow{color:#a9c0b6}
+  .plans-sec .section-head p{color:#b9cbc3}
+  .plans-sec::before{content:"";position:absolute;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(200,245,60,.18),transparent 65%);top:-260px;right:-200px;pointer-events:none}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;position:relative}
+  .plan{background:var(--ink-2);border-radius:28px;padding:32px;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);transition:transform .3s ease}
+  .plan:hover{transform:translateY(-6px)}
+  .plan.featured{background:var(--cream);color:var(--ink);box-shadow:0 30px 80px -30px rgba(200,245,60,.5)}
+  .plan-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .plan h3{font-size:30px}
+  .tag{font:700 12px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;padding:8px 12px;border-radius:999px;background:var(--lime);color:var(--ink)}
+  .plan-for{margin-top:8px;color:#b9cbc3;font-size:15px}
+  .featured .plan-for{color:var(--ink-soft)}
+  .plan-art{height:110px;margin:22px 0 4px;display:flex;align-items:flex-end}
+  .plan-art svg{height:100%;width:auto}
+  .price{display:flex;align-items:baseline;gap:6px;margin-top:18px}
+  .price b{font:800 64px/1 var(--display);letter-spacing:-.04em}
+  .price span{color:#b9cbc3}
+  .featured .price span{color:var(--ink-soft)}
+  .plan ul{list-style:none;padding:0;margin:24px 0 28px;display:grid;gap:12px;font-size:15.5px}
+  .plan li{display:flex;gap:12px;align-items:flex-start}
+  .plan li svg{flex:none;width:20px;height:20px;margin-top:2px;color:var(--lime)}
+  .featured li svg{color:var(--ok)}
+  .plan .btn{margin-top:auto;width:100%}
+  .plan:not(.featured) .btn{--bg:transparent;--fg:var(--cream);box-shadow:inset 0 0 0 2px rgba(246,242,233,.5)}
+  .plan:not(.featured) .btn:hover{--bg:var(--cream);--fg:var(--ink)}
+  .plans-note{margin-top:28px;text-align:center;color:#a9c0b6;font-size:15px}
+  .plans-note strong{color:var(--cream)}
+
+  /* Postcode */
+  .check-card{background:var(--paper);border-radius:32px;padding:clamp(28px,5vw,56px);box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;position:relative;overflow:hidden}
+  .check-card h2{font-size:clamp(32px,4.4vw,50px);margin-top:14px}
+  .check-card > div > p{color:var(--ink-soft);margin-top:14px}
+  .cities{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .city{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:var(--cream);font-weight:600;font-size:15px}
+  .city i{font-style:normal;font-size:12px;color:var(--ink-soft);font-weight:500}
+  .pc-form{display:flex;gap:10px;background:var(--cream);padding:8px;border-radius:999px;border:2px solid transparent;transition:border-color .2s}
+  .pc-form:focus-within{border-color:var(--ink)}
+  .pc-form input{flex:1;min-width:0;border:0;background:transparent;font:600 20px/1 var(--body);padding:0 16px;color:var(--ink);letter-spacing:.04em}
+  .pc-form input::placeholder{color:#9aa69f;font-weight:500;letter-spacing:0}
+  .pc-form input:focus{outline:none}
+  .pc-hint{font-size:14px;color:var(--ink-soft);margin:12px 0 0 18px}
+  .pc-result{margin-top:20px;border-radius:20px;padding:0;max-height:0;overflow:hidden;opacity:0;transition:all .4s ease}
+  .pc-result.show{max-height:420px;opacity:1;padding:22px}
+  .pc-result.yes{background:#e8f8d0}
+  .pc-result.no{background:#ffe9e2}
+  .pc-result.invalid{background:#f0ece2}
+  .pc-result h3{font-size:22px;display:flex;align-items:center;gap:10px}
+  .pc-result p{margin-top:8px;color:var(--ink-soft);font-size:15.5px}
+  .pc-result .btn{margin-top:16px;padding:12px 20px;min-height:44px;font-size:15px}
+  .wait-form{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .wait-form input{flex:1 1 200px;min-width:0;border:2px solid transparent;border-radius:999px;padding:12px 18px;font:500 16px var(--body);background:#fff}
+  .wait-form input:focus{outline:none;border-color:var(--ink)}
+  .wait-form .btn{margin-top:0}
+
+  /* Map illustration */
+  .map{position:relative;aspect-ratio:5/4;border-radius:24px;background:var(--ink);overflow:hidden}
+  .map svg{width:100%;height:100%}
+  .pin{cursor:default}
+  .pin .pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-out infinite}
+  .pin:nth-of-type(2) .pulse{animation-delay:.8s}.pin:nth-of-type(3) .pulse{animation-delay:1.6s}
+  @keyframes pulse{0%{transform:scale(.6);opacity:.8}100%{transform:scale(2.6);opacity:0}}
+  .pin.active circle.dot{fill:var(--coral)}
+
+  /* Test ride */
+  .ride-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+  .ride-aside h2{font-size:clamp(36px,5vw,60px);margin-top:14px}
+  .ride-aside > p{margin-top:16px;color:var(--ink-soft);font-size:18px}
+  .ride-list{list-style:none;padding:0;margin:28px 0 0;display:grid;gap:16px}
+  .ride-list li{display:flex;gap:14px;align-items:flex-start}
+  .ride-list .ico{flex:none;width:44px;height:44px;border-radius:14px;background:var(--lime);display:grid;place-items:center}
+  .ride-list .ico svg{width:22px;height:22px}
+  .ride-list b{display:block}
+  .ride-list span{color:var(--ink-soft);font-size:15.5px}
+  .form-card{background:var(--paper);border-radius:32px;padding:clamp(24px,4vw,44px);box-shadow:var(--shadow);position:relative}
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .field{display:flex;flex-direction:column;gap:8px;min-width:0}
+  .field.full{grid-column:1/-1}
+  .field label,.field legend{font-weight:600;font-size:14.5px;padding:0}
+  .field .opt{font-weight:400;color:var(--ink-soft)}
+  .field input:not([type=checkbox]):not([type=radio]),.field select{width:100%;min-height:52px;border:2px solid var(--line);border-radius:var(--radius-sm);padding:12px 16px;font:500 16px var(--body);color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+  .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f2a22' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:44px}
+  .field input:not([type=checkbox]):not([type=radio]):focus,.field select:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 4px rgba(200,245,60,.55)}
+  .field.invalid input:not([type=checkbox]):not([type=radio]),.field.invalid select{border-color:var(--err)}
+  .field.invalid .consent input{outline:2px solid var(--err);outline-offset:2px}
+  .err{display:none;color:var(--err);font-size:13.5px;font-weight:500}
+  .field.invalid .err{display:block}
+  fieldset.field{border:0;margin:0;padding:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{position:relative}
+  .chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .chip span{display:inline-flex;align-items:center;min-height:46px;padding:10px 16px;border-radius:999px;border:2px solid var(--line);background:#fff;font-weight:600;font-size:15px;transition:all .2s}
+  .chip input:hover + span{border-color:var(--ink-soft)}
+  .chip input:checked + span{background:var(--ink);border-color:var(--ink);color:var(--lime)}
+  .chip input:focus-visible + span{outline:3px solid var(--coral);outline-offset:2px}
+  .consent{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;color:var(--ink-soft)}
+  .consent input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var(--ink)}
+  .form-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:26px}
+  .form-foot small{color:var(--ink-soft);font-size:14px}
+  .form-foot .btn{flex:0 0 auto}
+  .success{display:none;text-align:center;padding:28px 6px}
+  .success.show{display:block;animation:pop .5s cubic-bezier(.2,.9,.3,1.3)}
+  @keyframes pop{from{opacity:0;transform:scale(.94)}}
+  .success .tick{width:84px;height:84px;margin:0 auto 20px;border-radius:50%;background:var(--lime);display:grid;place-items:center}
+  .success .tick svg{width:40px;height:40px}
+  .success h3{font-size:34px}
+  .success p{margin-top:12px;color:var(--ink-soft)}
+  .success dl{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;text-align:left;max-width:360px;margin:24px auto;background:var(--cream);padding:18px 22px;border-radius:18px;font-size:15px}
+  .success dt{color:var(--ink-soft)}
+  .success dd{margin:0;font-weight:600}
+
+  /* FAQ */
+  .faq{max-width:820px;margin:0 auto}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px 4px;font:700 clamp(19px,2.2vw,23px)/1.3 var(--display);letter-spacing:-.01em}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"";flex:none;width:36px;height:36px;border-radius:50%;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f2a22' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center/18px no-repeat;transition:transform .3s,background-color .3s}
+  .faq details[open] summary::after{transform:rotate(45deg);background-color:var(--lime)}
+  .faq details p{padding:0 4px 24px;color:var(--ink-soft);max-width:680px}
+
+  /* CTA + footer */
+  .cta{background:var(--lime);border-radius:36px;padding:clamp(36px,6vw,72px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px;position:relative;overflow:hidden}
+  .cta h2{font-size:clamp(34px,5vw,62px);max-width:640px;position:relative}
+  .cta .btn{position:relative}
+  .cta-wheel{position:absolute;right:-80px;bottom:-120px;width:340px;opacity:.16;animation:spin 20s linear infinite}
+  footer{padding:72px 0 40px}
+  .foot-grid{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:32px}
+  .foot-grid h4{font:600 13px/1 var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin:6px 0 16px}
+  .foot-grid ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+  .foot-grid a{text-decoration:none}
+  .foot-grid a:hover{text-decoration:underline}
+  .foot-grid p{color:var(--ink-soft);margin-top:14px;max-width:300px;font-size:15px}
+  .foot-bottom{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:14px;color:var(--ink-soft)}
+
+  /* Reveal */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .js-off .reveal{opacity:1;transform:none}
+
+  /* Responsive */
+  @media (max-width:1024px){
+    .features{grid-template-columns:repeat(2,1fr)}
+    .plans{grid-template-columns:1fr;max-width:520px;margin:0 auto}
+    .plan.featured{order:-1}
+    .ride-grid{grid-template-columns:1fr;gap:40px}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:880px){
+    .nav-cta .btn-ghost{display:none}
+    .menu-btn{display:inline-flex}
+    .nav-links{position:fixed;left:12px;right:12px;top:80px;flex-direction:column;align-items:stretch;gap:4px;background:var(--paper);padding:12px;border-radius:24px;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(-10px);pointer-events:none;transition:all .25s}
+    .menu-open .nav-links{visibility:visible;opacity:1;transform:none;pointer-events:auto}
+    .nav-links a{padding:14px 16px;font-size:18px;font-weight:600}
+    .hero{padding-top:28px}
+    .hero-grid{grid-template-columns:1fr;gap:12px}
+    .hero-art{max-width:480px;margin:0 auto}
+    .check-card{grid-template-columns:1fr;gap:32px}
+    .steps{grid-template-columns:1fr}
+  }
+  @media (max-width:600px){
+    body{font-size:16px}
+    .wrap{padding:0 16px}
+    .nav-inner{gap:8px}
+    .logo{font-size:20px;gap:8px}
+    .nav-cta{gap:8px}
+    .nav-cta .btn{padding:10px 14px;font-size:14px;min-height:44px}
+    .section{padding:72px 0}
+    .section-head{margin-bottom:32px}
+    .features{grid-template-columns:1fr}
+    .fields{grid-template-columns:1fr}
+    .hero-actions .btn{flex:1 1 100%}
+    .hero-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .hero-meta strong{font-size:24px}
+    .hero-meta span{font-size:12.5px;line-height:1.35}
+    .badge{padding:9px 12px;font-size:12.5px;gap:9px}
+    .badge b{font-size:13px}
+    .badge .ico{width:30px;height:30px;border-radius:10px}
+    .badge .ico svg{width:16px;height:16px}
+    .badge-1{left:0;top:6%}.badge-2{right:0;bottom:2%}
+    .pc-form{flex-direction:column;border-radius:22px;padding:10px}
+    .pc-form input{padding:14px 12px;font-size:18px}
+    .pc-form .btn{width:100%}
+    .pc-hint{margin-left:6px}
+    .form-foot .btn{width:100%}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    .foot-grid > div:first-child{grid-column:1/-1}
+    .marquee-track span{font-size:18px}
+    .plan{padding:26px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+    .hero h1 .hl::after{transform:skew(-8deg) scaleX(1)}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- SVG sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.6-3.4 8.4-8 9-4.6-.6-8-4.4-8-9V6l8-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-1.3 1.3a6 6 0 0 1-7.4.9L6 21.5a2.1 2.1 0 0 1-3-3l6.3-6.3a6 6 0 0 1 .9-7.4L11.5 3.5l1.7 1.3a4 4 0 0 0 1.5 1.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M3 6h11v10H3zM14 10h4l3 3v3h-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="17.5" r="2" fill="currentColor"/><circle cx="17" cy="17.5" r="2" fill="currentColor"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><path d="M4 10h16v11H4zM2.5 6.5h19V10h-19zM12 6.5V21M12 6.5C10 2 6 3 7.5 5.5 8.3 6.6 12 6.5 12 6.5zm0 0c2-4.5 6-3.5 4.5-1C15.7 6.6 12 6.5 12 6.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" fill="currentColor"/></symbol>
+    <symbol id="wheel" viewBox="-100 -100 200 200">
+      <circle r="88" fill="none" stroke="currentColor" stroke-width="12"/>
+      <circle r="78" fill="none" stroke="currentColor" stroke-width="2" opacity=".5"/>
+      <g stroke="currentColor" stroke-width="2.4" opacity=".75">
+        <line x1="0" y1="-78" x2="0" y2="78"/><line x1="-78" y1="0" x2="78" y2="0"/>
+        <line x1="-55" y1="-55" x2="55" y2="55"/><line x1="-55" y1="55" x2="55" y2="-55"/>
+        <line x1="-30" y1="-72" x2="30" y2="72"/><line x1="30" y1="-72" x2="-30" y2="72"/>
+        <line x1="-72" y1="-30" x2="72" y2="30"/><line x1="-72" y1="30" x2="72" y2="-30"/>
+      </g>
+      <circle r="12" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="logo" aria-label="Fernwheel home">
+      <svg class="logo-mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="11" fill="#0f2a22"/><circle cx="11.5" cy="21" r="5.5" fill="none" stroke="#c8f53c" stroke-width="2.6"/><circle cx="24.5" cy="21" r="5.5" fill="none" stroke="#c8f53c" stroke-width="2.6"/><path d="M11.5 21l5.5-9h5.5l2 9" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      Fernwheel
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#included">What's included</a></li>
+      <li><a href="#plans">Plans</a></li>
+      <li><a href="#delivery">Delivery</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#plans" class="btn btn-ghost">See plans</a>
+      <a href="#test-ride" class="btn">Book a test ride</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- Hero -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Now in Zurich · Berlin · Amsterdam</span>
+        <h1>Ride more.<br><span class="hl">Own less.</span></h1>
+        <p class="hero-lede">A premium e-bike, delivered to your door for one monthly price. Insurance, repairs and a replacement bike within 48&nbsp;hours are always included.</p>
+        <div class="hero-actions">
+          <a href="#test-ride" class="btn btn-lime">Book a free test ride <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <a href="#delivery" class="btn btn-ghost">Check your postcode</a>
+        </div>
+        <div class="hero-meta">
+          <div><strong>€39</strong><span>per month, from</span></div>
+          <div><strong>48h</strong><span>replacement guarantee</span></div>
+          <div><strong>€0</strong><span>repair bills, ever</span></div>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-blob"></div>
+        <div class="hero-sun"></div>
+        <div class="bike-shadow"></div>
+        <svg class="bike" viewBox="0 0 600 380">
+          <g class="speed-lines">
+            <line x1="10" y1="190" x2="70" y2="190"/>
+            <line x1="0" y1="225" x2="45" y2="225"/>
+            <line x1="20" y1="155" x2="60" y2="155"/>
+          </g>
+          <!-- wheels -->
+          <g color="#0f2a22">
+            <g><use href="#wheel" x="60" y="180" width="180" height="180"/><animateTransform attributeName="transform" type="rotate" from="0 150 270" to="360 150 270" dur="3.2s" repeatCount="indefinite"/></g>
+            <g><use href="#wheel" x="360" y="180" width="180" height="180"/><animateTransform attributeName="transform" type="rotate" from="0 450 270" to="360 450 270" dur="3.2s" repeatCount="indefinite"/></g>
+          </g>
+          <!-- rear rack -->
+          <path d="M150 270 L175 168 M120 168 H232" stroke="#0f2a22" stroke-width="7" stroke-linecap="round" fill="none"/>
+          <!-- frame -->
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M150 270 L280 272 L248 150 Z" stroke="#ff6b4a" stroke-width="13"/>
+            <path d="M280 272 C 320 230, 370 200, 420 172" stroke="#ff6b4a" stroke-width="17"/>
+            <path d="M412 140 L428 180 L450 270" stroke="#ff6b4a" stroke-width="12"/>
+            <path d="M262 196 C 320 190, 370 178, 414 150" stroke="#ff6b4a" stroke-width="9"/>
+          </g>
+          <!-- battery -->
+          <rect x="300" y="206" width="96" height="26" rx="11" transform="rotate(-27 348 219)" fill="#0f2a22"/>
+          <rect x="314" y="213" width="16" height="12" rx="3" transform="rotate(-27 348 219)" fill="#c8f53c"/>
+          <!-- hub motor -->
+          <circle cx="150" cy="270" r="22" fill="#0f2a22"/>
+          <circle cx="150" cy="270" r="8" fill="#c8f53c"/>
+          <!-- crank -->
+          <circle cx="280" cy="272" r="17" fill="none" stroke="#0f2a22" stroke-width="6"/>
+          <path d="M280 272 L300 300 M292 300 H312" stroke="#0f2a22" stroke-width="7" stroke-linecap="round"/>
+          <!-- seat -->
+          <path d="M248 150 L238 108" stroke="#0f2a22" stroke-width="9" stroke-linecap="round"/>
+          <path d="M206 102 C 220 92, 262 94, 272 104 C 258 112, 222 112, 206 102 Z" fill="#0f2a22"/>
+          <!-- handlebar -->
+          <path d="M412 140 L400 96 L438 84" stroke="#0f2a22" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M432 86 L458 80" stroke="#0f2a22" stroke-width="13" stroke-linecap="round"/>
+          <!-- light -->
+          <path d="M424 150 l14 -6 v14 z" fill="#fff"/>
+          <circle cx="430" cy="151" r="5" fill="#fff8c4"/>
+          <!-- fenders -->
+          <path d="M60 262 A 92 92 0 0 1 150 172" stroke="#0f2a22" stroke-width="6" fill="none" stroke-linecap="round" opacity=".9"/>
+          <path d="M392 196 A 96 96 0 0 1 540 250" stroke="#0f2a22" stroke-width="6" fill="none" stroke-linecap="round" opacity=".9"/>
+        </svg>
+        <div class="badge badge-1">
+          <span class="ico" style="background:var(--ink);color:var(--lime)"><svg width="20" height="20"><use href="#i-shield"/></svg></span>
+          <span><b>Theft insured</b><small>Covered from day one</small></span>
+        </div>
+        <div class="badge badge-2">
+          <span class="ico" style="background:var(--coral);color:#fff"><svg width="20" height="20"><use href="#i-swap"/></svg></span>
+          <span><b>Flat battery? Crash?</b><small>New bike in 48h</small></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Insurance included</span><span>Free repairs</span><span>Replacement in 48h</span><span>Doorstep delivery</span><span>Zurich</span><span>Berlin</span><span>Amsterdam</span>
+        <span>Insurance included</span><span>Free repairs</span><span>Replacement in 48h</span><span>Doorstep delivery</span><span>Zurich</span><span>Berlin</span><span>Amsterdam</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Included -->
+  <section class="section included" id="included">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">What's included</span>
+        <h2>All of the riding. None of the hassle.</h2>
+        <p>Owning an e-bike means insurance paperwork, surprise repair bills and weeks without wheels. With Fernwheel, all of that is our problem.</p>
+      </div>
+      <div class="features">
+        <article class="feature reveal">
+          <span class="ico"><svg aria-hidden="true"><use href="#i-shield"/></svg></span>
+          <h3>Insurance</h3>
+          <p>Theft and damage cover is built into every plan. No forms, no excess to haggle over.</p>
+        </article>
+        <article class="feature reveal">
+          <span class="ico"><svg aria-hidden="true"><use href="#i-wrench"/></svg></span>
+          <h3>Repairs</h3>
+          <p>Flat tyre, worn brakes or a cranky motor: our mechanics fix it at no extra cost.</p>
+        </article>
+        <article class="feature hot reveal">
+          <span class="ico"><svg aria-hidden="true"><use href="#i-swap"/></svg></span>
+          <h3>Replacement bike</h3>
+          <p>If your bike can't be fixed on the spot, a replacement reaches you within 48 hours.</p>
+          <span class="big">48h</span>
+        </article>
+        <article class="feature reveal">
+          <span class="ico"><svg aria-hidden="true"><use href="#i-truck"/></svg></span>
+          <h3>Delivery</h3>
+          <p>We bring your bike to your door, set it up for your height and show you the ropes.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section" id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How it works</span>
+        <h2>From sign-up to first ride in three steps.</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><h3>Pick a plan</h3><p>Choose the bike that fits how you ride, from quick city commutes to the weekly shop with the kids.</p></div>
+        <div class="step reveal"><h3>We deliver</h3><p>Pick a delivery slot. We hand over your bike fully charged, adjusted and ready to go.</p></div>
+        <div class="step reveal"><h3>Just ride</h3><p>Something goes wrong? Tap the app and we sort it. Your monthly price never changes.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plans -->
+  <section class="section plans-sec" id="plans">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Plans</span>
+        <h2>One monthly price. Everything included.</h2>
+        <p>Every plan includes insurance, repairs, a replacement within 48 hours and doorstep delivery.</p>
+      </div>
+      <div class="plans">
+        <article class="plan reveal">
+          <div class="plan-top"><h3>City</h3></div>
+          <p class="plan-for">Light and nimble for daily commutes.</p>
+          <div class="plan-art" aria-hidden="true">
+            <svg viewBox="0 0 220 110"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="45" cy="72" r="32" stroke="#f6f2e9" stroke-width="6"/><circle cx="175" cy="72" r="32" stroke="#f6f2e9" stroke-width="6"/><path d="M45 72L95 72L85 28L45 72M95 72L150 34L175 72M85 28H145M150 34L146 16H162M85 28L80 14M70 14H92" stroke="#c8f53c" stroke-width="6"/></g></svg>
+          </div>
+          <div class="price"><b>€39</b><span>/ month</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Lightweight e-bike, up to 60&nbsp;km range</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Insurance &amp; repairs included</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Replacement bike within 48h</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Integrated lights &amp; lock</li>
+          </ul>
+          <button class="btn" type="button" data-plan="City">Test ride City</button>
+        </article>
+
+        <article class="plan featured reveal">
+          <div class="plan-top"><h3>Plus</h3><span class="tag">Most popular</span></div>
+          <p class="plan-for">More power and range for the whole city.</p>
+          <div class="plan-art" aria-hidden="true">
+            <svg viewBox="0 0 220 110"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="45" cy="72" r="32" stroke="#0f2a22" stroke-width="6"/><circle cx="175" cy="72" r="32" stroke="#0f2a22" stroke-width="6"/><path d="M45 72L95 72L80 30L45 72M95 72C115 56 135 44 150 36L175 72M80 30L76 14M64 14H88M150 36L146 16H164" stroke="#ff6b4a" stroke-width="7"/><path d="M104 62L134 44" stroke="#0f2a22" stroke-width="10"/><path d="M22 52C28 42 36 38 45 38M45 38H70" stroke="#0f2a22" stroke-width="4"/></g></svg>
+          </div>
+          <div class="price"><b>€59</b><span>/ month</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Mid-drive motor, up to 100&nbsp;km range</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Insurance &amp; repairs included</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Replacement bike within 48h</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Rear rack, panniers &amp; GPS tracker</li>
+          </ul>
+          <button class="btn btn-lime" type="button" data-plan="Plus">Test ride Plus</button>
+        </article>
+
+        <article class="plan reveal">
+          <div class="plan-top"><h3>Cargo</h3></div>
+          <p class="plan-for">Room for kids, groceries and big ideas.</p>
+          <div class="plan-art" aria-hidden="true">
+            <svg viewBox="0 0 220 110"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="80" r="24" stroke="#f6f2e9" stroke-width="6"/><circle cx="190" cy="84" r="20" stroke="#f6f2e9" stroke-width="6"/><path d="M34 80L80 80L72 40L34 80M80 80H190M72 40L68 22M56 22H80M80 80L96 30L92 16H108" stroke="#c8f53c" stroke-width="6"/><rect x="118" y="44" width="62" height="32" rx="6" stroke="#f6f2e9" stroke-width="5"/></g></svg>
+          </div>
+          <div class="price"><b>€89</b><span>/ month</span></div>
+          <ul>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Longtail cargo e-bike, carries 2 kids</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Insurance &amp; repairs included</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Replacement bike within 48h</li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Child seats &amp; rain cover on request</li>
+          </ul>
+          <button class="btn" type="button" data-plan="Cargo">Test ride Cargo</button>
+        </article>
+      </div>
+      <p class="plans-note reveal">Not sure which one fits? <strong>Book a free test ride</strong> and try them all.</p>
+    </div>
+  </section>
+
+  <!-- Postcode check -->
+  <section class="section" id="delivery">
+    <div class="wrap">
+      <div class="check-card reveal">
+        <div>
+          <span class="eyebrow">Delivery area</span>
+          <h2>Do we ride in your neighbourhood?</h2>
+          <p>Enter your postcode to see if we deliver to you. We figure out the city for you.</p>
+
+          <form class="pc-form" id="pcForm" novalidate style="margin-top:28px">
+            <label for="pcInput" class="sr-only">Your postcode</label>
+            <input id="pcInput" name="postcode" inputmode="text" autocomplete="postal-code" placeholder="e.g. 8004, 10437 or 1012 AB" maxlength="10">
+            <button class="btn" type="submit">Check <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </form>
+          <p class="pc-hint">Try <button type="button" class="linkish" data-try="8004">8004</button>, <button type="button" class="linkish" data-try="10437">10437</button> or <button type="button" class="linkish" data-try="1015 BK">1015 BK</button></p>
+
+          <div class="pc-result" id="pcResult" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="map" aria-hidden="true">
+          <svg viewBox="0 0 500 400">
+            <defs>
+              <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/></pattern>
+            </defs>
+            <rect width="500" height="400" fill="url(#grid)"/>
+            <path d="M70 30 C 130 60, 160 40, 230 80 S 330 60, 420 110 S 460 230, 430 300 S 300 380, 210 350 S 80 330, 60 250 S 30 90, 70 30 Z" fill="rgba(200,245,60,.07)" stroke="rgba(200,245,60,.25)" stroke-width="1.5" stroke-dasharray="4 6"/>
+            <path d="M115 110 Q 230 140, 330 135 T 400 290" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round"/>
+            <path d="M115 110 Q 170 230, 210 300" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round"/>
+            <g class="pin" data-city="Amsterdam">
+              <circle class="pulse" cx="115" cy="110" r="14" fill="rgba(200,245,60,.5)"/>
+              <circle class="dot" cx="115" cy="110" r="9" fill="#c8f53c"/>
+              <text x="134" y="104" fill="#f6f2e9" font-family="Bricolage Grotesque, sans-serif" font-weight="700" font-size="22">Amsterdam</text>
+              <text x="134" y="124" fill="#a9c0b6" font-family="Inter, sans-serif" font-size="13">1011 – 1109</text>
+            </g>
+            <g class="pin" data-city="Berlin">
+              <circle class="pulse" cx="400" cy="140" r="14" fill="rgba(200,245,60,.5)"/>
+              <circle class="dot" cx="400" cy="140" r="9" fill="#c8f53c"/>
+              <text x="384" y="112" text-anchor="end" fill="#f6f2e9" font-family="Bricolage Grotesque, sans-serif" font-weight="700" font-size="22">Berlin</text>
+              <text x="384" y="132" text-anchor="end" fill="#a9c0b6" font-family="Inter, sans-serif" font-size="13">10115 – 14199</text>
+            </g>
+            <g class="pin" data-city="Zurich">
+              <circle class="pulse" cx="210" cy="310" r="14" fill="rgba(200,245,60,.5)"/>
+              <circle class="dot" cx="210" cy="310" r="9" fill="#c8f53c"/>
+              <text x="230" y="312" fill="#f6f2e9" font-family="Bricolage Grotesque, sans-serif" font-weight="700" font-size="22">Zurich</text>
+              <text x="230" y="332" fill="#a9c0b6" font-family="Inter, sans-serif" font-size="13">8001 – 8064</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Test ride -->
+  <section class="section" id="test-ride" style="padding-top:24px">
+    <div class="wrap ride-grid">
+      <div class="ride-aside reveal">
+        <span class="eyebrow">Free test ride</span>
+        <h2>Feel the difference before you subscribe.</h2>
+        <p>Thirty minutes on any of our bikes, with one of our riders to show you around. No card details, no obligation.</p>
+        <ul class="ride-list">
+          <li><span class="ico"><svg aria-hidden="true"><use href="#i-clock"/></svg></span><div><b>30 minutes, your pace</b><span>Try one plan or all three, back to back.</span></div></li>
+          <li><span class="ico"><svg aria-hidden="true"><use href="#i-pin"/></svg></span><div><b>At one of our city hubs</b><span>Central locations in Zurich, Berlin and Amsterdam.</span></div></li>
+          <li><span class="ico"><svg aria-hidden="true"><use href="#i-gift"/></svg></span><div><b>Completely free</b><span>Helmets provided. Just bring comfy shoes.</span></div></li>
+        </ul>
+      </div>
+
+      <div class="form-card reveal">
+        <form id="rideForm" novalidate>
+          <div class="fields">
+            <div class="field">
+              <label for="fName">Full name</label>
+              <input id="fName" name="name" autocomplete="name" required>
+              <span class="err">Please tell us your name.</span>
+            </div>
+            <div class="field">
+              <label for="fEmail">Email</label>
+              <input id="fEmail" name="email" type="email" autocomplete="email" inputmode="email" required>
+              <span class="err">Please enter a valid email address.</span>
+            </div>
+            <div class="field">
+              <label for="fPhone">Phone <span class="opt">(optional)</span></label>
+              <input id="fPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel">
+            </div>
+            <div class="field">
+              <label for="fCity">City</label>
+              <select id="fCity" name="city" required>
+                <option value="">Choose a city</option>
+                <option>Zurich</option>
+                <option>Berlin</option>
+                <option>Amsterdam</option>
+              </select>
+              <span class="err">Please choose a city.</span>
+            </div>
+            <div class="field">
+              <label for="fDate">Preferred date</label>
+              <input id="fDate" name="date" type="date" required>
+              <span class="err">Please pick a date from tomorrow onwards.</span>
+            </div>
+            <div class="field">
+              <label for="fPlan">Bike to try</label>
+              <select id="fPlan" name="plan">
+                <option value="Not sure yet">Not sure yet</option>
+                <option value="City">City · €39/mo</option>
+                <option value="Plus">Plus · €59/mo</option>
+                <option value="Cargo">Cargo · €89/mo</option>
+              </select>
+            </div>
+            <fieldset class="field full" id="slotField">
+              <legend>Time of day</legend>
+              <div class="chips" style="margin-top:8px">
+                <label class="chip"><input type="radio" name="slot" value="Morning (9–12)"><span>Morning · 9–12</span></label>
+                <label class="chip"><input type="radio" name="slot" value="Afternoon (12–17)"><span>Afternoon · 12–17</span></label>
+                <label class="chip"><input type="radio" name="slot" value="Evening (17–20)"><span>Evening · 17–20</span></label>
+              </div>
+              <span class="err">Please choose a time of day.</span>
+            </fieldset>
+            <div class="field full" id="consentField">
+              <label class="consent"><input type="checkbox" id="fConsent" name="consent" required> <span>I agree that Fernwheel may contact me about my test ride. We never share your data.</span></label>
+              <span class="err">Please confirm so we can contact you.</span>
+            </div>
+          </div>
+          <div class="form-foot">
+            <small>Takes 30 seconds. We confirm by email.</small>
+            <button class="btn btn-lime" type="submit">Book my test ride <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </form>
+
+        <div class="success" id="rideSuccess" role="status" aria-live="polite" tabindex="-1">
+          <div class="tick"><svg aria-hidden="true"><use href="#i-check"/></svg></div>
+          <h3>You're on the list!</h3>
+          <p>We'll email you within one working day to confirm the exact time and hub.</p>
+          <dl id="rideSummary"></dl>
+          <button class="btn btn-ghost" type="button" id="rideAgain">Book another ride</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq" style="padding-top:24px">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-inline:auto;text-align:center">
+        <span class="eyebrow">FAQ</span>
+        <h2>Questions? Answered.</h2>
+      </div>
+      <div class="faq reveal">
+        <details>
+          <summary>What happens if my bike is stolen?</summary>
+          <p>Report it in the app and file a police report. Theft is covered by the insurance in your plan, and we'll get a replacement bike to you within 48 hours.</p>
+        </details>
+        <details>
+          <summary>What does "replacement within 48 hours" mean?</summary>
+          <p>If your bike breaks down and we can't fix it on the spot, or it's stolen, we deliver a working replacement to you within 48 hours of your report.</p>
+        </details>
+        <details>
+          <summary>Are repairs really free?</summary>
+          <p>Yes. Wear and tear, punctures, brakes, battery and motor issues are all covered by your monthly price. You only pay if damage is caused deliberately.</p>
+        </details>
+        <details>
+          <summary>Can I switch plans later?</summary>
+          <p>Of course. If you need a Cargo bike when the family grows, or want to go lighter, we'll swap your bike and adjust your monthly price.</p>
+        </details>
+        <details>
+          <summary>What if you don't deliver to my postcode yet?</summary>
+          <p>Join the waitlist in the postcode check above. We expand neighbourhood by neighbourhood, and waitlist members are the first to know.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" style="padding-bottom:24px">
+    <div class="cta reveal">
+      <svg class="cta-wheel" color="#0f2a22" aria-hidden="true"><use href="#wheel"/></svg>
+      <h2>Your city looks better from the saddle.</h2>
+      <a href="#test-ride" class="btn">Book a free test ride <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="logo" aria-label="Fernwheel home">
+          <svg class="logo-mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="11" fill="#0f2a22"/><circle cx="11.5" cy="21" r="5.5" fill="none" stroke="#c8f53c" stroke-width="2.6"/><circle cx="24.5" cy="21" r="5.5" fill="none" stroke="#c8f53c" stroke-width="2.6"/><path d="M11.5 21l5.5-9h5.5l2 9" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>
+          Fernwheel
+        </a>
+        <p>Premium e-bikes on subscription. Insurance, repairs and replacements included.</p>
+      </div>
+      <div>
+        <h4>Ride</h4>
+        <ul><li><a href="#plans">Plans</a></li><li><a href="#test-ride">Test ride</a></li><li><a href="#delivery">Delivery area</a></li></ul>
+      </div>
+      <div>
+        <h4>Cities</h4>
+        <ul><li>Zurich</li><li>Berlin</li><li>Amsterdam</li></ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul><li><a href="#faq">FAQ</a></li><li><a href="mailto:hello@fernwheel.example">Contact</a></li><li><a href="#">Privacy</a></li></ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year">2026</span> Fernwheel</span>
+      <span>Made for cyclists in Zurich, Berlin &amp; Amsterdam</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .linkish{background:none;border:0;padding:0;font:inherit;color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:var(--lime-deep);text-decoration-thickness:2px;text-underline-offset:3px;cursor:pointer}
+</style>
+
+<script>
+(function(){
+  var doc = document.documentElement;
+
+  // Sticky nav border + mobile menu
+  var nav = document.getElementById('nav');
+  var menuBtn = document.getElementById('menuBtn');
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 8); }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  function setMenu(open){
+    document.body.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', open);
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  menuBtn.addEventListener('click', function(){ setMenu(!document.body.classList.contains('menu-open')); });
+  document.querySelectorAll('#navLinks a').forEach(function(a){ a.addEventListener('click', function(){ setMenu(false); }); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setMenu(false); });
+
+  // Reveal on scroll
+  var reveals = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, {rootMargin:'0px 0px -8% 0px', threshold:.08});
+    reveals.forEach(function(el, i){ el.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(el); });
+  } else { reveals.forEach(function(el){ el.classList.add('in'); }); }
+
+  var bike = document.querySelector('.bike');
+  if(bike && bike.pauseAnimations && matchMedia('(prefers-reduced-motion: reduce)').matches) bike.pauseAnimations();
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ---- Postcode check ----
+  var pcForm = document.getElementById('pcForm');
+  var pcInput = document.getElementById('pcInput');
+  var pcResult = document.getElementById('pcResult');
+  var pins = document.querySelectorAll('.pin');
+
+  function lookup(raw){
+    var s = raw.trim().toUpperCase().replace(/\s+/g, ' ');
+    var m;
+    if(!s) return {status:'invalid'};
+    // Amsterdam: 4 digits + optional 2 letters (1012 AB)
+    if((m = s.match(/^(?:NL-?)?\s?(\d{4})\s?([A-Z]{2})?$/)) && (m[2] || +m[1] < 2000)){
+      var nl = +m[1], code = m[1] + (m[2] ? ' ' + m[2] : '');
+      if(nl >= 1011 && nl <= 1109) return {status:'yes', city:'Amsterdam', code:code};
+      if(nl >= 1000) return {status:'no', near:'Amsterdam', code:code};
+      return {status:'invalid'};
+    }
+    // Zurich: 4 digits starting with 8
+    if((m = s.match(/^(?:CH-?)?\s?(\d{4})$/))){
+      var ch = +m[1];
+      if(ch >= 8001 && ch <= 8064) return {status:'yes', city:'Zurich', code:m[1]};
+      if(ch >= 8000 && ch <= 8999) return {status:'no', near:'Zurich', code:m[1]};
+      return {status:'outside', code:m[1]};
+    }
+    // Berlin: 5 digits
+    if((m = s.match(/^(?:D-?|DE-?)?\s?(\d{5})$/))){
+      var de = +m[1];
+      if(de >= 10115 && de <= 14199) return {status:'yes', city:'Berlin', code:m[1]};
+      return {status:'outside', code:m[1]};
+    }
+    return {status:'invalid'};
+  }
+
+  function esc(t){ return String(t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  var lastCity = null;
+  function renderResult(r){
+    pins.forEach(function(p){ p.classList.toggle('active', !!r.city && p.dataset.city === r.city); });
+    pcResult.className = 'pc-result';
+    var html;
+    if(r.status === 'yes'){
+      lastCity = r.city;
+      pcResult.classList.add('yes');
+      html = '<h3>🎉 Yes, we deliver to ' + esc(r.code) + '!</h3>' +
+        '<p>Great news: ' + esc(r.code) + ' is inside our ' + r.city + ' delivery area. Your bike arrives at your door, set up and fully charged.</p>' +
+        '<a href="#test-ride" class="btn" data-goride>Book a test ride in ' + r.city + '</a>';
+    } else if(r.status === 'no' || r.status === 'outside'){
+      pcResult.classList.add('no');
+      html = '<h3>Not yet in ' + esc(r.code) + '</h3>' +
+        '<p>' + (r.near ? 'We\'re just around the corner in central ' + r.near + ' and expanding soon. ' : 'We currently ride in Zurich, Berlin and Amsterdam. ') +
+        'Join the waitlist and we\'ll tell you the moment we arrive.</p>' +
+        '<form class="wait-form" id="waitForm" novalidate><label class="sr-only" for="waitEmail">Email for waitlist</label>' +
+        '<input id="waitEmail" type="email" placeholder="you@example.com" autocomplete="email" required>' +
+        '<button class="btn" type="submit">Join waitlist</button></form>';
+    } else {
+      pcResult.classList.add('invalid');
+      html = '<h3>Hmm, that doesn\'t look like a postcode</h3>' +
+        '<p>Try a Zurich (8004), Berlin (10437) or Amsterdam (1012 AB) postcode.</p>';
+    }
+    pcResult.innerHTML = html;
+    requestAnimationFrame(function(){ pcResult.classList.add('show'); });
+
+    var wf = document.getElementById('waitForm');
+    if(wf) wf.addEventListener('submit', function(e){
+      e.preventDefault();
+      var em = document.getElementById('waitEmail');
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){ em.focus(); em.style.borderColor = 'var(--err)'; return; }
+      wf.outerHTML = '<p style="margin-top:14px;color:var(--ink);font-weight:600">✓ You\'re on the waitlist. We\'ll be in touch at ' + esc(em.value.trim()) + '.</p>';
+    });
+    var go = pcResult.querySelector('[data-goride]');
+    if(go) go.addEventListener('click', function(){ if(lastCity) document.getElementById('fCity').value = lastCity; });
+  }
+
+  pcForm.addEventListener('submit', function(e){ e.preventDefault(); renderResult(lookup(pcInput.value)); });
+  document.querySelectorAll('[data-try]').forEach(function(b){
+    b.addEventListener('click', function(){ pcInput.value = b.dataset.try; renderResult(lookup(b.dataset.try)); });
+  });
+
+  // ---- Plan buttons prefill the form ----
+  document.querySelectorAll('[data-plan]').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.getElementById('fPlan').value = b.dataset.plan;
+      document.getElementById('test-ride').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+      setTimeout(function(){ document.getElementById('fName').focus({preventScroll:true}); }, 600);
+    });
+  });
+
+  // ---- Test ride form ----
+  var form = document.getElementById('rideForm');
+  var success = document.getElementById('rideSuccess');
+  var dateIn = document.getElementById('fDate');
+  function iso(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  var tmr = new Date(); tmr.setDate(tmr.getDate() + 1);
+  var max = new Date(); max.setDate(max.getDate() + 60);
+  dateIn.min = iso(tmr); dateIn.max = iso(max);
+
+  var checks = {
+    fName: function(v){ return v.trim().length > 1; },
+    fEmail: function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); },
+    fCity: function(v){ return !!v; },
+    fDate: function(v){ return !!v && v >= dateIn.min && v <= dateIn.max; }
+  };
+  function validateField(id){
+    var el = document.getElementById(id), ok = checks[id](el.value);
+    el.closest('.field').classList.toggle('invalid', !ok);
+    el.setAttribute('aria-invalid', !ok);
+    return ok;
+  }
+  Object.keys(checks).forEach(function(id){
+    var el = document.getElementById(id);
+    el.addEventListener('blur', function(){ if(el.value) validateField(id); });
+    el.addEventListener('input', function(){ if(el.closest('.field').classList.contains('invalid')) validateField(id); });
+    el.addEventListener('change', function(){ if(el.closest('.field').classList.contains('invalid')) validateField(id); });
+  });
+  form.querySelectorAll('input[name=slot]').forEach(function(r){ r.addEventListener('change', function(){ document.getElementById('slotField').classList.remove('invalid'); }); });
+  document.getElementById('fConsent').addEventListener('change', function(){ document.getElementById('consentField').classList.remove('invalid'); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var firstBad = null;
+    Object.keys(checks).forEach(function(id){ if(!validateField(id) && !firstBad) firstBad = document.getElementById(id); });
+    var slot = form.querySelector('input[name=slot]:checked');
+    document.getElementById('slotField').classList.toggle('invalid', !slot);
+    if(!slot && !firstBad) firstBad = form.querySelector('input[name=slot]');
+    var consent = document.getElementById('fConsent');
+    document.getElementById('consentField').classList.toggle('invalid', !consent.checked);
+    if(!consent.checked && !firstBad) firstBad = consent;
+    if(firstBad){ firstBad.focus(); return; }
+
+    var d = new Date(dateIn.value + 'T12:00:00');
+    var rows = [
+      ['Name', document.getElementById('fName').value.trim()],
+      ['City', document.getElementById('fCity').value],
+      ['Date', d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'long'})],
+      ['Time', slot.value],
+      ['Bike', document.getElementById('fPlan').value]
+    ];
+    document.getElementById('rideSummary').innerHTML = rows.map(function(r){ return '<dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('');
+    // TODO: send the booking to your backend, e.g. fetch('/api/test-rides', {method:'POST', body:new FormData(form)})
+    form.hidden = true;
+    success.classList.add('show');
+    success.focus();
+  });
+  document.getElementById('rideAgain').addEventListener('click', function(){
+    form.reset(); form.hidden = false; success.classList.remove('show');
+    document.getElementById('fName').focus();
+  });
+})();
+</script>
+</body>
+</html>

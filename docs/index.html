@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Fernwheel Case</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="One prompt, two Claude Code sessions, one difference: UXL (UX Lawyer) installed. A side-by-side demo with live pages, scanner evidence and law-cited findings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Libre+Caslon+Display&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a case file. A docket strip, the prompt as Exhibit P, the two live exhibits side by side in device frames,
+   the evidence table, numbered counts (one per law), then the verdict and how to reproduce it. */
+:root {
+  --paper: #f2f4f9;
+  --sheet: #ffffff;
+  --ink: #121a2c;
+  --ink-soft: #4a5571;
+  --rule: #d6dce8;
+  --mark: #ffe25a;
+  --mark-ink: #1d1a05;
+  --pass: #0b7149;  --pass-bg: #e2f3ea;
+  --fail: #b0271f;  --fail-bg: #fbe8e5;
+  --warn: #855600;  --warn-bg: #fcf0d9;
+  --bezel: #0b0f1a;
+  --display: "Libre Caslon Display", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius: 10px;
+  --target: 44px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d1220; --sheet: #151c2f; --ink: #e8ecf6; --ink-soft: #a6afc6; --rule: #2b3550;
+    --mark: #ead04a; --mark-ink: #1d1a05;
+    --pass: #56cf9c; --pass-bg: #12291f; --fail: #ff8f85; --fail-bg: #3a1714; --warn: #f2b84d; --warn-bg: #33240b;
+    --bezel: #04060c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1220; --sheet: #151c2f; --ink: #e8ecf6; --ink-soft: #a6afc6; --rule: #2b3550;
+  --mark: #ead04a; --mark-ink: #1d1a05;
+  --pass: #56cf9c; --pass-bg: #12291f; --fail: #ff8f85; --fail-bg: #3a1714; --warn: #f2b84d; --warn-bg: #33240b;
+  --bezel: #04060c; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; max-width: 65ch; text-wrap: pretty; }
+mark { background: linear-gradient(transparent 52%, var(--mark) 52%, var(--mark) 90%, transparent 90%); color: inherit; padding: 0 0.08em; }
+.wrap { max-width: 1180px; margin-inline: auto; }
+.mono { font-family: var(--mono); font-size: 0.8125rem; letter-spacing: 0.02em; }
+.label { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- docket strip */
+.docket { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-6);
+  padding-block: var(--space-4); border-bottom: 1px solid var(--rule); }
+.brand { display: inline-flex; align-items: center; gap: var(--space-3); min-height: var(--target); font-weight: 700; text-decoration: none; }
+.seal { display: inline-grid; place-items: center; width: 36px; height: 36px; border: 1.5px solid var(--ink); border-radius: 50%; font-family: var(--display); font-size: 1.25rem; line-height: 1; }
+.docket nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); align-items: center; }
+.docket nav a { display: inline-flex; align-items: center; min-height: var(--target); }
+
+/* ---- hero */
+.hero { display: grid; gap: var(--space-8); padding-block: var(--space-12) var(--space-12); }
+.hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.5rem, 1.6rem + 4.4vw, 5rem); line-height: 1.02; letter-spacing: -0.01em; max-width: 16ch; }
+.lede { font-size: 1.1875rem; color: var(--ink-soft); }
+.lede strong { color: var(--ink); font-weight: 600; }
+.prompt { position: relative; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-6); display: grid; gap: var(--space-3); }
+.prompt blockquote { margin: 0; font-size: 1.0625rem; line-height: 1.65; }
+.prompt .tab { position: absolute; top: -12px; left: var(--space-6); background: var(--ink); color: var(--paper); padding: 2px 10px; border-radius: 4px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-4); }
+.fact { border-top: 2px solid var(--ink); padding-top: var(--space-3); display: grid; gap: var(--space-2); }
+.fact h2 { font-family: var(--body); font-size: 1.0625rem; font-weight: 700; }
+.fact dl { display: grid; grid-template-columns: auto 1fr; gap: 2px var(--space-4); margin: 0; font-variant-numeric: tabular-nums; }
+.fact dt { color: var(--ink-soft); }
+.fact dd { margin: 0; font-weight: 500; }
+@media (min-width: 960px) { .hero { grid-template-columns: 1.15fr 1fr; align-items: start; column-gap: var(--space-12); } .hero > .intro { grid-row: span 2; } }
+
+/* ---- section heads */
+section { padding-block: var(--space-12); border-top: 1px solid var(--rule); }
+.head { display: grid; gap: var(--space-3); margin-bottom: var(--space-8); }
+.head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 1.5rem + 2vw, 3rem); line-height: 1.08; }
+
+/* ---- exhibits viewer */
+.controls { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); align-items: center; margin-bottom: var(--space-6); }
+.seg { display: inline-flex; padding: 3px; gap: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--sheet); }
+.seg button { font: 600 0.9375rem/1 var(--body); color: var(--ink-soft); background: transparent; border: 0; border-radius: 999px;
+  min-height: var(--target); padding: 0 var(--space-4); cursor: pointer; transition: background-color 150ms ease-out, color 150ms ease-out; }
+.seg button[aria-pressed="true"] { background: var(--mark); color: var(--mark-ink); }
+.seg button:hover:not([aria-pressed="true"]) { color: var(--ink); }
+.only-narrow { display: none; }
+.exhibits { display: grid; gap: var(--space-8); grid-template-columns: 1fr 1fr; }
+.exhibit { display: grid; gap: var(--space-3); align-content: start; min-width: 0; }
+.exhibit header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-2) var(--space-4); }
+.exhibit h3 { font-size: 1.125rem; font-weight: 700; }
+.exhibit h3 .mono { font-weight: 500; color: var(--ink-soft); margin-right: var(--space-2); }
+.score { display: inline-flex; align-items: center; gap: var(--space-2); font-variant-numeric: tabular-nums; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+.score.bad { background: var(--fail-bg); color: var(--fail); }
+.score.good { background: var(--pass-bg); color: var(--pass); }
+.frame { margin-inline: auto; width: 100%; }
+.frame[data-mode="phone"] { max-width: 340px; background: var(--bezel); border-radius: 44px; padding: 12px; box-shadow: 0 24px 48px -24px rgb(10 14 26 / 0.45); }
+.frame[data-mode="desktop"] { background: var(--bezel); border-radius: 12px; padding: 30px 8px 8px; position: relative; box-shadow: 0 24px 48px -24px rgb(10 14 26 / 0.45); }
+.frame[data-mode="desktop"]::before { content: ""; position: absolute; top: 11px; left: 14px; width: 8px; height: 8px; border-radius: 50%; background: #ff5f57; box-shadow: 14px 0 0 #febc2e, 28px 0 0 #28c840; }
+.screen { position: relative; width: 100%; overflow: hidden; background: var(--sheet); }
+.frame:focus-within { outline: 3px solid var(--mark); outline-offset: 4px; }   /* keyboard focus inside a live exhibit */
+.frame[data-mode="phone"] .screen { aspect-ratio: 390 / 780; border-radius: 32px; }
+.frame[data-mode="desktop"] .screen { aspect-ratio: 1440 / 900; border-radius: 4px; }
+.screen iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; transform: scale(var(--s, 1)); background: #fff; }
+.exhibit .open { justify-self: start; display: inline-flex; align-items: center; min-height: var(--target); font-weight: 600; }
+@media (max-width: 899px) {
+  .only-narrow { display: inline-flex; }
+  .exhibits { grid-template-columns: 1fr; }
+  .exhibits[data-show="a"] .exhibit[data-key="b"], .exhibits[data-show="b"] .exhibit[data-key="a"] { display: none; }
+}
+
+/* ---- evidence table */
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 560px; }
+th, td { text-align: left; padding: 14px var(--space-4); border-bottom: 1px solid var(--rule); vertical-align: top; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+thead th { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; }
+tbody th { font-weight: 500; width: 40%; }
+td.win { font-weight: 700; }
+.tag { display: inline-block; margin-left: var(--space-2); font-family: var(--mono); font-size: 0.75rem; padding: 1px 6px; border-radius: 4px; vertical-align: 1px; }
+.tag.fail { background: var(--fail-bg); color: var(--fail); }
+.tag.pass { background: var(--pass-bg); color: var(--pass); }
+.note { margin-top: var(--space-3); color: var(--ink-soft); font-size: 0.9375rem; }
+
+/* ---- counts */
+.counts { display: grid; gap: var(--space-16); }
+.count { display: grid; gap: var(--space-6); }
+.count-head { display: grid; gap: var(--space-3); }
+.count-head h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem); line-height: 1.12; }
+.laws { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.law { font-family: var(--mono); font-size: 0.8125rem; border: 1px solid var(--ink); border-radius: 4px; padding: 2px 8px; text-decoration: none; display: inline-flex; align-items: center; min-height: 32px; }
+@media (pointer: coarse) { .law { min-height: var(--target); padding-inline: 12px; } }   /* size by input, §L07 */
+.law:hover { background: var(--mark); color: var(--mark-ink); border-color: var(--mark-ink); }
+.pair { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+figure { margin: 0; display: grid; gap: var(--space-3); align-content: start; min-width: 0; }
+figure .shot { border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--sheet); }
+figure .shot.scroll { max-height: 34rem; overflow-y: auto; }
+figure .shot img { width: 100%; }
+figcaption { display: grid; gap: var(--space-1); font-size: 0.9375rem; color: var(--ink-soft); }
+figcaption strong { color: var(--ink); font-weight: 600; }
+.finding { display: flex; gap: var(--space-3); align-items: baseline; padding: var(--space-3) var(--space-4); border-left: 3px solid var(--ink); background: var(--sheet); border-radius: 0 var(--radius) var(--radius) 0; }
+.finding .label { flex: none; }
+.code-pair { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+pre { margin: 0; overflow-x: auto; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-4); font: 0.8125rem/1.6 var(--mono); }
+
+/* ---- both / still flagged */
+.columns { display: grid; gap: var(--space-8); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.columns h3 { font-size: 1.125rem; font-weight: 700; margin-bottom: var(--space-3); }
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.ticks li { display: grid; grid-template-columns: 20px 1fr; gap: var(--space-3); }
+.ticks li::before { content: ""; width: 10px; height: 10px; margin-top: 0.55em; border-radius: 50%; border: 2px solid var(--ink-soft); }
+.ticks.ok li::before { background: var(--pass); border-color: var(--pass); }
+
+/* ---- verdict */
+.verdict { background: var(--ink); color: var(--paper); border-radius: 16px; padding: var(--space-12) max(var(--space-6), 5vw); display: grid; gap: var(--space-4); }
+.verdict .label { color: var(--mark); }
+.verdict h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem); line-height: 1.05; }
+.verdict p { color: var(--paper); opacity: 0.86; font-size: 1.125rem; }
+
+footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid var(--rule); color: var(--ink-soft); font-size: 0.9375rem; display: grid; gap: var(--space-3); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="docket">
+  <a class="brand" href="https://github.com/BurgiSimon/UXL"><span class="seal" aria-hidden="true">§</span>UXL · UX Lawyer</a>
+  <nav aria-label="Page">
+    <a href="#exhibits">Exhibits</a>
+    <a href="#counts">Findings</a>
+    <a href="https://github.com/BurgiSimon/UXL">GitHub</a>
+  </nav>
+</header>
+
+<main>
+<div class="hero">
+  <div class="intro" style="display:grid; gap: var(--space-6)">
+    <p class="label">The Fernwheel case · UXL-DEMO-001 · 20 Oct 2026</p>
+    <h1>One prompt, two sessions, <mark>one difference.</mark></h1>
+    <p class="lede">We asked Claude Code to build a website for <strong>Fernwheel</strong>, a fictional e-bike subscription startup. Two fresh, separate sessions got the <strong>same prompt, the same model and the same tools</strong>. The only difference: Exhibit B had UXL installed as a project skill. The prompt never mentions UX.</p>
+  </div>
+  <figure class="prompt">
+    <span class="tab mono">Exhibit P · the prompt, verbatim</span>
+    <blockquote>We’re Fernwheel, a (fictional) e-bike subscription startup launching in Zurich, Berlin and Amsterdam. Members pay monthly (three plans from €39 to €89), and insurance, repairs and a replacement bike within 48 hours are included. Build our marketing website as a single self-contained index.html (inline CSS and JS, no build step; Google Fonts are fine, but no external images, so use CSS/SVG). It needs a homepage with our plans, a check whether we deliver to your postcode, and a form to book a free test ride. Make it stunning, and it has to work great on phones and desktop.</blockquote>
+  </figure>
+  <div class="facts">
+    <div class="fact">
+      <h2>Exhibit A · without UXL</h2>
+      <dl><dt>Time</dt><dd>6 min</dd><dt>Tool calls</dt><dd>23</dd><dt>Cost</dt><dd>$1.42</dd><dt>Skills used</dt><dd>none</dd></dl>
+    </div>
+    <div class="fact">
+      <h2>Exhibit B · with UXL</h2>
+      <dl><dt>Time</dt><dd>12 min</dd><dt>Tool calls</dt><dd>33</dd><dt>Cost</dt><dd>$2.91</dd><dt>Skills used</dt><dd>ux-lawyer, as its first action</dd></dl>
+    </div>
+  </div>
+</div>
+
+<section id="exhibits" aria-labelledby="exhibits-title">
+  <div class="head">
+    <p class="label">The exhibits · live</p>
+    <h2 id="exhibits-title">Both pages, exactly as the sessions wrote them</h2>
+    <p class="lede">These are the real, unedited files. Scroll inside each frame, try the postcode check (<span class="mono">8004</span>, <span class="mono">10437</span>, <span class="mono">1012 AB</span>) and book a ride.</p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Device">
+      <button type="button" data-mode="phone" aria-pressed="true">Phone · 390 px</button>
+      <button type="button" data-mode="desktop" aria-pressed="false">Desktop · 1440 px</button>
+    </div>
+    <div class="seg only-narrow" role="group" aria-label="Exhibit">
+      <button type="button" data-show="a" aria-pressed="true">Exhibit A</button>
+      <button type="button" data-show="b" aria-pressed="false">Exhibit B</button>
+    </div>
+  </div>
+  <div class="exhibits" data-show="a">
+    <article class="exhibit" data-key="a">
+      <header>
+        <h3><span class="mono">A</span>Without UXL</h3>
+        <span class="score bad" title="uxl_audit runtime score at 360, 390 and 1440 px">58 / 100</span>
+      </header>
+      <div class="frame" data-mode="phone"><div class="screen"><iframe title="Exhibit A: Fernwheel site built without UXL" src="fernwheel/without-uxl/index.html" width="390" height="780" loading="lazy"></iframe></div></div>
+      <a class="open" href="fernwheel/without-uxl/index.html" target="_blank" rel="noopener">Open Exhibit A full size ↗</a>
+    </article>
+    <article class="exhibit" data-key="b">
+      <header>
+        <h3><span class="mono">B</span>With UXL</h3>
+        <span class="score good" title="uxl_audit runtime score at 360, 390 and 1440 px">96 / 100</span>
+      </header>
+      <div class="frame" data-mode="phone"><div class="screen"><iframe title="Exhibit B: Fernwheel site built with UXL" src="fernwheel/with-uxl/index.html" width="390" height="780" loading="lazy"></iframe></div></div>
+      <a class="open" href="fernwheel/with-uxl/index.html" target="_blank" rel="noopener">Open Exhibit B full size ↗</a>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="evidence-title">
+  <div class="head">
+    <p class="label">The evidence</p>
+    <h2 id="evidence-title">What the scanners measured</h2>
+    <p class="lede">Both pages were scanned with UXL’s own tools after the sessions ended: <span class="mono">uxl_lint.py</span> on the source and <span class="mono">uxl_audit.mjs</span> in Chromium at 360, 390 and 1440 px.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Measure</th><th scope="col">Exhibit A · without</th><th scope="col">Exhibit B · with UXL</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Runtime audit score</th><td>58 / 100</td><td class="win">96 / 100</td></tr>
+        <tr><th scope="row">Runtime findings (critical · major · minor)</th><td>2 · 2 · 6</td><td class="win">0 · 0 · 3</td></tr>
+        <tr><th scope="row">Phone tap targets under 44 px</th><td>11 of 35 <span class="tag fail">9 under 24 px</span></td><td class="win">0 of 31</td></tr>
+        <tr><th scope="row">Distinct font sizes rendered</th><td>19–21</td><td class="win">11</td></tr>
+        <tr><th scope="row">Filled buttons in the first phone screen</th><td>2, same action in two styles</td><td class="win">1</td></tr>
+        <tr><th scope="row">Booking form</th><td>8 inputs at once</td><td class="win">2 steps, “Step 1 of 2”, tiles</td></tr>
+        <tr><th scope="row">Pending state while booking</th><td>none, instant success (backend left as a TODO)</td><td class="win">“Booking your ride…”, double taps blocked</td></tr>
+        <tr><th scope="row">Unfinished booking survives a reload</th><td>no</td><td class="win">yes</td></tr>
+        <tr><th scope="row">Static lint score</th><td>92</td><td>92</td></tr>
+        <tr><th scope="row">Largest paint (phone)</th><td>0.2 s</td><td>0.2 s</td></tr>
+        <tr><th scope="row">Laws cited in the source</th><td>0</td><td class="win">13 citations across 9 laws</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Scanner scores are heuristics, and this is one run per condition. Raw data: <a href="fernwheel/data.json">data.json</a>, <a href="fernwheel/reports/a-audit.md">audit A</a>, <a href="fernwheel/reports/b-audit.md">audit B</a>.</p>
+</section>
+
+<section id="counts" aria-labelledby="counts-title">
+  <div class="head">
+    <p class="label">The counts</p>
+    <h2 id="counts-title">Where the two pages differ, law by law</h2>
+    <p class="lede">At a glance both pages look launch-ready. Each count below names the law, shows the evidence from both exhibits, and states the finding.</p>
+  </div>
+  <div class="counts">
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 1</span><a class="law" href="https://lawsofux.com/fittss-law/">§L07 Fitts’s Law</a></div>
+        <h3>Footer links too small for a thumb</h3>
+        <p>On a phone, Exhibit A’s footer links are about 20 px tall and stacked tightly. That’s fine for a mouse and fiddly for a finger. Exhibit B gives every footer link a 44 px row. Exhibit A’s own hand-off promised “large tap targets”; the measurement says otherwise, which is why UXL measures instead of asking.</p>
+      </div>
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="fernwheel/screens/a-mobile-footer.png" width="780" height="1400" loading="lazy" alt="Exhibit A footer on a phone, with seven links outlined in red because they are under 44 pixels tall."></div>
+          <figcaption><strong>Exhibit A</strong><span>7 footer targets under 44 px, outlined in red.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot"><img src="fernwheel/screens/b-mobile-footer.png" width="780" height="1650" loading="lazy" alt="Exhibit B footer on a phone with evenly spaced links in 44 pixel rows and a Dark mode button."></div>
+          <figcaption><strong>Exhibit B</strong><span>0 targets under 44 px.</span></figcaption>
+        </figure>
+      </div>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A in violation (runtime audit: critical). Exhibit B compliant.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 2</span><a class="law" href="https://lawsofux.com/von-restorff-effect/">§L28 Von Restorff</a><a class="law" href="https://lawsofux.com/law-of-similarity/">§L15 Similarity</a><a class="law" href="https://lawsofux.com/mental-model/">§L17 Mental Model</a></div>
+        <h3>One action, one loud button</h3>
+        <p>Exhibit A shows the same action, booking a test ride, as a dark header button and a lime hero button. Next to them sits a dark, icon-only menu button: three heavy shapes compete in the first screen. Exhibit B reserves its single orange style for booking, keeps the secondary action outlined, and labels its menu “Menu”.</p>
+      </div>
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="fernwheel/screens/a-mobile.png" width="780" height="1688" loading="lazy" alt="Exhibit A first phone screen: headline Ride more. Own less., a dark Book a test ride button, a dark round menu button and a lime Book a free test ride button."></div>
+          <figcaption><strong>Exhibit A</strong><span>Two filled styles for one action, plus an unlabelled menu.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot"><img src="fernwheel/screens/b-mobile.png" width="780" height="1688" loading="lazy" alt="Exhibit B first phone screen: headline Your own e-bike, without the worries., one orange Book a free test ride button, an outlined See plans button and a labelled Menu button."></div>
+          <figcaption><strong>Exhibit B</strong><span>One primary action, a quiet secondary, a labelled menu.</span></figcaption>
+        </figure>
+      </div>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A dilutes its call to action. Exhibit B compliant.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 3</span><a class="law" href="https://lawsofux.com/chunking/">§L03 Chunking</a><a class="law" href="https://lawsofux.com/goal-gradient-effect/">§L09 Goal-Gradient</a><a class="law" href="https://lawsofux.com/hicks-law/">§L10 Hick’s Law</a></div>
+        <h3>Booking: eight inputs at once, or two short steps</h3>
+        <p>Exhibit A asks for name, email, phone, city, date, bike, time and consent in one form. Exhibit B splits booking into “Step 1 of 2” with a progress bar. City, bike and slot are large tiles with prices; contact details come second, next to a summary of the ride.</p>
+      </div>
+      <div class="pair">
+        <figure>
+          <div class="shot scroll" tabindex="0" aria-label="Exhibit A booking form, scrollable"><img src="fernwheel/screens/a-mobile-form-card.png" width="780" height="2082" loading="lazy" alt="Exhibit A booking form on a phone: full name, email, phone, city, preferred date, bike, time of day and a consent checkbox, then a lime Book my test ride button."></div>
+          <figcaption><strong>Exhibit A</strong><span>One long form. Scroll inside the image.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot scroll" tabindex="0" aria-label="Exhibit B booking form, scrollable"><img src="fernwheel/screens/b-mobile-form-card.png" width="780" height="2042" loading="lazy" alt="Exhibit B booking step 1 of 2 on a phone: progress bar, city chips, three bike cards with prices, day tiles, start time tiles and an orange Continue button."></div>
+          <figcaption><strong>Exhibit B</strong><span>Step 1 of 2, with choices as tappable tiles.</span></figcaption>
+        </figure>
+      </div>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A is acceptable but heavy. Exhibit B shows where the user is and what is left.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 4</span><a class="law" href="https://lawsofux.com/doherty-threshold/">§L06 Doherty Threshold</a><a class="law" href="https://lawsofux.com/zeigarnik-effect/">§L30 Zeigarnik</a></div>
+        <h3>What happens after the tap</h3>
+        <p>Exhibit A jumps straight to its success message and leaves the real request as a comment. Once a backend is connected, nothing tells the user that anything is happening. Exhibit B already shows a pending state, blocks double taps, and keeps an unfinished booking so a returning visitor can pick up where they left off.</p>
+      </div>
+      <div class="code-pair">
+        <figure>
+          <pre aria-label="Exhibit A submit handler, verbatim excerpt"><code>// TODO: send the booking to your backend, e.g. fetch('/api/test-rides', {method:'POST', body:new FormData(form)})
+form.hidden = true;
+success.classList.add('show');</code></pre>
+          <figcaption><strong>Exhibit A</strong><span>Submit handler, verbatim.</span></figcaption>
+        </figure>
+        <figure>
+          <pre aria-label="Exhibit B submit handler, verbatim excerpts"><code>btn.setAttribute('aria-busy', 'true');
+btn.innerHTML = '&lt;span class="spinner" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="btn-label"&gt;Booking your ride…&lt;/span&gt;';
+
+.btn[aria-busy="true"] { pointer-events: none; }   /* CSS */
+
+store.set('fw-draft', d);   // saveDraft()</code></pre>
+          <figcaption><strong>Exhibit B</strong><span>Submit handler, CSS and draft saving, verbatim excerpts.</span></figcaption>
+        </figure>
+      </div>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A has no feedback path. Exhibit B compliant.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 5</span><a class="law" href="https://lawsofux.com/law-of-similarity/">§L15 Similarity</a><a class="law" href="https://lawsofux.com/law-of-pragnanz/">§L14 Prägnanz</a></div>
+        <h3>A type scale, or nineteen sizes</h3>
+        <p>Exhibit A renders 19 to 21 different font sizes, including 12.5, 13.5, 14.5 and 15.5 px. Exhibit B uses 11, almost all from one scale. Fewer, deliberate sizes make the hierarchy easier to read.</p>
+      </div>
+      <p class="finding"><span class="label">Finding</span><span>Minor for both; noticeably tighter in Exhibit B.</span></p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="fair-title">
+  <div class="head">
+    <p class="label">For the record</p>
+    <h2 id="fair-title">What both got right, and what UXL still flags</h2>
+  </div>
+  <div class="columns">
+    <div>
+      <h3>Both exhibits</h3>
+      <ul class="ticks ok">
+        <li><span>Visible labels and inline, specific errors on every form (§L29).</span></li>
+        <li><span>A forgiving postcode check: 8004, 10437 and 1012 AB all work (§L24 Postel).</span></li>
+        <li><span>Three plans with one honest recommendation (§L02).</span></li>
+        <li><span>Reduced motion respected, fast first paint, no layout shift (§L06).</span></li>
+        <li><span>No fake urgency or pre-ticked extras (§L04).</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Still flagged in Exhibit B</h3>
+      <ul class="ticks">
+        <li><span>The linter counts 10 orange buttons across the long page. The session kept them on purpose: one per section, all leading to booking.</span></li>
+        <li><span>A 1.4 s bike roll-in on load (UXL’s limit for UI motion is 300 ms; this is decorative and once).</span></li>
+        <li><span>11 font sizes is still above the 6–8 UXL recommends.</span></li>
+        <li><span>The chat hand-off explained each choice but didn’t cite laws by §. The citations live in the code comments instead.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="verdict-title">
+  <div class="verdict">
+    <p class="label">Verdict</p>
+    <h2 id="verdict-title">Exhibit B.</h2>
+    <p>Both sessions produced a page that looks launch-ready. Exhibit B is the one that also holds up in a thumb’s reach: every target is tappable, one action leads, booking comes in two short steps, and taps get feedback. It took about twice the time and tokens, spent on checks that caught three real mobile bugs before hand-off.</p>
+  </div>
+</section>
+
+<section aria-labelledby="repro-title">
+  <div class="head">
+    <p class="label">Reproduce it</p>
+    <h2 id="repro-title">Run the case yourself</h2>
+    <p class="lede">Same prompt, two empty folders, one with UXL installed. Then let UXL’s scanners compare the results.</p>
+  </div>
+  <pre><code># Exhibit A: no skill
+mkdir a &amp;&amp; (cd a &amp;&amp; claude -p "$(cat PROMPT.txt)")
+
+# Exhibit B: same prompt, UXL installed as a project skill
+git clone https://github.com/BurgiSimon/UXL
+mkdir b &amp;&amp; UXL/install.sh --project b &amp;&amp; (cd b &amp;&amp; claude -p "$(cat PROMPT.txt)")
+
+# The evidence
+python3 UXL/tools/build_demo.py --without a --with b --prompt PROMPT.txt</code></pre>
+</section>
+</main>
+
+<footer>
+  <p>Fernwheel is a fictional company. Its prices, postcodes and hubs were invented by the two sessions. Both pages are published unedited.</p>
+  <p>Laws of UX by Jon Yablonski, <a href="https://lawsofux.com">lawsofux.com</a>. UXL is MIT-licensed: <a href="https://github.com/BurgiSimon/UXL">github.com/BurgiSimon/UXL</a>.</p>
+</footer>
+</div>
+
+<script>
+(() => {
+  const exhibits = document.querySelector(".exhibits");
+  const frames = [...document.querySelectorAll(".frame")];
+  const sizes = { phone: [390, 780], desktop: [1440, 900] };
+
+  function fit() {
+    for (const frame of frames) {
+      const screen = frame.querySelector(".screen");
+      const iframe = frame.querySelector("iframe");
+      const [w] = sizes[frame.dataset.mode];
+      screen.style.setProperty("--s", String(screen.clientWidth / w));
+      iframe.width = String(w);
+      iframe.height = String(sizes[frame.dataset.mode][1]);
+    }
+  }
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver(fit);
+    frames.forEach((f) => ro.observe(f.querySelector(".screen")));
+  } else {
+    window.addEventListener("resize", fit);
+  }
+  fit();
+
+  function press(group, attr, value) {
+    group.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset[attr] === value)));
+  }
+  document.querySelectorAll(".seg").forEach((group) => {
+    group.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+      if (button.dataset.mode) {
+        frames.forEach((f) => { f.dataset.mode = button.dataset.mode; });
+        press(group, "mode", button.dataset.mode);
+        fit();
+      }
+      if (button.dataset.show) {
+        exhibits.dataset.show = button.dataset.show;
+        press(group, "show", button.dataset.show);
+        fit();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

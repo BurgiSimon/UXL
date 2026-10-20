@@ -8,7 +8,7 @@ An Agent Skill and Claude Code plugin that makes Claude Code, Codex, Cursor, Gem
 design, build, audit and fix websites and web apps **for desktop and mobile** by applying the
 [Laws of UX](https://lawsofux.com). Every decision cites the law behind it, backed by evidence from static and runtime scanners.
 
-[Install](#install) · [Use](#use-it) · [The 30 laws](#the-30-laws) · [Scanners](#the-scanners) · [Benchmark](#benchmark) · [Contributing](CONTRIBUTING.md)
+[Demo](#demo-the-fernwheel-case) · [Install](#install) · [Use](#use-it) · [The 30 laws](#the-30-laws) · [Scanners](#the-scanners) · [Benchmark](#benchmark) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -33,6 +33,22 @@ The [Laws of UX](https://lawsofux.com) explain why these fail: Fitts, Hick, Jako
   Impact:   Frequent mis-taps on the most valuable action on the page
   Remedy:   min-height 44px, full-width below 640px (patch below)
 ```
+
+## Demo: the Fernwheel case
+
+One prompt, two fresh Claude Code sessions, one difference. We asked both sessions to *"build a stunning website for Fernwheel"*, a fictional e-bike subscription startup, with plans, a postcode check and a test-ride booking form, *"great on phones and desktop"*. Same model, same tools, and the prompt never mentions UX. Session B had UXL installed as a project skill and loaded it as its first action.
+
+| | Exhibit A · without UXL | Exhibit B · with UXL |
+|---|---|---|
+| First phone screen | <img src="docs/fernwheel/screens/a-mobile.png" width="260" alt="Exhibit A first phone screen"> | <img src="docs/fernwheel/screens/b-mobile.png" width="260" alt="Exhibit B first phone screen"> |
+| Footer on a phone (red = under 44 px) | <img src="docs/fernwheel/screens/a-mobile-footer.png" width="260" alt="Exhibit A footer with seven undersized links outlined"> | <img src="docs/fernwheel/screens/b-mobile-footer.png" width="260" alt="Exhibit B footer with 44 px link rows"> |
+| Runtime audit (360 / 390 / 1440 px) | 58 / 100 (2 critical, 2 major) | **96 / 100** (3 minor) |
+| Phone tap targets under 44 px | 11 of 35 (9 under 24 px) | **0 of 31** |
+| Booking | 8 inputs at once, no pending state | **"Step 1 of 2"**, tiles, pending state, resumable |
+| Font sizes rendered | 19–21 | **11** |
+| Time · cost | 6 min · $1.42 | 12 min · $2.91 |
+
+Both pages look launch-ready in a screenshot. Only one of them holds up under a thumb. **[See the full case with both pages live →](docs/index.html)** The showcase is in `docs/` (GitHub Pages-ready) and is built with `tools/build_demo.py`. It's one run per condition, so treat it as an illustration, not a statistic. The [benchmark](#benchmark) covers repeated evals.
 
 ## What you get
 

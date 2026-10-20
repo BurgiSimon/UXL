@@ -173,6 +173,13 @@ class Snippets(unittest.TestCase):
         rep = lint_snippet("a.css", ".toolbar .btn { height: 28px; }")
         self.assertIn("small-target", rules(rep))
 
+    def test_fetch_in_comment_is_not_async(self):
+        rep = lint_snippet("a.html", "<form id=f></form><script>f.onsubmit=()=>{ // TODO: fetch('/api/x')\n show(); }</script>")
+        self.assertNotIn("async-no-feedback", rules(rep))
+
+    def test_menu_toggle_ignored_by_audit_is_documented(self):
+        self.assertIn("isToggle", open(os.path.join(ROOT, "skills", "ux-lawyer", "scripts", "uxl_audit.mjs")).read())
+
     def test_list_rules(self):
         buf = io.StringIO()
         with redirect_stdout(buf):

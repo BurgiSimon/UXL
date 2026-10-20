@@ -9,6 +9,8 @@ Eval-driven refinements, from two skill-creator iterations (with vs. without ski
 - Target sizing follows the input type (`pointer: coarse`) rather than screen width. Labels must fit at 360px. Persisted UI state must not cause flashes or hydration mismatches. The hand-off respects the requested format and length.
 - Scanner accuracy: grouped navigation counts one choice per group; a repeated identical CTA is not competition; focus rings drawn via `:focus-within` and transitions are recognised; honeypot fields are ignored; postal codes are not forced to a numeric keyboard; icons inside buttons are not counted as targets. New optional 360px `small` viewport.
 - Fair trigger evaluator (`evals/trigger_eval.py`): 20/20 correct.
+- Demo, "The Fernwheel case" (`docs/`): the same prompt in two headless Claude Code sessions, with and without UXL. Both pages are published live, with scanner evidence, law-cited findings and `tools/build_demo.py` to reproduce it.
+- Auditor: menu toggles aren't counted as calls to action; focus inside iframes is skipped. Linter: `fetch` inside comments is ignored.
 
 - `ux-lawyer` Agent Skill with Build, Audit & Fix and Consult modes, plus the UXL statutes (numeric defaults backed by the laws).
 - 30 law references (one per Law of UX). Each has build rules for desktop and mobile, code patterns, an audit table and trade-offs.

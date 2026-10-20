@@ -879,8 +879,9 @@ def check_scripts(src: Source, out: Collector, project: dict):
 
     # async without feedback (component files only)
     if src.ext in (".jsx", ".tsx", ".vue", ".svelte", ".astro", ".js", ".ts", ".html", ".htm") and re.search(r"<[A-Za-z][\w.]*[\s>/]", text):
-        m = ASYNC_RE.search(text)
-        code_only = re.sub(r">([^<>{}]+)<", lambda mm: ">" + re.sub(r"[^\n]", " ", mm.group(1)) + "<", text)  # drop copy text
+        no_comments = re.sub(r"/\*.*?\*/|(?<![:\w\"'])//[^\n]*", lambda mm: re.sub(r"[^\n]", " ", mm.group(0)), text, flags=re.S)
+        m = ASYNC_RE.search(no_comments)
+        code_only = re.sub(r">([^<>{}]+)<", lambda mm: ">" + re.sub(r"[^\n]", " ", mm.group(1)) + "<", no_comments)  # drop copy text
         if m and not FEEDBACK_RE.search(code_only):
             is_server = re.search(r"export\s+default\s+async\s+function", text) and "use client" not in text
             if not (is_server and _has_loading_sibling(src.path)):
