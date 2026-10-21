@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Demo 3, "The Voxmere case" (`docs/voxmere/`): an award-hungry brief for a fictional deep-tech startup. Both sessions ran the awards plugin; session B also had UXL. It called the skill before writing markup, ran UXL's scanners before its first jury, struck a planned scarcity counter as "invented scarcity, UXL §L04", and used §L05/§L25 to turn down a jury request that would have hidden the phone headline. Both pages are live, with a blind awards jury, scanner evidence and an event-by-event trace of how B used UXL.
+- A film of the Voxmere case (`docs/voxmere/uxl-voxmere.mp4`, linked from the README). `video/` holds its source: `capture.mjs` records both pages frame by frame under a virtual clock (so GSAP, Lenis and WebGL move at video speed), and a Remotion project cuts the footage into scenes, one per law.
+- `tools/demo_evidence_voxmere.mjs`: phone captures of the ship-to choice and summary, the checkout submitted empty, a declined card and the confirmation, plus where keyboard focus lands.
 - Demo 2, "The Lumenvale case" (`docs/lumenvale/`): UXL working alongside the awards plugin. Both sessions ran the awards pipeline; session B also called UXL before building and ran the `ux-auditor` agent before shipping. Both pages are live, with a blind awards jury, scanner evidence and the UX case file traced into the shipped code.
 - `tools/build_demo.py`: `--slug` for more than one demo; records sub-agents; sums duration, turns and output tokens across all result events of a session that background tasks woke more than once.
 - `tools/demo_evidence_lumenvale.mjs`: phone captures of the nights list, the booking dialog and the confirmation, plus where keyboard focus lands after booking.

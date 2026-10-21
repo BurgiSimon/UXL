@@ -1,0 +1,376 @@
+{
+  "prompt": "We're Voxmere, a (fictional) deep-tech startup from Lausanne. We've built the first display that shows true 3D holograms inside a solid block of glass: you can walk around it and see the image from every side, with no headset and no glasses. Our first product is the Voxmere Cube, in two sizes: Cube 10 (10 cm, CHF 1,290) and Cube 20 (20 cm, CHF 2,490), each in Clear or Smoke glass. You reserve one with a CHF 100 deposit that's fully refundable until it ships; the rest is charged when your Cube ships. The first batch of 500 Cubes ships in March 2027 to Switzerland and the EU; the UK and the US follow in June 2027, and so does every reservation made after the first batch is gone.\n\nOur website is the first hologram most people will ever see from us, so it has to be as far ahead as the product. We want it to win Awwwards Site of the Day and FWA of the Day: push it, be experimental, make it the site other designers share. Build it as a single self-contained index.html: inline all CSS and JS. Libraries like GSAP, Lenis or Three.js are fine, but install them from npm and inline them, because the page can't load anything from a CDN. Google Fonts are OK, but no external images, so draw everything with CSS, SVG, canvas or WebGL. It should tell the story of how a block of glass learned to hold light, let people explore the Cube and compare the two sizes, and let them reserve one: choose size and finish, and see the price, the deposit and when it ships to them. We don't have a payment backend yet, so fake the payment step. It has to work great on phones and desktop.",
+  "exhibits": {
+    "a": {
+      "label": "without-uxl",
+      "lint": {
+        "score": 100,
+        "counts": {
+          "critical": 0,
+          "major": 0,
+          "minor": 0
+        },
+        "findings": []
+      },
+      "audit": {
+        "score": 86,
+        "counts": {
+          "critical": 0,
+          "major": 2,
+          "minor": 3
+        },
+        "viewports": {
+          "small": {
+            "findings": [
+              {
+                "rule": "tap-target-size",
+                "severity": "major",
+                "message": "1 of 34 interactive targets are smaller than 44×44px",
+                "evidence": "div#page > header.topbar > button.dial-toggle \"0° Glass , open the chapter index\" 41×44",
+                "citation": "§L07 Fitts's Law"
+              },
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "11 distinct font sizes in use",
+                "evidence": "12, 13, 14, 15, 16, 17, 18, 20, 32, 36, 62.64",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 34,
+              "smallTargets": 1,
+              "scrollWidth": 360,
+              "bodyFontSize": 17,
+              "fontSizes": [
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                20,
+                32,
+                36,
+                62.64
+              ],
+              "fontFamilies": [
+                "mona sans"
+              ],
+              "textColors": 3,
+              "filledCtasAboveFold": 0,
+              "h1": 1,
+              "perf": {
+                "lcp": 112,
+                "cls": 0.012380850022319617,
+                "fcp": 112,
+                "ttfb": 0.40000000037252903,
+                "domContentLoaded": 147,
+                "loadMs": 1333
+              }
+            }
+          },
+          "mobile": {
+            "findings": [
+              {
+                "rule": "tap-target-size",
+                "severity": "major",
+                "message": "1 of 34 interactive targets are smaller than 44×44px",
+                "evidence": "div#page > header.topbar > button.dial-toggle \"0° Glass , open the chapter index\" 41×44",
+                "citation": "§L07 Fitts's Law"
+              },
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "11 distinct font sizes in use",
+                "evidence": "12, 13, 14, 15, 16, 17, 18, 20, 32, 36, 67.86",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 34,
+              "smallTargets": 1,
+              "scrollWidth": 390,
+              "bodyFontSize": 17,
+              "fontSizes": [
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                20,
+                32,
+                36,
+                67.86
+              ],
+              "fontFamilies": [
+                "mona sans"
+              ],
+              "textColors": 3,
+              "filledCtasAboveFold": 0,
+              "h1": 1,
+              "perf": {
+                "lcp": 164,
+                "cls": 0,
+                "fcp": 164,
+                "ttfb": 0.09999999962747097,
+                "domContentLoaded": 152.5,
+                "loadMs": 1331
+              }
+            }
+          },
+          "desktop": {
+            "findings": [
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "11 distinct font sizes in use",
+                "evidence": "12, 13, 14, 15, 16, 17, 18, 20, 24.0005, 63.9994, 160",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 39,
+              "smallTargets": 0,
+              "scrollWidth": 1440,
+              "bodyFontSize": 17,
+              "fontSizes": [
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                20,
+                24.0005,
+                63.9994,
+                160
+              ],
+              "fontFamilies": [
+                "mona sans"
+              ],
+              "textColors": 3,
+              "navChoices": 6,
+              "filledCtasAboveFold": 0,
+              "h1": 1,
+              "perf": {
+                "lcp": 124,
+                "cls": 0.026289841054071287,
+                "fcp": 124,
+                "ttfb": 0.10000000055879354,
+                "domContentLoaded": 152.70000000018626,
+                "loadMs": 1333
+              },
+              "focusChecked": 14
+            }
+          }
+        }
+      },
+      "session": {
+        "tool_calls": 436,
+        "skills_used": [
+          "awards:craft",
+          "awards:concept",
+          "awards:system",
+          "awards:structure",
+          "awards:stack",
+          "awards:motion",
+          "awards:webgl",
+          "awards:jury",
+          "awards:ship",
+          "awards:jury"
+        ],
+        "agents_used": [],
+        "duration_s": 6997,
+        "turns": 232,
+        "cost_usd": 36.326932599999964,
+        "output_tokens": 341661,
+        "final_message": "I've built the Voxmere site as one self-contained `index.html`: 890 KB, 311 KB gzipped. The CSS, the Mona Sans font (from npm) and all scripts are inline, including GSAP, Lenis and Three.js, so it loads nothing external.\n\nThe idea: **the picture has a back.** The page is one walk around a single Smoke-glass Cube. Seen from the front, the light inside reads GLASS. Turn it 90° by drag, arrow keys or touch, and it reads LIGHT, because the letters only exist in volume. The top navigation is a 0°–360° degree scale, and scrolling the page walks you around the object.\n\nChapters in order:\n- **Hero:** a museum-style object label with the price and the Reserve button.\n- **The block:** the empty glass.\n- **The light:** the page goes dark and a jellyfish made of light comes apart into the slices it's drawn in.\n- **Walk around it:** four pictures (the two words, Lake Geneva's basin, a nautilus, a moon jellyfish), each turnable to see its back.\n- **Two sizes:** both Cubes drawn to scale on a ruler, plus a comparison table.\n- **Reserve:**\n  - choose size, glass and country;\n  - see price, the CHF 100 deposit, the balance due at shipping and your ship month (March or June 2027, following your batch rules);\n  - preview the Cube in daylight or evening light;\n  - pay in a clearly marked test-mode sheet, then get a receipt.\n- **404:** \"404°: more than a full lap.\"\n\nWithout WebGL, a CSS-3D Cube and all text and buttons stay usable. Reduced motion is honoured.\n\n**Independent jury (round 2, verbatim):**\n```\ndisposition: ship\nDesign 7.8 · Usability 7.7 · Creativity 8.4 · Content 8.2 — weighted 7.93\n```\n- Developer sub-scores: animation 8.4, performance 8.0, responsive 7.8, accessibility 8.4, code 8.3.\n- What a visitor remembers an hour later: *\"A dark glass block standing in the middle of the headline with the word GLASS glowing orange inside it, under a menu that is a 0° to 360° ruler you turn by dragging the glass.\"*\n- The jury found nothing traceable to a known site, and nothing that reads as machine-generated.\n\n**Not marked shipped yet.** After that verdict I applied its four remaining phone and theme-flip fixes. The audit is still clean and fresh captures show no errors, but no jury has reviewed those changes. The process caps a build at two jury rounds unless you ask for more, so it's yours to say whether to run a third. Four minor items the jury raised are still open:\n- the 404 footer shows the \"laps walked\" sentence;\n- two forms of zero appear in the price rows;\n- small misalignments in the size drawing;\n- floor haze outside the evening preview.\n\n**Measured:**\n- Main script 60 KB gzipped; the 3D layer is 141 KB and only starts after the page has drawn.\n- One font file; no images or 3D model files.\n- Throttled LCP (Slow-4G emulation, 4× CPU slowdown) is 1.4 s on desktop and 1.1 s on a phone.\n- Zero console errors.\n\n**What you need to supply or replace:**\n- Every spec I invented, beyond your sizes, prices, finishes, deposit and ship dates: point counts, weights, power, annealing days, 30 redraws a second, the slices, the laser process.\n- The \"123 of 500 places left\" counter, which is also made up.\n- A real payment provider in place of the test sheet.\n- At hosting time: a PNG share image (the current one is inline and social sites ignore it), a canonical URL, `robots.txt` and a sitemap.\n- I didn't state shipping or tax costs because your brief didn't give them.\n\nHeadless tests prove correctness, not speed. One pass on a real mid-range phone is still owed, to check frame rate and the 120 Hz turn.\n\nEdit in `src/` and run `node build.mjs` to regenerate `index.html`.\n\nFiles are in `/tmp/claude-0/-home-user-UXL/c0811b7c-8206-595e-99d5-b1383002bdd1/scratchpad/demo3-runs/without-uxl/`:\n- `index.html`\n- `AWARDS.md`\n- `DESIGN.md`\n- `build.mjs`\n- `.awards/jury/2026-10-21.md`\n- `.awards/jury/2026-10-21-verdict.md`\n- `.awards/ship/2026-10-21.md`\n- `.awards/captures/20261021T083646-ship2/manifest.json`",
+        "laws_cited": []
+      },
+      "bytes": 911791
+    },
+    "b": {
+      "label": "with-uxl",
+      "lint": {
+        "score": 100,
+        "counts": {
+          "critical": 0,
+          "major": 0,
+          "minor": 0
+        },
+        "findings": []
+      },
+      "audit": {
+        "score": 96,
+        "counts": {
+          "critical": 0,
+          "major": 0,
+          "minor": 3
+        },
+        "viewports": {
+          "small": {
+            "findings": [
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "9 distinct font sizes in use",
+                "evidence": "12, 14, 15, 16, 17, 18, 22, 36, 56",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 25,
+              "smallTargets": 0,
+              "scrollWidth": 360,
+              "bodyFontSize": 16,
+              "fontSizes": [
+                12,
+                14,
+                15,
+                16,
+                17,
+                18,
+                22,
+                36,
+                56
+              ],
+              "fontFamilies": [
+                "mona sans"
+              ],
+              "textColors": 5,
+              "navChoices": 1,
+              "filledCtasAboveFold": 1,
+              "h1": 1,
+              "perf": {
+                "lcp": 116,
+                "cls": 0,
+                "fcp": 116,
+                "ttfb": 0.09999999962747097,
+                "domContentLoaded": 130.09999999962747,
+                "loadMs": 1795
+              }
+            }
+          },
+          "mobile": {
+            "findings": [
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "9 distinct font sizes in use",
+                "evidence": "12, 14, 15, 16, 17, 18, 22, 36, 56",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 25,
+              "smallTargets": 0,
+              "scrollWidth": 390,
+              "bodyFontSize": 16,
+              "fontSizes": [
+                12,
+                14,
+                15,
+                16,
+                17,
+                18,
+                22,
+                36,
+                56
+              ],
+              "fontFamilies": [
+                "mona sans"
+              ],
+              "textColors": 5,
+              "navChoices": 1,
+              "filledCtasAboveFold": 1,
+              "h1": 1,
+              "perf": {
+                "lcp": 192,
+                "cls": 0,
+                "fcp": 192,
+                "ttfb": 0.09999999962747097,
+                "domContentLoaded": 141.09999999962747,
+                "loadMs": 1864
+              }
+            }
+          },
+          "desktop": {
+            "findings": [
+              {
+                "rule": "font-sprawl",
+                "severity": "minor",
+                "message": "10 distinct font sizes in use",
+                "evidence": "12, 15, 16, 17, 18.72, 20, 20.96, 23, 27.9994, 63.9994, 158.4",
+                "citation": "§L15 Law of Similarity, §L14 Law of Prägnanz, §L01 Aesthetic-Usability Effect"
+              }
+            ],
+            "metrics": {
+              "targets": 30,
+              "smallTargets": 0,
+              "scrollWidth": 1440,
+              "bodyFontSize": 18.72,
+              "fontSizes": [
+                12,
+                15,
+                16,
+                17,
+                18.72,
+                20,
+                20.96,
+                23,
+                27.9994,
+                63.9994,
+                158.4
+              ],
+              "fontFamilies": [
+                "mona sans"
+              ],
+              "textColors": 6,
+              "navChoices": 5,
+              "filledCtasAboveFold": 1,
+              "h1": 1,
+              "perf": {
+                "lcp": 176,
+                "cls": 0.0007773276748971194,
+                "fcp": 176,
+                "ttfb": 0,
+                "domContentLoaded": 116.79999999981374,
+                "loadMs": 1878
+              },
+              "focusChecked": 13
+            }
+          }
+        }
+      },
+      "session": {
+        "tool_calls": 403,
+        "skills_used": [
+          "awards:craft",
+          "awards:concept",
+          "awards:system",
+          "awards:structure",
+          "uxl:ux-lawyer",
+          "awards:stack",
+          "awards:motion",
+          "awards:webgl",
+          "awards:jury",
+          "awards:jury",
+          "awards:ship"
+        ],
+        "agents_used": [],
+        "duration_s": 7077,
+        "turns": 220,
+        "cost_usd": 37.28260980000002,
+        "output_tokens": 317017,
+        "final_message": "I've built the Voxmere site as one self-contained `index.html`, about 1 MB (327 KB gzipped). Every font, style, script and the WebGL code is inside it, and it requests nothing from the network. A matching `404.html` sits beside it.\n\n**The idea:** the page is a turntable. A glass cube sits on a ring marked in degrees, and scrolling turns it a full 360°.\n- **The headline:** \"Light, held.\" sits behind the glass and visibly bends through it.\n- **The story:** a window holds no light. A picture on a flat plate becomes a line when turned to 90°. The Cube's image still has a back at 180°.\n- **Turn it yourself:** a dark \"Smoke\" chapter where you turn the cube by drag, swipe, arrow keys or ±45° buttons. You can switch what it shows (a mountain, a fossil shell, moving planets) and preview Clear or Smoke glass.\n- **Sizes:** Cube 10 and Cube 20 at true relative scale beside a bank card, with a spec table.\n- **Navigation:** the degree marks along the bottom are the chapter menu, with a needle showing where you are.\n- **Colour:** the light ground is deliberate, since the claim is that the image reads in a daylit room. The only colour is helium-neon laser red, used for the light and the Reserve button.\n\n**Reserving:** pick size, glass and region, and the page shows the price, CHF 100 due today, the balance due at shipping, and the ship month for that region. Payment is a demo screen that says so. Card number 4000 0000 0000 0002 shows a declined card, and the confirmation gives a reference number and what happens next. The choice is remembered on the device, and a reservation can be cancelled with an undo.\n\n**How it scored:** two jury rounds. The opening screen passed on its own (ship, 7.77 mean), and the full site came back as:\n\n> disposition: fix\n> Design 7.6 · Usability 7.8 · Creativity 8.2 · Content 8.1 — weighted 7.83\n\nThat is above the 7.2 bar for Awwwards \"Site of the Day\". The fix verdict was because the final screen was cut off on desktop and phone. I applied all eight requested fixes and confirmed them on fresh screenshots. \"Shipped\" stays unticked until one more jury check confirms them; the method allows that only if you ask, so say the word and I'll run it. In its memory test, the jury described \"a glass cube on a degree-marked turntable that bends the word 'held' through itself\". It could not name a site this copies.\n\n**Checks:**\n- **Audit:** 0 findings on the source and on the built file.\n- **UX audit:** 96/100 with 0 major findings, up from 80/100.\n- **Screenshots:** 73 across desktop, phone, reduced motion and no-WebGL, with 0 errors.\n- **Reservation:** tested end to end in a browser, including the declined card.\n- **Load speed:** main content appears in 1.4 s on desktop and 1.1 s on phone, on a throttled mobile connection (budget 2.5 s).\n\n**Decisions I made without asking you:**\n- **Invented specs:** points of light, weights, power and the mechanism (\"two infrared beams cross\") are invented. They're all listed as synthetic in `AWARDS.md`; swap in real numbers when you have them.\n- **No \"units left\" counter:** a live count of the 500 would be invented urgency. The page states the rule instead: first 500 ship March 2027 to Switzerland and the EU, later reservations and UK/US ship June 2027.\n- **Phone headline below the cube:** the jury wanted it behind the glass on phones too, but at that size the glass made it unreadable, so the bending stays a desktop moment.\n- **Fonts:** Mona Sans, taken from npm and embedded rather than linked from Google.\n- **Contact address:** `hello@voxmere.ch` in the footer is a placeholder; replace it.\n\n**Still to check:**\n- **On a real phone:** speed of the glass effect and how the swipe feels.\n- **When hosted:** the canonical URL, sitemap and an absolute link-preview image URL all need your domain. `og.png` and `robots.txt` are already in `release/`.\n\nIf you want a shareable link, I can publish the page as a private artifact.\n\nFiles are in `/tmp/claude-0/-home-user-UXL/c0811b7c-8206-595e-99d5-b1383002bdd1/scratchpad/demo3-runs/with-uxl/`:\n- release/index.html\n- release/404.html\n- AWARDS.md\n- .awards/jury/2026-10-21-2.md\n- .awards/ship/2026-10-21.md",
+        "laws_cited": []
+      },
+      "bytes": 1065100
+    }
+  }
+}
