@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Voxmere Case</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="An award-hungry deep-tech client, two Claude Code sessions with the awards plugin, one also with UXL (UX Lawyer). Live pages, a blind awards jury, scanner evidence and the laws that changed the code.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Libre+Caslon+Display&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Metric-matched stand-in while Public Sans loads, so the swap doesn't move the layout (§L06).
+   Overrides as measured with fontTools against Arial / Liberation Sans by Exhibit B's session. */
+@font-face {
+  font-family: "Public Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  size-adjust: 104.6%; ascent-override: 90.8%; descent-override: 21.5%; line-gap-override: 0%;
+}
+/* Layout: case file no. 3, same system as the Fernwheel and Lumenvale cases. Docket strip, the prompt as Exhibit P, the film,
+   the two live exhibits, the scoreboard, the two pipelines side by side, then one count per law that changed the code. */
+:root {
+  --paper: #f2f4f9;
+  --sheet: #ffffff;
+  --ink: #121a2c;
+  --ink-soft: #4a5571;
+  --rule: #d6dce8;
+  --mark: #ffe25a;
+  --mark-ink: #1d1a05;
+  --pass: #0b7149;  --pass-bg: #e2f3ea;
+  --fail: #b0271f;  --fail-bg: #fbe8e5;
+  --warn: #855600;  --warn-bg: #fcf0d9;
+  --bezel: #0b0f1a;
+  --display: "Libre Caslon Display", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --body: "Public Sans", "Public Sans Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius: 10px;
+  --target: 44px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d1220; --sheet: #151c2f; --ink: #e8ecf6; --ink-soft: #a6afc6; --rule: #2b3550;
+    --mark: #ead04a; --mark-ink: #1d1a05;
+    --pass: #56cf9c; --pass-bg: #12291f; --fail: #ff8f85; --fail-bg: #3a1714; --warn: #f2b84d; --warn-bg: #33240b;
+    --bezel: #04060c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1220; --sheet: #151c2f; --ink: #e8ecf6; --ink-soft: #a6afc6; --rule: #2b3550;
+  --mark: #ead04a; --mark-ink: #1d1a05;
+  --pass: #56cf9c; --pass-bg: #12291f; --fail: #ff8f85; --fail-bg: #3a1714; --warn: #f2b84d; --warn-bg: #33240b;
+  --bezel: #04060c; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; max-width: 65ch; text-wrap: pretty; }
+mark { background: linear-gradient(transparent 52%, var(--mark) 52%, var(--mark) 90%, transparent 90%); color: inherit; padding: 0 0.08em; }
+.wrap { max-width: 1180px; margin-inline: auto; }
+.mono { font-family: var(--mono); font-size: 0.8125rem; letter-spacing: 0.02em; }
+.label { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+
+/* ---- docket strip */
+.docket { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-6);
+  padding-block: var(--space-4); border-bottom: 1px solid var(--rule); }
+.brand { display: inline-flex; align-items: center; gap: var(--space-3); min-height: var(--target); font-weight: 700; text-decoration: none; }
+.seal { display: inline-grid; place-items: center; width: 36px; height: 36px; border: 1.5px solid var(--ink); border-radius: 50%; font-family: var(--display); font-size: 1.25rem; line-height: 1; }
+.docket nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); align-items: center; }
+.docket nav a { display: inline-flex; align-items: center; min-height: var(--target); }
+
+/* ---- hero */
+.hero { display: grid; gap: var(--space-8); padding-block: var(--space-12) var(--space-12); }
+.hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.5rem, 1.6rem + 4.4vw, 5rem); line-height: 1.02; letter-spacing: -0.01em; max-width: 15ch; }
+.lede { font-size: 1.1875rem; color: var(--ink-soft); }
+.lede strong { color: var(--ink); font-weight: 600; }
+.prompt { position: relative; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-6); display: grid; gap: var(--space-3); margin: 0; }
+.prompt blockquote { margin: 0; font-size: 1.0625rem; line-height: 1.65; }
+.prompt .tab { position: absolute; top: -12px; left: var(--space-6); background: var(--ink); color: var(--paper); padding: 2px 10px; border-radius: 4px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-4); }
+.fact { border-top: 2px solid var(--ink); padding-top: var(--space-3); display: grid; gap: var(--space-2); align-content: start; }
+.fact h2 { font-family: var(--body); font-size: 1.0625rem; font-weight: 700; }
+.fact dl { display: grid; grid-template-columns: auto 1fr; gap: 2px var(--space-4); margin: 0; font-variant-numeric: tabular-nums; }
+.fact dt { color: var(--ink-soft); }
+.fact dd { margin: 0; font-weight: 500; }
+@media (min-width: 960px) { .hero { grid-template-columns: 1.15fr 1fr; align-items: start; column-gap: var(--space-12); } .hero > .intro { grid-row: span 2; } }
+
+/* ---- section heads */
+section { padding-block: var(--space-12); border-top: 1px solid var(--rule); }
+.head { display: grid; gap: var(--space-3); margin-bottom: var(--space-8); }
+.head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 1.5rem + 2vw, 3rem); line-height: 1.08; }
+
+/* ---- exhibits viewer */
+.controls { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); align-items: center; margin-bottom: var(--space-6); }
+.seg { display: inline-flex; padding: 3px; gap: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--sheet); }
+.seg button { font: 600 0.9375rem/1 var(--body); color: var(--ink-soft); background: transparent; border: 0; border-radius: 999px;
+  min-height: var(--target); padding: 0 var(--space-4); cursor: pointer; transition: background-color 150ms ease-out, color 150ms ease-out; }
+.seg button[aria-pressed="true"] { background: var(--mark); color: var(--mark-ink); }
+.seg button:hover:not([aria-pressed="true"]) { color: var(--ink); }
+.only-narrow { display: none; }
+.exhibits { display: grid; gap: var(--space-8); grid-template-columns: 1fr 1fr; }
+.exhibit { display: grid; gap: var(--space-3); align-content: start; min-width: 0; }
+.exhibit header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-2) var(--space-4); }
+.exhibit h3 { font-size: 1.125rem; font-weight: 700; }
+.exhibit h3 .mono { font-weight: 500; color: var(--ink-soft); margin-right: var(--space-2); }
+.score { display: inline-flex; align-items: center; gap: var(--space-2); font-variant-numeric: tabular-nums; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+.score.mid { background: var(--warn-bg); color: var(--warn); }
+.score.good { background: var(--pass-bg); color: var(--pass); }
+.frame { margin-inline: auto; width: 100%; }
+.frame[data-mode="phone"] { max-width: 340px; background: var(--bezel); border-radius: 44px; padding: 12px; box-shadow: 0 24px 48px -24px rgb(10 14 26 / 0.45); }
+.frame[data-mode="desktop"] { background: var(--bezel); border-radius: 12px; padding: 30px 8px 8px; position: relative; box-shadow: 0 24px 48px -24px rgb(10 14 26 / 0.45); }
+.frame[data-mode="desktop"]::before { content: ""; position: absolute; top: 11px; left: 14px; width: 8px; height: 8px; border-radius: 50%; background: #ff5f57; box-shadow: 14px 0 0 #febc2e, 28px 0 0 #28c840; }
+.screen { position: relative; width: 100%; overflow: hidden; background: var(--bezel); }
+.frame:focus-within { outline: 3px solid var(--mark); outline-offset: 4px; }   /* keyboard focus inside a live exhibit */
+.frame[data-mode="phone"] .screen { aspect-ratio: 390 / 780; border-radius: 32px; }
+.frame[data-mode="desktop"] .screen { aspect-ratio: 1440 / 900; border-radius: 4px; }
+.screen iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; transform: scale(var(--s, 1)); background: var(--bezel); }
+.exhibit .open { justify-self: start; display: inline-flex; align-items: center; min-height: var(--target); font-weight: 600; }
+@media (max-width: 899px) {
+  .only-narrow { display: inline-flex; }
+  .exhibits { grid-template-columns: 1fr; }
+  .exhibits[data-show="a"] .exhibit[data-key="b"], .exhibits[data-show="b"] .exhibit[data-key="a"] { display: none; }
+}
+
+/* ---- tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet); }
+.table-wrap + .table-wrap, .note + .table-wrap { margin-top: var(--space-6); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 560px; }
+caption { text-align: left; padding: var(--space-4) var(--space-4) 0; font-weight: 700; }
+caption .mono { display: block; font-weight: 400; color: var(--ink-soft); margin-top: 2px; }
+th, td { text-align: left; padding: 14px var(--space-4); border-bottom: 1px solid var(--rule); vertical-align: top; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+thead th { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; }
+tbody th { font-weight: 500; width: 40%; }
+td.win { font-weight: 700; }
+tr.total th, tr.total td { border-top: 2px solid var(--ink); }
+.tag { display: inline-block; margin-left: var(--space-2); font-family: var(--mono); font-size: 0.75rem; padding: 1px 6px; border-radius: 4px; vertical-align: 1px; }
+.tag.fail { background: var(--fail-bg); color: var(--fail); }
+.tag.warn { background: var(--warn-bg); color: var(--warn); }
+.tag.pass { background: var(--pass-bg); color: var(--pass); }
+.note { margin-top: var(--space-3); color: var(--ink-soft); font-size: 0.9375rem; }
+
+/* ---- pipelines: the order of skill calls is the information */
+.tracks { display: grid; gap: var(--space-6); }
+.track { display: grid; gap: var(--space-3); background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-4) var(--space-4) var(--space-6); }
+.track h3 { font-size: 1.0625rem; font-weight: 700; }
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-3) 26px; }
+.steps li { position: relative; display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 6px;
+  font-family: var(--mono); font-size: 0.8125rem; background: var(--paper); }
+.steps li:not(:last-child)::after { content: "→"; position: absolute; right: -20px; color: var(--ink-soft); font-family: var(--body); }
+.steps li.uxl { background: var(--mark); color: var(--mark-ink); border-color: var(--mark-ink); font-weight: 500; }
+.steps li .sub { margin-left: 6px; opacity: 0.75; }
+.key { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); align-items: center; color: var(--ink-soft); font-size: 0.9375rem; }
+.key span::before { content: ""; display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: var(--space-2); vertical-align: -2px; border: 1px solid var(--rule); background: var(--paper); }
+.key span.k-uxl::before { background: var(--mark); border-color: var(--mark-ink); }
+.columns { display: grid; gap: var(--space-8); grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); margin-top: var(--space-8); }
+.columns h3 { font-size: 1.125rem; font-weight: 700; margin-bottom: var(--space-3); }
+.columns p + p, .columns p + blockquote, .columns blockquote + p { margin-top: var(--space-3); }
+
+/* ---- counts */
+.counts { display: grid; gap: var(--space-16); }
+.count { display: grid; gap: var(--space-6); }
+.count-head { display: grid; gap: var(--space-3); }
+.count-head h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem); line-height: 1.12; }
+.laws { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.law { font-family: var(--mono); font-size: 0.8125rem; border: 1px solid var(--ink); border-radius: 4px; padding: 2px 8px; text-decoration: none; display: inline-flex; align-items: center; min-height: 32px; }
+@media (pointer: coarse) { .law { min-height: var(--target); padding-inline: 12px; } }   /* size by input, §L07 */
+.law:hover { background: var(--mark); color: var(--mark-ink); border-color: var(--mark-ink); }
+.quote { margin: 0; padding: var(--space-4); border-left: 3px solid var(--mark); background: var(--sheet); border-radius: 0 var(--radius) var(--radius) 0; display: grid; gap: var(--space-2); }
+.quote p { font-size: 1.0625rem; }
+.pair { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+figure { margin: 0; display: grid; gap: var(--space-3); align-content: start; min-width: 0; }
+figure .shot { border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--bezel); }
+figure .shot.scroll { max-height: 34rem; overflow-y: auto; }
+figure .shot img { width: 100%; }
+figcaption { display: grid; gap: var(--space-1); font-size: 0.9375rem; color: var(--ink-soft); }
+figcaption strong { color: var(--ink); font-weight: 600; }
+.finding { display: flex; gap: var(--space-3); align-items: baseline; padding: var(--space-3) var(--space-4); border-left: 3px solid var(--ink); background: var(--sheet); border-radius: 0 var(--radius) var(--radius) 0; }
+.finding .label { flex: none; }
+pre { margin: 0; overflow-x: auto; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-4); font: 0.8125rem/1.6 var(--mono); }
+
+/* ---- for the record */
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.ticks li { display: grid; grid-template-columns: 20px 1fr; gap: var(--space-3); }
+.ticks li::before { content: ""; width: 10px; height: 10px; margin-top: 0.55em; border-radius: 50%; border: 2px solid var(--ink-soft); }
+.ticks.ok li::before { background: var(--pass); border-color: var(--pass); }
+
+/* ---- verdict */
+.verdict { background: var(--ink); color: var(--paper); border-radius: 16px; padding: var(--space-12) max(var(--space-6), 5vw); display: grid; gap: var(--space-4); }
+.verdict .label { color: var(--mark); }
+.verdict h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem); line-height: 1.05; }
+.verdict p { color: var(--paper); opacity: 0.86; font-size: 1.125rem; }
+
+/* ---- the film */
+.film { margin: 0; display: grid; gap: var(--space-3); }
+.film video { width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: var(--radius); background: var(--bezel); display: block; }
+
+footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid var(--rule); color: var(--ink-soft); font-size: 0.9375rem; display: grid; gap: var(--space-3); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="docket">
+  <a class="brand" href="https://github.com/BurgiSimon/UXL"><span class="seal" aria-hidden="true">§</span>UXL · UX Lawyer</a>
+  <nav aria-label="Page">
+    <a href="#exhibits">Exhibits</a>
+    <a href="#teamwork">How they worked together</a>
+    <a href="#counts">Findings</a>
+    <a href="../index.html">Case 1: Fernwheel</a>
+    <a href="../lumenvale/index.html">Case 2: Lumenvale</a>
+    <a href="https://github.com/BurgiSimon/UXL">GitHub</a>
+  </nav>
+</header>
+
+<main>
+<div class="hero">
+  <div class="intro" style="display:grid; gap: var(--space-6)">
+    <p class="label">The Voxmere case · UXL-DEMO-003 · 21 Oct 2026</p>
+    <h1>Award briefs invite tricks. <mark>UXL turned two of them down.</mark></h1>
+    <p class="lede">Two fresh Claude Code sessions got the same prompt: a site for <strong>Voxmere</strong>, a fictional deep-tech startup whose glass cube holds a true 3D image, and whose brief asks outright for Awwwards Site of the Day: “push it, be experimental”. Both ran the same model at effort xhigh with the <strong>awards</strong> plugin. Exhibit B also had <strong>UXL</strong> installed. The prompt names neither skill and never says “UX”.</p>
+  </div>
+  <figure class="prompt">
+    <span class="tab mono">Exhibit P · the prompt, verbatim</span>
+    <blockquote>We’re Voxmere, a (fictional) deep-tech startup from Lausanne. We’ve built the first display that shows true 3D holograms inside a solid block of glass: you can walk around it and see the image from every side, with no headset and no glasses. Our first product is the Voxmere Cube, in two sizes: Cube 10 (10 cm, CHF 1,290) and Cube 20 (20 cm, CHF 2,490), each in Clear or Smoke glass. You reserve one with a CHF 100 deposit that’s fully refundable until it ships; the rest is charged when your Cube ships. The first batch of 500 Cubes ships in March 2027 to Switzerland and the EU; the UK and the US follow in June 2027, and so does every reservation made after the first batch is gone.<br><br>Our website is the first hologram most people will ever see from us, so it has to be as far ahead as the product. We want it to win Awwwards Site of the Day and FWA of the Day: push it, be experimental, make it the site other designers share. Build it as a single self-contained index.html: inline all CSS and JS. Libraries like GSAP, Lenis or Three.js are fine, but install them from npm and inline them, because the page can’t load anything from a CDN. Google Fonts are OK, but no external images, so draw everything with CSS, SVG, canvas or WebGL. It should tell the story of how a block of glass learned to hold light, let people explore the Cube and compare the two sizes, and let them reserve one: choose size and finish, and see the price, the deposit and when it ships to them. We don’t have a payment backend yet, so fake the payment step. It has to work great on phones and desktop.</blockquote>
+  </figure>
+  <div class="facts">
+    <div class="fact">
+      <h2>Exhibit A · awards</h2>
+      <dl><dt>Time</dt><dd>117 min</dd><dt>Tool calls</dt><dd>436</dd><dt>Cost</dt><dd>$36.33</dd><dt>Skills used</dt><dd>10 awards calls, craft → ship</dd></dl>
+    </div>
+    <div class="fact">
+      <h2>Exhibit B · awards + UXL</h2>
+      <dl><dt>Time</dt><dd>118 min</dd><dt>Tool calls</dt><dd>403</dd><dt>Cost</dt><dd>$37.28</dd><dt>Skills used</dt><dd>the same awards pipeline, plus one ux-lawyer call and 7 UXL scanner runs</dd></dl>
+    </div>
+  </div>
+</div>
+
+<section id="film" aria-labelledby="film-title">
+  <div class="head">
+    <p class="label">The film</p>
+    <h2 id="film-title">The case in 70 seconds</h2>
+    <p class="lede">Recorded from the two published pages, frame by frame, and edited in code with Remotion. No sound.</p>
+  </div>
+  <figure class="film">
+    <video src="uxl-voxmere.mp4" poster="screens/film-poster.jpg" controls muted playsinline preload="none" width="1920" height="1080"></video>
+    <figcaption><span>Source and capture script: <a href="https://github.com/BurgiSimon/UXL/tree/main/video">video/</a> in the repository.</span></figcaption>
+  </figure>
+</section>
+
+<section id="exhibits" aria-labelledby="exhibits-title">
+  <div class="head">
+    <p class="label">The exhibits · live</p>
+    <h2 id="exhibits-title">Both pages, exactly as the sessions wrote them</h2>
+    <p class="lede">These are the real, unedited files. Turn the glass, scroll the story and reserve a Cube. Both pages fake the payment, and nothing leaves your browser.</p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Device">
+      <button type="button" data-mode="phone" aria-pressed="true">Phone · 390 px</button>
+      <button type="button" data-mode="desktop" aria-pressed="false">Desktop · 1440 px</button>
+    </div>
+    <div class="seg only-narrow" role="group" aria-label="Exhibit">
+      <button type="button" data-show="a" aria-pressed="true">Exhibit A</button>
+      <button type="button" data-show="b" aria-pressed="false">Exhibit B</button>
+    </div>
+  </div>
+  <div class="exhibits" data-show="a">
+    <article class="exhibit" data-key="a">
+      <header>
+        <h3><span class="mono">A</span>Awards</h3>
+        <span class="score mid" title="Blind awards jury, weighted score out of 10">Jury 7.65 · fix</span>
+      </header>
+      <div class="frame" data-mode="phone"><div class="screen"><iframe title="Exhibit A: Voxmere site built with the awards plugin" src="without-uxl/index.html" width="390" height="780" loading="lazy"></iframe></div></div>
+      <a class="open" href="without-uxl/index.html" target="_blank" rel="noopener">Open Exhibit A full size ↗</a>
+    </article>
+    <article class="exhibit" data-key="b">
+      <header>
+        <h3><span class="mono">B</span>Awards + UXL</h3>
+        <span class="score good" title="Blind awards jury, weighted score out of 10">Jury 7.83 · ship</span>
+      </header>
+      <div class="frame" data-mode="phone"><div class="screen"><iframe title="Exhibit B: Voxmere site built with the awards plugin and UXL" src="with-uxl/index.html" width="390" height="780" loading="lazy"></iframe></div></div>
+      <a class="open" href="with-uxl/index.html" target="_blank" rel="noopener">Open Exhibit B full size ↗</a>
+    </article>
+  </div>
+</section>
+
+<section id="scores" aria-labelledby="scores-title">
+  <div class="head">
+    <p class="label">The scoreboard</p>
+    <h2 id="scores-title">What a blind jury and the scanners said</h2>
+    <p class="lede">After both sessions ended, each page went to a fresh session that ran the awards jury on the file alone. The folders were renamed, so the juror could not tell which exhibit it was judging. Weights are the jury’s own: Design 40, Usability 30, Creativity 20, Content 10. Site of the Day territory starts at 7.2 with no axis under 6.8.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <caption>Blind awards jury<span class="mono">/awards:jury, one fresh session per page</span></caption>
+      <thead><tr><th scope="col">Axis (weight)</th><th scope="col">Exhibit A · awards</th><th scope="col">Exhibit B · awards + UXL</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Design (40)</th><td>7.7</td><td>8.0</td></tr>
+        <tr><th scope="row">Usability (30)</th><td>7.0 <span class="tag warn">capped</span></td><td>7.0 <span class="tag warn">capped</span></td></tr>
+        <tr><th scope="row">Creativity (20)</th><td>8.3</td><td>8.4</td></tr>
+        <tr><th scope="row">Content (10)</th><td>8.1</td><td>8.5</td></tr>
+        <tr class="total"><th scope="row">Weighted</th><td>7.65</td><td>7.83</td></tr>
+        <tr><th scope="row">Disposition</th><td>fix</td><td>ship</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">The blind jury barely separates the two. Both Usability scores sit at the 7.0 cap, each held there by one failed check. Exhibit A’s is the 41 px chapter button on phones, the same button UXL’s auditor flagged as major (§L07 Fitts’s Law); without the cap the juror puts A’s Usability near 8.5. Exhibit B’s is wayfinding: the chapter readout lags at Glass, and the jury folder had no 404 page. The second half is on us: B shipped its 404 as a separate file, and, as in the Lumenvale run, only index.html went to the juror. Exhibit A’s 404 lives inside its index.html. Without the cap the juror puts B’s Usability near 8.2. A’s “fix” comes from two static-audit findings on its minified file that the juror itself calls false positives. B scored higher on Design and Content, but both concepts came from awards:concept before UXL was called, so read those rows as one run’s variation.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>Scanners and measurements<span class="mono">uxl_audit.mjs at 360, 390 and 1440 px · uxl_lint.py on the file · Playwright walk-throughs at 390 px</span></caption>
+      <thead><tr><th scope="col">Measure</th><th scope="col">Exhibit A · awards</th><th scope="col">Exhibit B · awards + UXL</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">UXL runtime audit score</th><td>86 / 100 (2 major)</td><td class="win">96 / 100 (0 major)</td></tr>
+        <tr><th scope="row">UXL static lint score</th><td>100</td><td>100</td></tr>
+        <tr><th scope="row">Phone tap targets under 44 px</th><td>1 of 34, the chapter dial at 41 px</td><td class="win">0 of 25</td></tr>
+        <tr><th scope="row">Filled buttons in the first phone screen</th><td>2</td><td class="win">1</td></tr>
+        <tr><th scope="row">Headline in the first phone screen</th><td>behind the glass, partly covered</td><td class="win">under the cube, fully legible</td></tr>
+        <tr><th scope="row">Choosing where it ships</th><td>a 30-country dropdown; the ship month appears after you pick</td><td class="win">4 regions, each showing its ship month</td></tr>
+        <tr><th scope="row">Scarcity</th><td>“123 of 500 places left”, from a hard-coded number</td><td class="win">the batch rule, stated; no counter</td></tr>
+        <tr><th scope="row">Checkout progress</th><td>none</td><td class="win">Step 1, 2 and 3 of 3</td></tr>
+        <tr><th scope="row">Payment form submitted empty</th><td>the browser’s bubble on the first field</td><td class="win">all five problems listed, focus moved to the list</td></tr>
+        <tr><th scope="row">Declined card</th><td>no path</td><td class="win">test number 4000 0000 0000 0002, a clear message, nothing charged</td></tr>
+        <tr><th scope="row">After paying</th><td>a receipt</td><td class="win">a receipt and “What happens next”</td></tr>
+        <tr><th scope="row">Taxes</th><td>not mentioned</td><td class="win">Swiss VAT included; import VAT and duties shown before the balance</td></tr>
+        <tr><th scope="row">In-session awards jury, final round</th><td>7.93, Usability 7.7 · ship</td><td>7.83, Usability 7.8 · fix</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Scanner scores are heuristics, and this is one run per condition. The in-session juries each judged their own build mid-session, so only the blind run compares like with like. Raw data: <a href="data.json">data.json</a>, <a href="reports/a-audit.md">audit A</a>, <a href="reports/b-audit.md">audit B</a>, <a href="reports/b-uxl-audit-first.md">B’s first UXL audit</a>, <a href="reports/a-jury-blind.md">blind jury A</a>, <a href="reports/b-jury-blind.md">blind jury B</a>, <a href="reports/b-uxl-trace.md">how B used UXL, event by event</a>.</p>
+</section>
+
+<section id="teamwork" aria-labelledby="teamwork-title">
+  <div class="head">
+    <p class="label">How the two skills worked together</p>
+    <h2 id="teamwork-title">Awards ran the pipeline. UXL came in once, and its scanners twice.</h2>
+    <p class="lede">Both sessions walked the same awards pipeline, from direction to ship. Session B called UXL on its own before it wrote any markup, then ran UXL’s linter and auditor before its first jury and again before hand-off. It cost B one more minute and $0.95.</p>
+  </div>
+  <div class="tracks">
+    <div class="track">
+      <h3>Exhibit A · skill calls in order</h3>
+      <ol class="steps" aria-label="Exhibit A skill calls">
+        <li>craft</li><li>concept</li><li>system</li><li>structure</li><li>stack</li><li>motion</li><li>webgl</li><li>jury</li><li>ship</li><li>jury <span class="sub">verdict</span></li>
+      </ol>
+    </div>
+    <div class="track">
+      <h3>Exhibit B · skill calls in order</h3>
+      <ol class="steps" aria-label="Exhibit B skill calls">
+        <li>craft</li><li>concept</li><li>system</li><li>structure</li><li class="uxl">uxl: ux-lawyer</li><li>stack</li><li>motion</li><li>webgl</li><li class="uxl">uxl: lint + audit ×3</li><li>jury <span class="sub">hero</span></li><li>jury</li><li>ship</li><li class="uxl">uxl: final scan</li>
+      </ol>
+    </div>
+    <p class="key"><span>awards skill</span><span class="k-uxl">UXL, called by the session itself</span></p>
+  </div>
+  <div class="columns">
+    <div>
+      <h3>1 · Laws before markup</h3>
+      <p>Four seconds after awards:structure loaded, session B called UXL with this brief, verbatim:</p>
+      <blockquote class="quote"><p>Apply the laws while building the static skeleton and the reservation flow.</p></blockquote>
+      <p>It read UXL’s playbook for navigation, calls to action, forms, checkout, modals and multi-step flows, then wrote one line into its page map:</p>
+      <blockquote class="quote"><p>UXL: one primary per view, labels above inputs, autocomplete, card grouping, decline path (4000 0000 0000 0002), never-disabled submit, selection saved to localStorage, no scarcity counter.</p></blockquote>
+    </div>
+    <div>
+      <h3>2 · Scanners before the jury</h3>
+      <p>With the WebGL layer in, B ran UXL’s linter and auditor before its first jury round. The audit scored 80 with three major findings: the hero headline and the Reserve button measured 1.00:1 contrast. B first planned to log them as exceptions, looked at the annotated screenshot, and rebuilt the layering instead. The next audit scored 93, the final one 96 with no majors.</p>
+    </div>
+    <div>
+      <h3>3 · Laws against the jury</h3>
+      <p>B’s awards jury asked for the headline behind the glass on phones too. B declined and wrote down why:</p>
+      <blockquote class="quote"><p>the phone keeps a legible &lt;h1&gt; under the cube (UXL §L05 Cognitive Load, §L25 Selective Attention); the refraction stays a desktop moment.</p></blockquote>
+      <p>Exhibit A’s jury asked for the same thing, and A did it.</p>
+    </div>
+  </div>
+</section>
+
+<section id="counts" aria-labelledby="counts-title">
+  <div class="head">
+    <p class="label">The counts</p>
+    <h2 id="counts-title">Where the laws changed the code</h2>
+    <p class="lede">Each count quotes session B in its own words, shows what shipped, and puts Exhibit A, which never saw UXL, next to it. B wrote no case file this time, so the quotes come from its contract, its design spec and its scanner runs.</p>
+  </div>
+  <div class="counts">
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 1</span><a class="law" href="https://lawsofux.com/cognitive-bias/">§L04 Cognitive Bias</a></div>
+        <h3>State the rule. Don’t invent the count.</h3>
+        <p>A first batch of 500 begs for a counter, and both sessions planned one. Session B’s brief, written before it called UXL, says “the ‘first-batch remaining’ figure is a fictional counter”. After UXL, the counter was gone and the brief said why. Exhibit A shipped it: “Batch one has 123 of 500 places left”, worked out from a constant. A’s hand-off tells the client the number is made up. The page tells visitors nothing of the kind.</p>
+      </div>
+      <blockquote class="quote"><span class="label">Session B’s brief, after UXL, verbatim</span><p>Deliberately absent: a “first batch remaining” counter (it would be invented scarcity, UXL §L04)</p></blockquote>
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="screens/a-mobile-shipto.png" width="780" height="1022" loading="lazy" alt="Exhibit A on a phone: a Ship to dropdown set to Switzerland, then the reservation summary with price, deposit today, charged when it ships, Ships to you March 2027 in batch one, and the line Batch one has 123 of 500 places left."></div>
+          <figcaption><strong>Exhibit A</strong><span>A dropdown, then “123 of 500 places left”.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot scroll" tabindex="0" aria-label="Exhibit B ship-to choice and summary, scrollable"><img src="screens/b-mobile-shipto.png" width="780" height="2078" loading="lazy" alt="Exhibit B on a phone: Deliver to, with four options, Switzerland and European Union shipping March 2027, United Kingdom and United States shipping June 2027, then the reservation summary and the first-batch rule in plain words."></div>
+          <figcaption><strong>Exhibit B</strong><span>Four regions with their ship months, then the batch rule in words.</span></figcaption>
+        </figure>
+      </div>
+      <pre aria-label="What shipped, verbatim"><code>const TAKEN_BEFORE_VISIT = 377;   // Exhibit A, src/js/ui/reserve.js: the "places left" source
+
+First batch: 500 Cubes, shipping March 2027 to Switzerland and the EU. Reservations made after
+the first 500, and every UK and US reservation, ship in June 2027.   // Exhibit B, under the summary</code></pre>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A shows urgency nobody counted. Exhibit B compliant.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 2</span><a class="law" href="https://lawsofux.com/working-memory/">§L29 Working Memory</a><a class="law" href="https://lawsofux.com/hicks-law/">§L10 Hick’s Law</a></div>
+        <h3>Show the ship month where people choose</h3>
+        <p>There are only two ship dates, and they depend on where you live. Exhibit A asks you to pick one of 30 countries from a dropdown, then tells you the month in the summary below. Exhibit B offers four regions and prints the month inside each option, so the choice and its consequence sit together. Both captures are in Count 1.</p>
+      </div>
+      <blockquote class="quote"><span class="label">Session B’s design spec, verbatim</span><p>the ship month sits inside each region option (recognition over recall, §L29)</p></blockquote>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A works, but hides two dates behind 30 options. Exhibit B compliant.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 3</span><a class="law" href="https://lawsofux.com/postels-law/">§L24 Postel’s Law</a><a class="law" href="https://lawsofux.com/goal-gradient-effect/">§L09 Goal-Gradient</a></div>
+        <h3>A checkout that explains itself</h3>
+        <p>Both pages say plainly that the payment is a demo. Exhibit A fills in a test card and leans on the browser: submit the form empty and a bubble points at the first field, with no word on what else is missing. Exhibit B counts its steps, lists every problem at once with a link to each field, moves focus to that list, and has a declined-card path. Its submit button is never disabled to signal a mistake.</p>
+      </div>
+      <blockquote class="quote"><span class="label">Session B’s design spec, verbatim</span><p>Never disabled to signal invalid input (UXL §L24). One per view (§L28).</p></blockquote>
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="screens/a-mobile-pay-empty.png" width="780" height="1688" loading="lazy" alt="Exhibit A payment sheet on a phone after submitting it empty: Deposit CHF 100, a test-mode notice, an outlined email field with the browser bubble Please fill out this field, name field, a prefilled test card and a Pay CHF 100 deposit button."></div>
+          <figcaption><strong>Exhibit A</strong><span>The browser’s bubble, on one field.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot"><img src="screens/b-mobile-pay-empty.png" width="780" height="1688" loading="lazy" alt="Exhibit B payment step 2 of 3 on a phone after submitting it empty: a demo checkout notice, a box reading 5 things to fix before paying with a linked list, and red messages under the email and name fields."></div>
+          <figcaption><strong>Exhibit B</strong><span>Step 2 of 3, five fixes listed, each field marked.</span></figcaption>
+        </figure>
+      </div>
+      <pre aria-label="Where focus lands, measured"><code>Exhibit A   empty submit  → focus: input#pay-email
+Exhibit B   empty submit  → focus: div#pay-errors "5 things to fix before paying"
+Exhibit B   declined card → "Your card was declined (demo). Nothing was charged. Try a different card number."</code></pre>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A is adequate for a demo. Exhibit B handles failure.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 4</span><a class="law" href="https://lawsofux.com/cognitive-load/">§L05 Cognitive Load</a><a class="law" href="https://lawsofux.com/selective-attention/">§L25 Selective Attention</a></div>
+        <h3>Keep the first sentence readable on a phone</h3>
+        <p>Both concepts put the headline behind the glass, so the cube bends the words. On a 1440 px screen that works in both. On a phone the cube covers most of the line. Both awards juries asked for the effect on phones anyway. Exhibit A complied, and its first phone screen reads “Glass” and then smoked glass. Exhibit B refused, citing two laws, and kept the refraction for desktop.</p>
+      </div>
+      <blockquote class="quote"><span class="label">Session B’s jury log, verbatim</span><p>Not applied: 1) on a 390 px phone the glass covers nearly the whole word (the first phone build read “L ght, h t, ld.”), so the phone keeps a legible &lt;h1&gt; under the cube (UXL §L05 Cognitive Load, §L25 Selective Attention); the refraction stays a desktop moment.</p></blockquote>
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="screens/a-mobile.png" width="780" height="1688" loading="lazy" alt="Exhibit A first phone screen: the headline Glass that holds light, with that holds light behind a smoked glass cube that reads GLASS in orange points, then the product label and a Reserve one for CHF 100 button."></div>
+          <figcaption><strong>Exhibit A</strong><span>“that holds light.” sits behind smoked glass.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot"><img src="screens/b-mobile.png" width="780" height="1688" loading="lazy" alt="Exhibit B first phone screen: a clear glass cube on a degree ring with a red point-cloud peak inside, the headline Light, held. below it, one line of copy, one red Reserve a Cube button and the deposit terms."></div>
+          <figcaption><strong>Exhibit B</strong><span>The headline under the cube, one red button.</span></figcaption>
+        </figure>
+      </div>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A trades its first phone sentence for the effect. Exhibit B compliant.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 5</span><a class="law" href="https://lawsofux.com/aesthetic-usability-effect/">§L01 Aesthetic-Usability</a><a class="law" href="https://lawsofux.com/selective-attention/">§L25 Selective Attention</a></div>
+        <h3>Words that existed only as pixels</h3>
+        <p>B’s first build looked right. Its headline, its first-screen copy and the ground behind them were painted in the WebGL canvas, and the real text in the page was transparent. A screenshot can’t tell. UXL’s auditor measured the text itself and found 1.00:1 contrast, which means anything that reads the page instead of the canvas would get nothing: a screen reader’s highlight, a print, a failed GPU. B moved every word and background back into the page and let the canvas draw only the cubes. Exhibit A had kept its headline as real text from the start.</p>
+      </div>
+      <blockquote class="quote"><span class="label">UXL audit, B’s first run, verbatim</span><p>h1#light-title "Light, held." 1.00:1 (needs 3:1); div.hero-copy &gt; div.hero-action &gt; a.btn.btn-primary "Reserve a Cube" 1.00:1 (needs 4.5:1)</p></blockquote>
+      <blockquote class="quote"><span class="label">Session B, after looking at the annotated screenshot</span><p>I found that the ground and headline only exist in canvas, making them invisible to screenshots, prints, or CSS readers. I’m restructuring so the canvas draws only the cubes above a transparent page, while the real background and headline live in the DOM, with the glass still refracting them via its transmission buffer.</p></blockquote>
+      <pre aria-label="Exhibit B fix, verbatim"><code>.gl-headline .hero-title { color: transparent; }   /* site.css, removed */
+
+Canvas model: one fixed, transparent canvas over the page… every word and background on the page
+stays real DOM (no transparent text, correct in print, full-page captures and contrast tools)   // AWARDS.md</code></pre>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A compliant. Exhibit B’s bug caught by the audit and fixed before the first jury.</span></p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="fair-title">
+  <div class="head">
+    <p class="label">For the record</p>
+    <h2 id="fair-title">What both got right, and what is still open</h2>
+  </div>
+  <div class="columns" style="margin-top:0">
+    <div>
+      <h3>Both exhibits</h3>
+      <ul class="ticks ok">
+        <li><span>A concept no jury could trace to another site: in both, you turn the glass, and the page’s navigation is a degree scale.</span></li>
+        <li><span>The deposit, the balance due at shipping and the ship month in the summary, before anyone pays (§L29).</span></li>
+        <li><span>A demo payment that says it is one, and a confirmation with a reference.</span></li>
+        <li><span>Reduced-motion and no-WebGL paths, real text for the headline in the shipped file, and no console errors (§L06).</span></li>
+        <li><span>Every invented spec flagged to the client in the hand-off.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Still open</h3>
+      <ul class="ticks">
+        <li><span>UXL missed three things B’s own jury caught: low contrast in the dark Smoke chapter (the auditor measures at page load, before that theme applies), a 320 px overflow (its smallest viewport is 360) and a last screen cut off at the bottom. B fixed all three before hand-off.</span></li>
+        <li><span>Session B never called UXL’s ux-auditor agent and wrote no case file or “UX decisions” list, which UXL’s build mode asks for. Its hand-off lists decisions, but without citations.</span></li>
+        <li><span>Exhibit B: in B’s source files, UXL’s linter still counts six primary-styled buttons. B shows one per screen and calls the finding a file-level false positive. The shipped single file scans clean.</span></li>
+        <li><span>Exhibit B: 9 to 11 font sizes, above the 6 to 8 UXL recommends. Exhibit A has 11.</span></li>
+        <li><span>Exhibit A: the chapter dial on phones is 41 px wide, under the 44 px floor.</span></li>
+        <li><span>Credit where due: B’s 48 px touch targets, reduced-motion tiers and navigation were set by the awards phases before UXL was called.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="verdict-title">
+  <div class="verdict">
+    <p class="label">Verdict</p>
+    <h2 id="verdict-title">Exhibit B, on the counts.</h2>
+    <p>Both sessions built an award-grade page, and a blind awards jury barely tells them apart: 7.83 against 7.65, both with Usability at its cap. The jury scores what a juror sees. UXL changed what a buyer meets: no invented scarcity next to a CHF 100 deposit, the ship month where the choice is made, a checkout that explains failure, and a first phone sentence you can read. Session B planned the same counter A shipped, then took it out after reading UXL. That cost one more minute and $0.95. UXL also missed three things B’s own jury caught, so the two reviews belong together.</p>
+  </div>
+</section>
+
+<section aria-labelledby="repro-title">
+  <div class="head">
+    <p class="label">Reproduce it</p>
+    <h2 id="repro-title">Run the case yourself</h2>
+    <p class="lede">Same prompt, same model, effort xhigh, two empty folders. Both get the awards plugin; B also gets UXL. Then score both with UXL’s scanners and a blind awards jury, and cut the film.</p>
+  </div>
+  <pre><code>git clone https://github.com/BurgiSimon/awards
+git clone https://github.com/BurgiSimon/UXL
+mkdir a b
+
+# Exhibit A: awards only
+(cd a &amp;&amp; claude -p "$(cat ../PROMPT.txt)" --model "$MODEL" --effort xhigh \
+  --plugin-dir ../awards/plugins/awards)
+
+# Exhibit B: awards + UXL
+(cd b &amp;&amp; claude -p "$(cat ../PROMPT.txt)" --model "$MODEL" --effort xhigh \
+  --plugin-dir ../awards/plugins/awards --plugin-dir ../UXL)
+
+# The evidence (B built with Vite: use its release/index.html)
+python3 UXL/tools/build_demo.py --without a --with b --prompt PROMPT.txt --slug voxmere
+node UXL/tools/demo_evidence_voxmere.mjs
+
+# The blind jury: copy each index.html into a neutrally named folder, keep the logs outside it, then
+(cd site-p &amp;&amp; claude -p "/awards:jury index.html --verdict" --model "$MODEL" --effort xhigh \
+  --plugin-dir ../awards/plugins/awards &gt; ../logs/site-p.jsonl)
+
+# The film
+(cd UXL/video &amp;&amp; npm i &amp;&amp; npm run capture &amp;&amp; npm run render)</code></pre>
+</section>
+</main>
+
+<footer>
+  <p>Voxmere is a fictional company. Its specs, addresses and every number beyond the prompt’s prices, sizes and dates were invented by the two sessions. Both pages are published unedited.</p>
+  <p>Laws of UX by Jon Yablonski, <a href="https://lawsofux.com">lawsofux.com</a>. Awards plugin: <a href="https://github.com/BurgiSimon/awards">github.com/BurgiSimon/awards</a>. Film made with <a href="https://www.remotion.dev">Remotion</a>. UXL is MIT-licensed: <a href="https://github.com/BurgiSimon/UXL">github.com/BurgiSimon/UXL</a>.</p>
+</footer>
+</div>
+
+<script>
+(() => {
+  const exhibits = document.querySelector(".exhibits");
+  const frames = [...document.querySelectorAll(".frame")];
+  const sizes = { phone: [390, 780], desktop: [1440, 900] };
+
+  function fit() {
+    for (const frame of frames) {
+      const screen = frame.querySelector(".screen");
+      const iframe = frame.querySelector("iframe");
+      const [w, h] = sizes[frame.dataset.mode];
+      screen.style.setProperty("--s", String(screen.clientWidth / w));
+      iframe.width = String(w);
+      iframe.height = String(h);
+    }
+  }
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver(fit);
+    frames.forEach((f) => ro.observe(f.querySelector(".screen")));
+  } else {
+    window.addEventListener("resize", fit);
+  }
+  fit();
+
+  function press(group, attr, value) {
+    group.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset[attr] === value)));
+  }
+  document.querySelectorAll(".seg").forEach((group) => {
+    group.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+      if (button.dataset.mode) {
+        frames.forEach((f) => { f.dataset.mode = button.dataset.mode; });
+        press(group, "mode", button.dataset.mode);
+        fit();
+      }
+      if (button.dataset.show) {
+        exhibits.dataset.show = button.dataset.show;
+        press(group, "show", button.dataset.show);
+        fit();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

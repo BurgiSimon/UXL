@@ -8,9 +8,13 @@ An Agent Skill and Claude Code plugin that makes Claude Code, Codex, Cursor, Gem
 design, build, audit and fix websites and web apps **for desktop and mobile** by applying the
 [Laws of UX](https://lawsofux.com). Every decision cites the law behind it, backed by evidence from static and runtime scanners.
 
-[Demo](#demo-the-fernwheel-case) · [Demo 2: with awards](#demo-2-the-lumenvale-case-uxl-with-awards) · [Install](#install) · [Use](#use-it) · [The 30 laws](#the-30-laws) · [Scanners](#the-scanners) · [Benchmark](#benchmark) · [Contributing](CONTRIBUTING.md)
+[Demo](#demo-the-fernwheel-case) · [Demo 2: with awards](#demo-2-the-lumenvale-case-uxl-with-awards) · [Demo 3: an award brief](#demo-3-the-voxmere-case-an-award-brief) · [Install](#install) · [Use](#use-it) · [The 30 laws](#the-30-laws) · [Scanners](#the-scanners) · [Benchmark](#benchmark) · [Contributing](CONTRIBUTING.md)
 
 </div>
+
+[![The Voxmere case: a 70-second film of two Claude Code sessions building the same award-hungry site, one with UXL](docs/voxmere/screens/film-poster.jpg)](https://burgisimon.github.io/UXL/voxmere/uxl-voxmere.mp4)
+
+<p align="center"><sub>▶ <a href="https://burgisimon.github.io/UXL/voxmere/uxl-voxmere.mp4">Watch the film</a> (69 seconds, no sound): the <a href="#demo-3-the-voxmere-case-an-award-brief">Voxmere case</a>, recorded from both live pages and edited in code with Remotion.</sub></p>
 
 ---
 
@@ -48,7 +52,7 @@ One prompt, two fresh Claude Code sessions, one difference. We asked both sessio
 | Font sizes rendered | 19–21 | **11** |
 | Time · cost | 6 min · $1.42 | 12 min · $2.91 |
 
-Both pages look launch-ready in a screenshot. Only one of them holds up under a thumb. **[See the full case with both pages live →](docs/index.html)** The showcase is in `docs/` (GitHub Pages-ready) and is built with `tools/build_demo.py`. It's one run per condition, so treat it as an illustration, not a statistic. The [benchmark](#benchmark) covers repeated evals.
+Both pages look launch-ready in a screenshot. Only one of them holds up under a thumb. **[See the full case with both pages live →](https://burgisimon.github.io/UXL/)** The showcase is served with GitHub Pages from `docs/` and is built with `tools/build_demo.py`. It's one run per condition, so treat it as an illustration, not a statistic. The [benchmark](#benchmark) covers repeated evals.
 
 ## Demo 2: the Lumenvale case, UXL with awards
 
@@ -64,7 +68,23 @@ UXL is built to work alongside other skills. In the second case, both sessions r
 | Says when you pay | no | **yes**, on both booking steps and the ticket |
 | Time · cost | 88 min · $29.95 | 105 min · $39.24 |
 
-Awards gave both pages the concept, the WebGL sky and the motion. UXL's auditor booked seats in a real browser and found 5 major issues the craft review had mostly missed, each fixed before hand-off. **[See the Lumenvale case with both pages live →](docs/lumenvale/index.html)** One run per condition, again: an illustration, not a statistic.
+Awards gave both pages the concept, the WebGL sky and the motion. UXL's auditor booked seats in a real browser and found 5 major issues the craft review had mostly missed, each fixed before hand-off. **[See the Lumenvale case with both pages live →](https://burgisimon.github.io/UXL/lumenvale/)** One run per condition, again: an illustration, not a statistic.
+
+## Demo 3: the Voxmere case, an award brief
+
+The third case raises the stakes. The client is Voxmere, a fictional deep-tech startup whose glass cube holds a true 3D image, and its brief asks outright for Awwwards Site of the Day: *"push it, be experimental"*. Both sessions ran the [awards](https://github.com/BurgiSimon/awards) plugin at effort xhigh; session B also had UXL. B called UXL on its own before writing any markup and ran UXL's scanners before its first jury. Before UXL, B's own brief planned a "first-batch remaining" counter. After, it struck it as *"invented scarcity, UXL §L04"*. Exhibit A shipped that counter.
+
+| | Exhibit A · awards | Exhibit B · awards + UXL |
+|---|---|---|
+| First phone screen | <img src="docs/voxmere/screens/a-mobile.png" width="260" alt="Exhibit A first phone screen: Glass that holds light, with the second half of the headline behind a smoked glass cube"> | <img src="docs/voxmere/screens/b-mobile.png" width="260" alt="Exhibit B first phone screen: a glass cube on a degree ring, the headline Light, held. below it, and one Reserve a Cube button"> |
+| Where it ships, on a phone | <img src="docs/voxmere/screens/a-mobile-shipto.png" width="260" alt="Exhibit A: a Ship to dropdown, then the summary and the line Batch one has 123 of 500 places left"> | <img src="docs/voxmere/screens/b-mobile-shipto.png" width="260" alt="Exhibit B: four regions, each with its ship month, then the summary and the batch rule in words"> |
+| Blind awards jury (weighted · Usability) | 7.65 · Usability 7.0 · "fix" | **7.83** · Usability 7.0 · "ship" |
+| UXL runtime audit | 86 / 100 | **96 / 100** |
+| Scarcity | "123 of 500 places left", from a hard-coded number | **the batch rule, no counter** |
+| Payment form submitted empty | the browser's bubble, on one field | **all five problems listed; a declined-card path** |
+| Time · cost | 117 min · $36.33 | 118 min · $37.28 |
+
+The blind jury barely separates the two pages, and both Usability scores sit at the cap, each held there by one failed check. A's is the 41 px phone button that UXL's audit had flagged. What UXL changed is what a buyer meets: no invented urgency next to a deposit, the ship month where the choice is made, a checkout that explains failure, and a phone headline you can read. It cost one more minute and $0.95. **[See the Voxmere case with both pages live →](https://burgisimon.github.io/UXL/voxmere/)** The film above is cut from these two pages; its source is in [`video/`](video/).
 
 ## What you get
 
@@ -230,7 +250,9 @@ adapters/                generated AGENTS.md / Cursor / Copilot / Windsurf rule 
 gemini-extension.json    Gemini CLI extension manifest
 install.sh               multi-agent installer
 evals/                   eval prompts + assertions, fixtures, grader
-tests/ tools/            linter tests, skill validator, adapter builder
+tests/ tools/            linter tests, skill validator, adapter builder, demo builders
+docs/                    the demo cases, served with GitHub Pages: Fernwheel, Lumenvale, Voxmere
+video/                   the Voxmere film: Playwright frame capture + Remotion source
 ```
 
 ## Credits & license
