@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ShopCo – Checkout</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <img src="logo.png" class="logo">
+    <nav class="main-nav">
+      <a href="/">Home</a>
+      <a href="/new">New In</a>
+      <a href="/women">Women</a>
+      <a href="/men">Men</a>
+      <a href="/kids">Kids</a>
+      <a href="/home">Home &amp; Living</a>
+      <a href="/beauty">Beauty</a>
+      <a href="/sale">Sale</a>
+      <a href="/brands">Brands</a>
+      <a href="/gift-cards">Gift Cards</a>
+      <a href="/blog">Blog</a>
+      <a href="/help">Help</a>
+    </nav>
+  </header>
+
+  <div class="promo-banner">
+    🔥 HURRY! Only <b>2 left</b> in stock – offer ends in <span id="timer">09:59</span>!
+  </div>
+
+  <main class="checkout">
+    <h2>Checkout</h2>
+
+    <div class="cart-summary">
+      <div class="edit-cart" onclick="location.href='/cart'">Edit cart</div>
+      <img src="/img/sneaker.jpg">
+      <p>Runner X Sneaker – €89.00</p>
+    </div>
+
+    <form id="checkout-form" action="/order" method="post">
+      <input type="text" name="email" placeholder="Email">
+      <input type="text" name="firstname" placeholder="First name">
+      <input type="text" name="lastname" placeholder="Last name">
+      <input type="text" name="phone" placeholder="Phone (digits only)" pattern="[0-9]{10}">
+      <input type="text" name="street" placeholder="Street">
+      <input type="text" name="city" placeholder="City">
+      <input type="text" name="zip" placeholder="ZIP">
+      <select name="country">
+        <option>Select country</option>
+        <option>Austria</option><option>Belgium</option><option>Bulgaria</option><option>Croatia</option>
+        <option>Cyprus</option><option>Czechia</option><option>Denmark</option><option>Estonia</option>
+        <option>Finland</option><option>France</option><option>Germany</option><option>Greece</option>
+        <option>Hungary</option><option>Ireland</option><option>Italy</option><option>Latvia</option>
+        <option>Lithuania</option><option>Luxembourg</option><option>Malta</option><option>Netherlands</option>
+        <option>Poland</option><option>Portugal</option><option>Romania</option><option>Slovakia</option>
+        <option>Slovenia</option><option>Spain</option><option>Sweden</option><option>Switzerland</option>
+      </select>
+      <input type="text" name="cardnumber" placeholder="Card number">
+      <input type="text" name="expiry" placeholder="MM/YY">
+      <input type="text" name="cvc" placeholder="CVC">
+      <span class="cvc-help">?<span class="tooltip">The 3 digits on the back of your card</span></span>
+      <input type="text" name="coupon" placeholder="Coupon code">
+      <button type="button" class="btn btn-primary small" onclick="applyCoupon()">Apply</button>
+
+      <label class="insurance"><input type="checkbox" name="insurance" checked> Add Shipping Protection (+€4.99)</label>
+
+      <p class="terms">By placing your order you agree to our Terms, Privacy Policy and Returns Policy. Prices include VAT.</p>
+
+      <button type="submit" class="btn btn-primary" id="submit-btn" disabled>Submit</button>
+    </form>
+
+    <section class="newsletter">
+      <input type="text" name="newsletter_email" placeholder="Your email">
+      <button class="btn btn-primary">Sign up</button>
+      <a href="#" class="no-thanks">No thanks, I don't like saving money</a>
+    </section>
+
+    <section class="recommended">
+      <h3>You may also like</h3>
+      <div class="carousel" data-autoplay="true">
+        <div class="slide"><img src="/img/p1.jpg"></div>
+        <div class="slide"><img src="/img/p2.jpg"></div>
+        <div class="slide"><img src="/img/p3.jpg"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('checkout-form');
+    const btn = document.getElementById('submit-btn');
+    form.addEventListener('input', () => {
+      btn.disabled = !form.checkValidity() || [...form.querySelectorAll('input[type=text]')].some(i => !i.value);
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const res = await fetch('/api/order', { method: 'POST', body: new FormData(form) });
+      if (!res.ok) { alert('Error! Something went wrong.'); return; }
+      location.href = '/thanks';
+    });
+    function applyCoupon() { alert('Coupon applied'); }
+    // fake urgency timer
+    let t = 599; setInterval(() => { t = t > 0 ? t - 1 : 599; document.getElementById('timer').textContent =
+      String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'); }, 1000);
+    // autoplay slider
+    const slides = document.querySelectorAll('.carousel .slide'); let s = 0;
+    setInterval(() => { slides.forEach((el, i) => el.style.display = i === s ? 'block' : 'none'); s = (s + 1) % slides.length; }, 2500);
+  </script>
+</body>
+</html>

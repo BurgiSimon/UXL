@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Lumenvale Case</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Two Claude Code sessions, same prompt, both with the awards plugin; one also with UXL (UX Lawyer). Live pages, a blind awards jury, scanner evidence and the UX case file that turned into code.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Libre+Caslon+Display&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Metric-matched stand-in while Public Sans loads, so the swap doesn't move the layout (§L06).
+   Overrides as measured with fontTools against Arial / Liberation Sans by Exhibit B's session. */
+@font-face {
+  font-family: "Public Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  size-adjust: 104.6%; ascent-override: 90.8%; descent-override: 21.5%; line-gap-override: 0%;
+}
+/* Layout: case file no. 2, same system as the Fernwheel case. Docket strip, the prompt as Exhibit P, the two live
+   exhibits, the scoreboard, the two skills' pipelines side by side, then one count per UXL finding (case file → code). */
+:root {
+  --paper: #f2f4f9;
+  --sheet: #ffffff;
+  --ink: #121a2c;
+  --ink-soft: #4a5571;
+  --rule: #d6dce8;
+  --mark: #ffe25a;
+  --mark-ink: #1d1a05;
+  --pass: #0b7149;  --pass-bg: #e2f3ea;
+  --fail: #b0271f;  --fail-bg: #fbe8e5;
+  --warn: #855600;  --warn-bg: #fcf0d9;
+  --bezel: #0b0f1a;
+  --display: "Libre Caslon Display", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --body: "Public Sans", "Public Sans Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius: 10px;
+  --target: 44px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d1220; --sheet: #151c2f; --ink: #e8ecf6; --ink-soft: #a6afc6; --rule: #2b3550;
+    --mark: #ead04a; --mark-ink: #1d1a05;
+    --pass: #56cf9c; --pass-bg: #12291f; --fail: #ff8f85; --fail-bg: #3a1714; --warn: #f2b84d; --warn-bg: #33240b;
+    --bezel: #04060c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1220; --sheet: #151c2f; --ink: #e8ecf6; --ink-soft: #a6afc6; --rule: #2b3550;
+  --mark: #ead04a; --mark-ink: #1d1a05;
+  --pass: #56cf9c; --pass-bg: #12291f; --fail: #ff8f85; --fail-bg: #3a1714; --warn: #f2b84d; --warn-bg: #33240b;
+  --bezel: #04060c; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; max-width: 65ch; text-wrap: pretty; }
+mark { background: linear-gradient(transparent 52%, var(--mark) 52%, var(--mark) 90%, transparent 90%); color: inherit; padding: 0 0.08em; }
+.wrap { max-width: 1180px; margin-inline: auto; }
+.mono { font-family: var(--mono); font-size: 0.8125rem; letter-spacing: 0.02em; }
+.label { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+
+/* ---- docket strip */
+.docket { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-6);
+  padding-block: var(--space-4); border-bottom: 1px solid var(--rule); }
+.brand { display: inline-flex; align-items: center; gap: var(--space-3); min-height: var(--target); font-weight: 700; text-decoration: none; }
+.seal { display: inline-grid; place-items: center; width: 36px; height: 36px; border: 1.5px solid var(--ink); border-radius: 50%; font-family: var(--display); font-size: 1.25rem; line-height: 1; }
+.docket nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); align-items: center; }
+.docket nav a { display: inline-flex; align-items: center; min-height: var(--target); }
+
+/* ---- hero */
+.hero { display: grid; gap: var(--space-8); padding-block: var(--space-12) var(--space-12); }
+.hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.5rem, 1.6rem + 4.4vw, 5rem); line-height: 1.02; letter-spacing: -0.01em; max-width: 15ch; }
+.lede { font-size: 1.1875rem; color: var(--ink-soft); }
+.lede strong { color: var(--ink); font-weight: 600; }
+.prompt { position: relative; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-6); display: grid; gap: var(--space-3); margin: 0; }
+.prompt blockquote { margin: 0; font-size: 1.0625rem; line-height: 1.65; }
+.prompt .tab { position: absolute; top: -12px; left: var(--space-6); background: var(--ink); color: var(--paper); padding: 2px 10px; border-radius: 4px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-4); }
+.fact { border-top: 2px solid var(--ink); padding-top: var(--space-3); display: grid; gap: var(--space-2); align-content: start; }
+.fact h2 { font-family: var(--body); font-size: 1.0625rem; font-weight: 700; }
+.fact dl { display: grid; grid-template-columns: auto 1fr; gap: 2px var(--space-4); margin: 0; font-variant-numeric: tabular-nums; }
+.fact dt { color: var(--ink-soft); }
+.fact dd { margin: 0; font-weight: 500; }
+@media (min-width: 960px) { .hero { grid-template-columns: 1.15fr 1fr; align-items: start; column-gap: var(--space-12); } .hero > .intro { grid-row: span 2; } }
+
+/* ---- section heads */
+section { padding-block: var(--space-12); border-top: 1px solid var(--rule); }
+.head { display: grid; gap: var(--space-3); margin-bottom: var(--space-8); }
+.head h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 1.5rem + 2vw, 3rem); line-height: 1.08; }
+
+/* ---- exhibits viewer */
+.controls { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); align-items: center; margin-bottom: var(--space-6); }
+.seg { display: inline-flex; padding: 3px; gap: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--sheet); }
+.seg button { font: 600 0.9375rem/1 var(--body); color: var(--ink-soft); background: transparent; border: 0; border-radius: 999px;
+  min-height: var(--target); padding: 0 var(--space-4); cursor: pointer; transition: background-color 150ms ease-out, color 150ms ease-out; }
+.seg button[aria-pressed="true"] { background: var(--mark); color: var(--mark-ink); }
+.seg button:hover:not([aria-pressed="true"]) { color: var(--ink); }
+.only-narrow { display: none; }
+.exhibits { display: grid; gap: var(--space-8); grid-template-columns: 1fr 1fr; }
+.exhibit { display: grid; gap: var(--space-3); align-content: start; min-width: 0; }
+.exhibit header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-2) var(--space-4); }
+.exhibit h3 { font-size: 1.125rem; font-weight: 700; }
+.exhibit h3 .mono { font-weight: 500; color: var(--ink-soft); margin-right: var(--space-2); }
+.score { display: inline-flex; align-items: center; gap: var(--space-2); font-variant-numeric: tabular-nums; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+.score.mid { background: var(--warn-bg); color: var(--warn); }
+.score.good { background: var(--pass-bg); color: var(--pass); }
+.frame { margin-inline: auto; width: 100%; }
+.frame[data-mode="phone"] { max-width: 340px; background: var(--bezel); border-radius: 44px; padding: 12px; box-shadow: 0 24px 48px -24px rgb(10 14 26 / 0.45); }
+.frame[data-mode="desktop"] { background: var(--bezel); border-radius: 12px; padding: 30px 8px 8px; position: relative; box-shadow: 0 24px 48px -24px rgb(10 14 26 / 0.45); }
+.frame[data-mode="desktop"]::before { content: ""; position: absolute; top: 11px; left: 14px; width: 8px; height: 8px; border-radius: 50%; background: #ff5f57; box-shadow: 14px 0 0 #febc2e, 28px 0 0 #28c840; }
+.screen { position: relative; width: 100%; overflow: hidden; background: var(--bezel); }
+.frame:focus-within { outline: 3px solid var(--mark); outline-offset: 4px; }   /* keyboard focus inside a live exhibit */
+.frame[data-mode="phone"] .screen { aspect-ratio: 390 / 780; border-radius: 32px; }
+.frame[data-mode="desktop"] .screen { aspect-ratio: 1440 / 900; border-radius: 4px; }
+.screen iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; transform: scale(var(--s, 1)); background: var(--bezel); }
+.exhibit .open { justify-self: start; display: inline-flex; align-items: center; min-height: var(--target); font-weight: 600; }
+@media (max-width: 899px) {
+  .only-narrow { display: inline-flex; }
+  .exhibits { grid-template-columns: 1fr; }
+  .exhibits[data-show="a"] .exhibit[data-key="b"], .exhibits[data-show="b"] .exhibit[data-key="a"] { display: none; }
+}
+
+/* ---- tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sheet); }
+.table-wrap + .table-wrap, .note + .table-wrap { margin-top: var(--space-6); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 560px; }
+caption { text-align: left; padding: var(--space-4) var(--space-4) 0; font-weight: 700; }
+caption .mono { display: block; font-weight: 400; color: var(--ink-soft); margin-top: 2px; }
+th, td { text-align: left; padding: 14px var(--space-4); border-bottom: 1px solid var(--rule); vertical-align: top; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+thead th { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; }
+tbody th { font-weight: 500; width: 40%; }
+td.win { font-weight: 700; }
+tr.total th, tr.total td { border-top: 2px solid var(--ink); }
+.tag { display: inline-block; margin-left: var(--space-2); font-family: var(--mono); font-size: 0.75rem; padding: 1px 6px; border-radius: 4px; vertical-align: 1px; }
+.tag.fail { background: var(--fail-bg); color: var(--fail); }
+.tag.warn { background: var(--warn-bg); color: var(--warn); }
+.tag.pass { background: var(--pass-bg); color: var(--pass); }
+.note { margin-top: var(--space-3); color: var(--ink-soft); font-size: 0.9375rem; }
+
+/* ---- pipelines: the order of skill calls is the information */
+.tracks { display: grid; gap: var(--space-6); }
+.track { display: grid; gap: var(--space-3); background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-4) var(--space-4) var(--space-6); }
+.track h3 { font-size: 1.0625rem; font-weight: 700; }
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-3) 26px; }
+.steps li { position: relative; display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 6px;
+  font-family: var(--mono); font-size: 0.8125rem; background: var(--paper); }
+.steps li:not(:last-child)::after { content: "→"; position: absolute; right: -20px; color: var(--ink-soft); font-family: var(--body); }
+.steps li.uxl { background: var(--mark); color: var(--mark-ink); border-color: var(--mark-ink); font-weight: 500; }
+.steps li .sub { margin-left: 6px; opacity: 0.75; }
+.key { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); align-items: center; color: var(--ink-soft); font-size: 0.9375rem; }
+.key span::before { content: ""; display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: var(--space-2); vertical-align: -2px; border: 1px solid var(--rule); background: var(--paper); }
+.key span.k-uxl::before { background: var(--mark); border-color: var(--mark-ink); }
+.columns { display: grid; gap: var(--space-8); grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); margin-top: var(--space-8); }
+.columns h3 { font-size: 1.125rem; font-weight: 700; margin-bottom: var(--space-3); }
+.columns p + p, .columns p + blockquote, .columns blockquote + p { margin-top: var(--space-3); }
+
+/* ---- counts */
+.counts { display: grid; gap: var(--space-16); }
+.count { display: grid; gap: var(--space-6); }
+.count-head { display: grid; gap: var(--space-3); }
+.count-head h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem); line-height: 1.12; }
+.laws { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.law { font-family: var(--mono); font-size: 0.8125rem; border: 1px solid var(--ink); border-radius: 4px; padding: 2px 8px; text-decoration: none; display: inline-flex; align-items: center; min-height: 32px; }
+@media (pointer: coarse) { .law { min-height: var(--target); padding-inline: 12px; } }   /* size by input, §L07 */
+.law:hover { background: var(--mark); color: var(--mark-ink); border-color: var(--mark-ink); }
+.quote { margin: 0; padding: var(--space-4); border-left: 3px solid var(--mark); background: var(--sheet); border-radius: 0 var(--radius) var(--radius) 0; display: grid; gap: var(--space-2); }
+.quote p { font-size: 1.0625rem; }
+.pair { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+figure { margin: 0; display: grid; gap: var(--space-3); align-content: start; min-width: 0; }
+figure .shot { border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--bezel); }
+figure .shot.scroll { max-height: 34rem; overflow-y: auto; }
+figure .shot img { width: 100%; }
+figcaption { display: grid; gap: var(--space-1); font-size: 0.9375rem; color: var(--ink-soft); }
+figcaption strong { color: var(--ink); font-weight: 600; }
+.finding { display: flex; gap: var(--space-3); align-items: baseline; padding: var(--space-3) var(--space-4); border-left: 3px solid var(--ink); background: var(--sheet); border-radius: 0 var(--radius) var(--radius) 0; }
+.finding .label { flex: none; }
+pre { margin: 0; overflow-x: auto; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-4); font: 0.8125rem/1.6 var(--mono); }
+
+/* ---- for the record */
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.ticks li { display: grid; grid-template-columns: 20px 1fr; gap: var(--space-3); }
+.ticks li::before { content: ""; width: 10px; height: 10px; margin-top: 0.55em; border-radius: 50%; border: 2px solid var(--ink-soft); }
+.ticks.ok li::before { background: var(--pass); border-color: var(--pass); }
+
+/* ---- verdict */
+.verdict { background: var(--ink); color: var(--paper); border-radius: 16px; padding: var(--space-12) max(var(--space-6), 5vw); display: grid; gap: var(--space-4); }
+.verdict .label { color: var(--mark); }
+.verdict h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem); line-height: 1.05; }
+.verdict p { color: var(--paper); opacity: 0.86; font-size: 1.125rem; }
+
+footer { padding-block: var(--space-12) var(--space-16); border-top: 1px solid var(--rule); color: var(--ink-soft); font-size: 0.9375rem; display: grid; gap: var(--space-3); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="docket">
+  <a class="brand" href="https://github.com/BurgiSimon/UXL"><span class="seal" aria-hidden="true">§</span>UXL · UX Lawyer</a>
+  <nav aria-label="Page">
+    <a href="#exhibits">Exhibits</a>
+    <a href="#teamwork">How they worked together</a>
+    <a href="#counts">Findings</a>
+    <a href="../index.html">Case 1: Fernwheel</a>
+    <a href="https://github.com/BurgiSimon/UXL">GitHub</a>
+  </nav>
+</header>
+
+<main>
+<div class="hero">
+  <div class="intro" style="display:grid; gap: var(--space-6)">
+    <p class="label">The Lumenvale case · UXL-DEMO-002 · 20 Oct 2026</p>
+    <h1>Awards sets the ceiling. <mark>UXL raises the floor.</mark></h1>
+    <p class="lede">Two fresh Claude Code sessions got the same prompt: an award-worthy site for <strong>Lumenvale</strong>, a fictional dark-sky observatory in the Swiss Alps. Both ran the same model at effort xhigh with the <strong>awards</strong> plugin, a pipeline of skills built to win Site of the Day. Exhibit B also had <strong>UXL</strong> installed. The prompt names neither skill and never says “UX”.</p>
+  </div>
+  <figure class="prompt">
+    <span class="tab mono">Exhibit P · the prompt, verbatim</span>
+    <blockquote>We’re Lumenvale, a (fictional) dark-sky observatory high in the Swiss Alps. We run guided stargazing nights for small groups of 12: CHF 48 for adults, CHF 24 for kids under 16, with an optional private telescope session for CHF 30. Build our website as a single self-contained index.html: inline all CSS and JS. Libraries like GSAP, Lenis or Three.js are fine, but install them from npm and inline them, because the page can’t load anything from a CDN. Google Fonts are OK, but no external images, so draw everything with CSS, SVG, canvas or WebGL. It should be award-worthy, the kind of site that wins Site of the Day, and tell the story of a night at Lumenvale. It needs our upcoming nights with the moon phase and seats left, and a way to book tickets for a night. It has to work great on phones and desktop.</blockquote>
+  </figure>
+  <div class="facts">
+    <div class="fact">
+      <h2>Exhibit A · awards</h2>
+      <dl><dt>Time</dt><dd>88 min</dd><dt>Tool calls</dt><dd>407</dd><dt>Cost</dt><dd>$29.95</dd><dt>Skills used</dt><dd>10 awards calls, craft → ship</dd></dl>
+    </div>
+    <div class="fact">
+      <h2>Exhibit B · awards + UXL</h2>
+      <dl><dt>Time</dt><dd>105 min</dd><dt>Tool calls</dt><dd>434</dd><dt>Cost</dt><dd>$39.24</dd><dt>Skills used</dt><dd>the same 10 awards calls, plus ux-lawyer and the ux-auditor agent</dd></dl>
+    </div>
+  </div>
+</div>
+
+<section id="exhibits" aria-labelledby="exhibits-title">
+  <div class="head">
+    <p class="label">The exhibits · live</p>
+    <h2 id="exhibits-title">Both pages, exactly as the sessions wrote them</h2>
+    <p class="lede">These are the real, unedited files. Each one computes its calendar from today’s date, so the nights are live. Scroll inside a frame and book a night. Nothing leaves your browser.</p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Device">
+      <button type="button" data-mode="phone" aria-pressed="true">Phone · 390 px</button>
+      <button type="button" data-mode="desktop" aria-pressed="false">Desktop · 1440 px</button>
+    </div>
+    <div class="seg only-narrow" role="group" aria-label="Exhibit">
+      <button type="button" data-show="a" aria-pressed="true">Exhibit A</button>
+      <button type="button" data-show="b" aria-pressed="false">Exhibit B</button>
+    </div>
+  </div>
+  <div class="exhibits" data-show="a">
+    <article class="exhibit" data-key="a">
+      <header>
+        <h3><span class="mono">A</span>Awards</h3>
+        <span class="score mid" title="Blind awards jury, weighted score out of 10">Jury 7.23 · fix</span>
+      </header>
+      <div class="frame" data-mode="phone"><div class="screen"><iframe title="Exhibit A: Lumenvale site built with the awards plugin" src="without-uxl/index.html" width="390" height="780" loading="lazy"></iframe></div></div>
+      <a class="open" href="without-uxl/index.html" target="_blank" rel="noopener">Open Exhibit A full size ↗</a>
+    </article>
+    <article class="exhibit" data-key="b">
+      <header>
+        <h3><span class="mono">B</span>Awards + UXL</h3>
+        <span class="score good" title="Blind awards jury, weighted score out of 10">Jury 8.14 · ship</span>
+      </header>
+      <div class="frame" data-mode="phone"><div class="screen"><iframe title="Exhibit B: Lumenvale site built with the awards plugin and UXL" src="with-uxl/index.html" width="390" height="780" loading="lazy"></iframe></div></div>
+      <a class="open" href="with-uxl/index.html" target="_blank" rel="noopener">Open Exhibit B full size ↗</a>
+    </article>
+  </div>
+</section>
+
+<section id="scores" aria-labelledby="scores-title">
+  <div class="head">
+    <p class="label">The scoreboard</p>
+    <h2 id="scores-title">What a blind jury and the scanners said</h2>
+    <p class="lede">After both sessions ended, each page went to a fresh session that ran the awards jury on the file alone. The folders were renamed, so the juror could not tell which exhibit it was judging. Weights are the jury’s own: Design 40, Usability 30, Creativity 20, Content 10. Site of the Day territory starts at 7.2 with no axis under 6.8.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <caption>Blind awards jury<span class="mono">/awards:jury, one fresh session per page</span></caption>
+      <thead><tr><th scope="col">Axis (weight)</th><th scope="col">Exhibit A · awards</th><th scope="col">Exhibit B · awards + UXL</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Design (40)</th><td>7.6</td><td>7.9</td></tr>
+        <tr><th scope="row">Usability (30)</th><td>6.0 <span class="tag fail">capped</span></td><td>8.1</td></tr>
+        <tr><th scope="row">Creativity (20)</th><td>7.8</td><td>8.5</td></tr>
+        <tr><th scope="row">Content (10)</th><td>8.3</td><td>8.5</td></tr>
+        <tr class="total"><th scope="row">Weighted</th><td>7.23</td><td>8.14</td></tr>
+        <tr><th scope="row">Disposition</th><td>fix</td><td>ship</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Exhibit A clears 7.2 overall, but its Usability of 6.0 sits under the 6.8 floor, so the jury sent it back to fix. One bug set that cap: with full motion on, the skip link leaves focus on itself. Exhibit B passed all eight usability walk steps. B also scored higher on Design and Creativity, but both concepts came from awards:concept before UXL was ever called, so read those two rows as one run’s variation, not as UXL’s doing.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>Scanners and measurements<span class="mono">uxl_audit.mjs at 360, 390 and 1440 px · uxl_lint.py on the file · Playwright probes</span></caption>
+      <thead><tr><th scope="col">Measure</th><th scope="col">Exhibit A · awards</th><th scope="col">Exhibit B · awards + UXL</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">UXL runtime audit score</th><td>90 / 100</td><td class="win">96 / 100</td></tr>
+        <tr><th scope="row">UXL static lint score</th><td>94</td><td>94</td></tr>
+        <tr><th scope="row">Filled Book buttons in the nights list</th><td>16 of 16</td><td class="win">1 of 27, on the recommended night</td></tr>
+        <tr><th scope="row">Filled buttons in the first phone screen</th><td>2</td><td class="win">1</td></tr>
+        <tr><th scope="row">Body text on phones</th><td>15 px</td><td class="win">17 px</td></tr>
+        <tr><th scope="row">Booking says when you pay</th><td>no</td><td class="win">yes, at both steps and on the ticket</td></tr>
+        <tr><th scope="row">Confirmation tells you</th><td>meeting stop and time</td><td class="win">address, bus stop, parking, what to bring, the cloud plan, a calendar file</td></tr>
+        <tr><th scope="row">Skip link with full motion on</th><td>focus stays on the link</td><td class="win">focus moves to the content</td></tr>
+        <tr><th scope="row">In-session awards jury, final round</th><td>7.42, Usability 7.0</td><td>7.81, Usability 7.8</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Scanner scores are heuristics, and this is one run per condition. The in-session juries each judged their own build mid-session, so only the blind run compares like with like. Raw data: <a href="data.json">data.json</a>, <a href="reports/a-audit.md">audit A</a>, <a href="reports/b-audit.md">audit B</a>, <a href="reports/a-jury-blind.md">blind jury A</a>, <a href="reports/b-jury-blind.md">blind jury B</a>, <a href="reports/b-uxl-casefile.md">UXL case file</a>.</p>
+</section>
+
+<section id="teamwork" aria-labelledby="teamwork-title">
+  <div class="head">
+    <p class="label">How the two skills worked together</p>
+    <h2 id="teamwork-title">Awards ran the pipeline. UXL was called in twice.</h2>
+    <p class="lede">Both sessions walked the same awards pipeline, from direction to ship. Session B added two UXL steps on its own: the skill before it built anything, and the auditor before it shipped.</p>
+  </div>
+  <div class="tracks">
+    <div class="track">
+      <h3>Exhibit A · skill calls in order</h3>
+      <ol class="steps" aria-label="Exhibit A skill calls">
+        <li>craft</li><li>concept</li><li>system</li><li>structure</li><li>stack</li><li>motion</li><li>webgl</li><li>jury</li><li>ship</li><li>jury <span class="sub">verdict</span></li>
+      </ol>
+    </div>
+    <div class="track">
+      <h3>Exhibit B · skill calls in order</h3>
+      <ol class="steps" aria-label="Exhibit B skill calls">
+        <li>craft</li><li>concept</li><li>system</li><li>structure</li><li class="uxl">uxl: ux-lawyer</li><li>stack</li><li>motion</li><li>webgl</li><li>jury <span class="sub">hero</span></li><li class="uxl">uxl: ux-auditor</li><li>jury</li><li>ship <span class="sub">+ case file</span></li>
+      </ol>
+    </div>
+    <p class="key"><span>awards skill</span><span class="k-uxl">UXL, called by the session itself</span></p>
+  </div>
+  <div class="columns">
+    <div>
+      <h3>1 · Laws before code</h3>
+      <p>Right after awards:structure laid out the chapters, session B called UXL with this brief, verbatim:</p>
+      <blockquote class="quote"><p>Apply the laws to the booking flow and navigation.</p></blockquote>
+      <p>It then read UXL’s specs for navigation, calls to action, forms, modals and multi-step flows, and wrote phone layouts and accessibility notes into its page map. The idea of opening on the next dark night came from awards:structure, before UXL was called.</p>
+    </div>
+    <div>
+      <h3>2 · Two reviewers, two questions</h3>
+      <p>The awards jury asks what a Site of the Day juror sees: it scores captures of every chapter on Design, Usability, Creativity and Content. The UXL auditor asks what a visitor runs into: it booked seats in a real browser at 390, 375 and 1440 px and measured. Its case file came back with 0 critical, 5 major and 7 minor findings, each citing a law.</p>
+    </div>
+    <div>
+      <h3>3 · One fix list</h3>
+      <p>The awards:ship skill takes its fixes from the jury report. Session B handed it the UXL case file as well, verbatim:</p>
+      <blockquote class="quote"><p>Also fold in the UXL auditor's case file (0 critical, 5 major: M1 mobile two filled Book buttons via CSS specificity main.css:108-109; M2 calendar rows lack a 'Dark sky' tag …</p></blockquote>
+      <p>Ship fixed all five majors in one pass, next to the jury’s three craft fixes. The counts below follow each one from the case file into the code.</p>
+    </div>
+  </div>
+</section>
+
+<section id="counts" aria-labelledby="counts-title">
+  <div class="head">
+    <p class="label">The counts</p>
+    <h2 id="counts-title">From case file to code, law by law</h2>
+    <p class="lede">Each count quotes the UXL auditor’s finding on Exhibit B, shows the line that shipped, and puts Exhibit A, which had no auditor, next to it. B’s own awards jury caught the first one too. The other four came from UXL alone.</p>
+  </div>
+  <div class="counts">
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 1</span><a class="law" href="https://lawsofux.com/von-restorff-effect/">§L28 Von Restorff</a><a class="law" href="https://lawsofux.com/law-of-similarity/">§L15 Similarity</a></div>
+        <h3>One loud Book at a time</h3>
+        <p>Emphasis only works when it is rare. Exhibit A paints every Book button in the list the same torch red, so 16 equal buttons compete and none leads. Exhibit B fills only the night it recommends and outlines the rest. Its auditor also found a CSS bug that put two filled Book buttons on a phone screen at once.</p>
+      </div>
+      <blockquote class="quote"><span class="label">UXL case file, verbatim</span><p>On phones, two filled orange "Book" buttons compete through most of the story, and they lead to different places. This is a CSS specificity bug.</p></blockquote>
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="screens/a-mobile-nights.png" width="780" height="1916" loading="lazy" alt="Exhibit A nights list on a phone: one night after another, each with its moon, star count, seats and a filled red Book button."></div>
+          <figcaption><strong>Exhibit A</strong><span>Every row ends in the same filled button.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot"><img src="screens/b-mobile-nights.png" width="780" height="1916" loading="lazy" alt="Exhibit B nights list on a phone: nights with outlined Book buttons, a sold-out night, and one filled Book button on the recommended dark-sky night."></div>
+          <figcaption><strong>Exhibit B</strong><span>Outlined Book buttons; the one filled button sits on the recommended night.</span></figcaption>
+        </figure>
+      </div>
+      <pre aria-label="Exhibit B fix, verbatim"><code>/* main.css: the filled header Book is desktop-only now */
+@media (min-width: 768px) {
+  .bar.is-solid:not(.is-calm) .bar__book { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+}</code></pre>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A dilutes its call to action. Exhibit B compliant after the fix.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 2</span><a class="law" href="https://lawsofux.com/working-memory/">§L29 Working Memory</a><a class="law" href="https://lawsofux.com/mental-model/">§L17 Mental Model</a></div>
+        <h3>Say when people pay, where they commit</h3>
+        <p>Neither page takes payment. Exhibit A never says so: its button reads “Hold 2 seats · CHF 96”, and its cloud policy offers “a refund”, which implies money already changed hands. Exhibit B states the terms in the calendar intro, under the total on both booking steps, and on the ticket.</p>
+      </div>
+      <blockquote class="quote"><span class="label">UXL case file, verbatim</span><p>"Reserve 2 seats · CHF 96" next to a big total looks like a charge. Hesitant users drop out right before the one fact that would reassure them.</p></blockquote>
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="screens/a-mobile-booking.png" width="780" height="1688" loading="lazy" alt="Exhibit A booking sheet on a phone: adults and children steppers, a private session checkbox, name field, and a footer with Total CHF 96 and a Hold 2 seats, CHF 96 button."></div>
+          <figcaption><strong>Exhibit A</strong><span>Total and “Hold 2 seats”, with no word on payment.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot"><img src="screens/b-mobile-booking.png" width="780" height="1688" loading="lazy" alt="Exhibit B booking step 1 of 2 on a phone: night selector, adults and children steppers, a private session that is taken this night, and a footer reading Total CHF 96, 2 adults, pay on the night, with a Continue button."></div>
+          <figcaption><strong>Exhibit B</strong><span>“2 adults · pay on the night” under the total, from step 1.</span></figcaption>
+        </figure>
+      </div>
+      <pre aria-label="Exhibit B fix, verbatim"><code>totalNote.textContent = `${parts.length ? parts.join(' · ') : 'No seats yet'} · pay on the night`;   // booking.js
+
+&lt;p class="booking__pay"&gt;No payment now. You pay at the valley station by card or TWINT; cancel free until 24 hours before.&lt;/p&gt;</code></pre>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A leaves the price looking like a charge. Exhibit B compliant.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 3</span><a class="law" href="https://lawsofux.com/peak-end-rule/">§L23 Peak-End Rule</a><a class="law" href="https://lawsofux.com/working-memory/">§L29 Working Memory</a></div>
+        <h3>End on everything a guest needs</h3>
+        <p>The confirmation is the screen people keep. Exhibit A gives a reference, the bus stop and the meeting time. Exhibit B’s ticket adds the address, parking, what to bring, how a cloud cancellation will reach you and what you will pay, plus a calendar file with the location in it.</p>
+      </div>
+      <blockquote class="quote"><span class="label">UXL case file, verbatim</span><p>Task 3 ("know when and where to meet") is only half served at the step people screenshot and keep.</p></blockquote>
+      <div class="pair">
+        <figure>
+          <div class="shot"><img src="screens/a-mobile-done.png" width="780" height="1688" loading="lazy" alt="Exhibit A confirmation on a phone: Your seats are marked, a reference, meet at the Alp Lumen Postbus stop at 18:55, a cloud refund note and a demo booking notice."></div>
+          <figcaption><strong>Exhibit A</strong><span>Reference, stop and time, plus an honest demo notice.</span></figcaption>
+        </figure>
+        <figure>
+          <div class="shot"><img src="screens/b-mobile-done.png" width="780" height="1688" loading="lazy" alt="Exhibit B ticket on a phone: You're on the plate, with rows for night, meet time, where, what to bring, if cloudy, seats, private session, moon and total paid at the valley station."></div>
+          <figcaption><strong>Exhibit B</strong><span>A ticket with where, what to bring and the cloud plan.</span></figcaption>
+        </figure>
+      </div>
+      <pre aria-label="Exhibit B fix, verbatim"><code>['Where', 'Lumenvale valley station, Talweg 1, Val Lumen · PostBus stop “Val Lumen, Talstation”, free parking'],
+['Bring', 'Warm layers and a hat (often below 0 °C); we lend jackets, blankets and red torches'],
+['If cloudy', b.phone ? 'We email and text you by 14:00 on the day' : 'We email you by 14:00 on the day'],</code></pre>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A is adequate. Exhibit B ends on a complete ticket.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 4</span><a class="law" href="https://lawsofux.com/mental-model/">§L17 Mental Model</a><a class="law" href="https://lawsofux.com/law-of-similarity/">§L15 Similarity</a></div>
+        <h3>Call a dark night “dark” where people choose</h3>
+        <p>A dark sky is the reason to pick one night over another. Before the fix, Exhibit B’s filter, hero and booking used three different words for it, and the rows used none. It now tags dark rows “Dark sky”, dims the moon when it stays below the horizon, and defines the term once in the legend. Exhibit A reached a good answer on its own route: each row gives an expected star count.</p>
+      </div>
+      <blockquote class="quote"><span class="label">UXL case file, verbatim</span><p>"Dark", the attribute task 1 depends on, is hard to read in the calendar rows.</p></blockquote>
+      <pre aria-label="Exhibit B fix, verbatim"><code>${n.dark ? '&lt;span class="night__tag"&gt;Dark sky&lt;/span&gt;' : ''}   // schedule.js, every calendar row
+
+.moon.is-down { opacity: 0.45; }   /* main.css: a moon below the horizon reads as absent */</code></pre>
+      <p class="finding"><span class="label">Finding</span><span>Both compliant at hand-off, by different routes.</span></p>
+    </article>
+
+    <article class="count">
+      <div class="count-head">
+        <div class="laws"><span class="label">Count 5</span><a class="law" href="https://lawsofux.com/postels-law/">§L24 Postel’s Law</a></div>
+        <h3>Keyboard users keep their place</h3>
+        <p>In Exhibit B, finishing a booking re-rendered the calendar and deleted the button that had opened the dialog, so keyboard focus fell back to the top of a 9,000 px page. The fix sends focus to the booked night. Exhibit A handles this case: its close handler falls back to the night’s Book button.</p>
+      </div>
+      <blockquote class="quote"><span class="label">UXL case file, verbatim</span><p>Keyboard and screen-reader users lose their place on a page about 9,000px long, at the end of the main task.</p></blockquote>
+      <pre aria-label="Exhibit B fix, verbatim"><code>const back = trigger &amp;&amp; document.contains(trigger) ? trigger : night &amp;&amp; (document.querySelector(`#${night.id} .night__book`) || document.getElementById(`${night.id}-t`));   // booking.js</code></pre>
+      <p class="finding"><span class="label">Finding</span><span>Exhibit A compliant. Exhibit B’s bug caught and fixed before hand-off.</span></p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="fair-title">
+  <div class="head">
+    <p class="label">For the record</p>
+    <h2 id="fair-title">What both got right, and what is still open</h2>
+  </div>
+  <div class="columns" style="margin-top:0">
+    <div>
+      <h3>Both exhibits</h3>
+      <ul class="ticks ok">
+        <li><span>A real sky: moon phases, moonrise and twilight computed for the site, every night listed with its moon and seats.</span></li>
+        <li><span>A committed visual world that the jury could not trace to a source site.</span></li>
+        <li><span>Bottom-sheet booking on phones, a live total and specific error messages (§L29).</span></li>
+        <li><span>Reduced-motion tiers, a no-WebGL fallback and no layout shift (§L06).</span></li>
+        <li><span>No fake urgency or pre-ticked extras (§L04).</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Still open</h3>
+      <ul class="ticks">
+        <li><span>Exhibit A: the skip link fails with full motion on, which capped its blind Usability score at 6.</span></li>
+        <li><span>Exhibit B: the ticket says “We’ve sent the details to” your email, but nothing is sent. Its hand-off flags this; a real backend has to make it true.</span></li>
+        <li><span>Exhibit B: the blind jury’s three craft fixes. The scrolled header lets type ghost through, the moon scale stops two thirds along its track, and the dawn headline is cut under the bar on a 1440 × 900 screen.</span></li>
+        <li><span>Exhibit B: 11 to 12 font sizes, above the 6 to 8 UXL recommends.</span></li>
+        <li><span>Both: the fixes made after the last in-session jury round were not juried again in-session. The blind run above judged the final files.</span></li>
+        <li><span>Exhibit B cost 31 % more and took 19 % longer: $39.24 and 105 min against $29.95 and 88 min.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="verdict-title">
+  <div class="verdict">
+    <p class="label">Verdict</p>
+    <h2 id="verdict-title">Exhibit B.</h2>
+    <p>Both sessions built an award-grade page: a committed world, a real sky, motion with reduced tiers. The awards skills set that ceiling in both. Exhibit B is the one the blind jury would ship, at 8.14 against 7.23, and the one where the person booking knows what they will pay, when, and where to go. UXL added two steps and 31 % to the bill. Its auditor found five major issues before hand-off, and four of them were ones the craft review had not flagged.</p>
+  </div>
+</section>
+
+<section aria-labelledby="repro-title">
+  <div class="head">
+    <p class="label">Reproduce it</p>
+    <h2 id="repro-title">Run the case yourself</h2>
+    <p class="lede">Same prompt, same model, effort xhigh, two empty folders. Both get the awards plugin; B also gets UXL. Then score both with UXL’s scanners and a blind awards jury.</p>
+  </div>
+  <pre><code>git clone https://github.com/BurgiSimon/awards
+git clone https://github.com/BurgiSimon/UXL
+mkdir a b
+
+# Exhibit A: awards only
+(cd a &amp;&amp; claude -p "$(cat ../PROMPT.txt)" --model "$MODEL" --effort xhigh \
+  --plugin-dir ../awards/plugins/awards)
+
+# Exhibit B: awards + UXL
+(cd b &amp;&amp; claude -p "$(cat ../PROMPT.txt)" --model "$MODEL" --effort xhigh \
+  --plugin-dir ../awards/plugins/awards --plugin-dir ../UXL)
+
+# The evidence
+python3 UXL/tools/build_demo.py --without a --with b --prompt PROMPT.txt --slug lumenvale
+node UXL/tools/demo_evidence_lumenvale.mjs
+
+# The blind jury: copy each index.html into a neutrally named folder, then
+(cd site-k &amp;&amp; claude -p "/awards:jury index.html --verdict" --model "$MODEL" --effort xhigh \
+  --plugin-dir ../awards/plugins/awards)</code></pre>
+</section>
+</main>
+
+<footer>
+  <p>Lumenvale is a fictional observatory. Its address, telescope, seat counts and prices were invented by the prompt and the two sessions. Both pages are published unedited.</p>
+  <p>Laws of UX by Jon Yablonski, <a href="https://lawsofux.com">lawsofux.com</a>. Awards plugin: <a href="https://github.com/BurgiSimon/awards">github.com/BurgiSimon/awards</a>. UXL is MIT-licensed: <a href="https://github.com/BurgiSimon/UXL">github.com/BurgiSimon/UXL</a>.</p>
+</footer>
+</div>
+
+<script>
+(() => {
+  const exhibits = document.querySelector(".exhibits");
+  const frames = [...document.querySelectorAll(".frame")];
+  const sizes = { phone: [390, 780], desktop: [1440, 900] };
+
+  function fit() {
+    for (const frame of frames) {
+      const screen = frame.querySelector(".screen");
+      const iframe = frame.querySelector("iframe");
+      const [w, h] = sizes[frame.dataset.mode];
+      screen.style.setProperty("--s", String(screen.clientWidth / w));
+      iframe.width = String(w);
+      iframe.height = String(h);
+    }
+  }
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver(fit);
+    frames.forEach((f) => ro.observe(f.querySelector(".screen")));
+  } else {
+    window.addEventListener("resize", fit);
+  }
+  fit();
+
+  function press(group, attr, value) {
+    group.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset[attr] === value)));
+  }
+  document.querySelectorAll(".seg").forEach((group) => {
+    group.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+      if (button.dataset.mode) {
+        frames.forEach((f) => { f.dataset.mode = button.dataset.mode; });
+        press(group, "mode", button.dataset.mode);
+        fit();
+      }
+      if (button.dataset.show) {
+        exhibits.dataset.show = button.dataset.show;
+        press(group, "show", button.dataset.show);
+        fit();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

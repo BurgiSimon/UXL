@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edge cases · UXL audit regression fixture</title>
+  <style>
+    :root { --accent: #0f6b5c; --ring: rgb(15 107 92 / 0.25); --text: #1d1b18; --muted: #5c574f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.5 system-ui, sans-serif; color: var(--text); background: #fbfaf8; }
+    a { color: var(--accent); }
+    :focus-visible { outline: 2px solid #1f6feb; outline-offset: 2px; }
+    .layout { display: grid; grid-template-columns: 1fr; }
+    @media (min-width: 1024px) { .layout { grid-template-columns: 260px 1fr; } }
+    /* Grouped sidebar: 14 links in labelled sections = 2 + 3 choices (chunking) */
+    .sidebar { padding: 16px; display: none; }
+    @media (min-width: 1024px) { .sidebar { display: block; } }
+    .sidebar a { display: flex; align-items: center; min-height: 44px; padding: 0 12px; text-decoration: none; color: var(--text); }
+    .sidebar h2 { font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin: 16px 12px 4px; }
+    main { padding: 24px 16px 96px; max-width: 44rem; }
+    .btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border-radius: 10px; font-weight: 600; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    /* Focus indicator drawn on the wrapper with a transition */
+    .field-row { display: flex; gap: 8px; border: 1px solid #8a8378; border-radius: 10px; padding: 4px; transition: box-shadow 200ms ease, border-color 200ms ease; }
+    .field-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--ring); }
+    .field-row input { flex: 1; min-height: 44px; border: 0; font-size: 16px; padding: 0 8px; background: transparent; }
+    .field-row input:focus { outline: none; }
+    .hp { position: absolute; left: -9999px; }
+    .tabbar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: #fff; border-top: 1px solid #e3dfd8; padding-bottom: env(safe-area-inset-bottom); }
+    .tabbar a { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 56px; text-decoration: none; color: var(--text); font-size: 14px; }
+    @media (min-width: 1024px) { .tabbar { display: none; } }
+    section { margin-top: 48px; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Main">
+      <a href="/">Dashboard</a><a href="/inbox">Inbox</a>
+      <div><h2>Work</h2><a href="/projects">Projects</a><a href="/tasks">Tasks</a><a href="/calendar">Calendar</a><a href="/files">Files</a></div>
+      <div><h2>Money</h2><a href="/timesheets">Timesheets</a><a href="/invoices">Invoices</a><a href="/reports">Reports</a></div>
+      <div><h2>Workspace</h2><a href="/team">Team</a><a href="/clients">Clients</a><a href="/integrations">Integrations</a><a href="/settings">Settings</a><a href="/help">Help</a></div>
+    </nav>
+    <main>
+      <h1 style="display:contents"><span>Plan the week</span> <span>in minutes</span></h1>
+      <p>One primary action, repeated as the page scrolls. That is still one action, not competing ones.</p>
+      <a class="btn btn-primary" href="#signup">Get early access</a>
+      <section id="signup" aria-labelledby="signup-h">
+        <h2 id="signup-h">Join the waitlist</h2>
+        <form>
+          <label for="email">Email</label>
+          <div class="field-row">
+            <input id="email" name="email" type="email" autocomplete="email" required>
+            <button class="btn btn-primary" type="submit">Get early access</button>
+          </div>
+          <div class="hp" aria-hidden="true"><label>Leave empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+        </form>
+      </section>
+      <section aria-labelledby="faq-h"><h2 id="faq-h">Questions</h2><p>Plenty of room down here.</p>
+        <a class="btn btn-primary" href="#signup">Get early access</a></section>
+    </main>
+  </div>
+  <nav class="tabbar" aria-label="Tabs"><a href="/">Home</a><a href="/tasks">Tasks</a><a href="/projects">Projects</a><a href="/inbox">Inbox</a><a href="/more">More</a></nav>
+</body>
+</html>

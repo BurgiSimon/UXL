@@ -1,0 +1,551 @@
+{
+  "metadata": {
+    "skill_name": "ux-lawyer",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-10-20T15:37:56Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 13,
+        "failed": 0,
+        "total": 13,
+        "time_seconds": 1012.6,
+        "tokens": 227041,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Has a responsive viewport meta tag and does not disable zoom",
+          "passed": true,
+          "evidence": "uxl_lint: none of viewport-missing, zoom-disabled"
+        },
+        {
+          "text": "Static UXL scan reports zero critical findings",
+          "passed": true,
+          "evidence": "uxl_lint: 0 finding(s) at >= critical (max 0)"
+        },
+        {
+          "text": "Static UXL scan reports at most 1 major finding",
+          "passed": true,
+          "evidence": "uxl_lint: 0 finding(s) at >= major (max 1)"
+        },
+        {
+          "text": "Email field has a real label (not placeholder-only), type=email and autocomplete=email",
+          "passed": true,
+          "evidence": "uxl_lint: none of placeholder-as-label, input-unlabeled, autocomplete-missing, input-type-generic"
+        },
+        {
+          "text": "No tap targets below 44px on the mobile render (runtime)",
+          "passed": true,
+          "evidence": "uxl_audit (mobile): none of tap-target-size"
+        },
+        {
+          "text": "Form inputs are >= 16px on mobile (no iOS zoom) and no horizontal overflow",
+          "passed": true,
+          "evidence": "uxl_audit (mobile): none of input-zoom, horizontal-overflow"
+        },
+        {
+          "text": "No major contrast failures at either viewport",
+          "passed": true,
+          "evidence": "uxl_audit (all viewports, >= major): none of contrast"
+        },
+        {
+          "text": "No competing filled CTAs in the first screen (cta-competition not major)",
+          "passed": true,
+          "evidence": "uxl_audit (all viewports, >= major): none of cta-competition"
+        },
+        {
+          "text": "Keyboard focus is visible on desktop",
+          "passed": true,
+          "evidence": "uxl_audit (desktop): none of focus-invisible"
+        },
+        {
+          "text": "Signup shows a pending state while submitting and a success confirmation afterwards",
+          "passed": true,
+          "evidence": "index.html: on submit, setPending(true) (L879 -> L852-867) locks the button width (L856), sets aria-busy='true' on the button (L857), changes the label to 'Joining\u2026' (L858), prepends a spinning .spinner (L859-860; CSS L143-147, with a reduced-motion fallback at L445) and makes the input readOnly (L854). 'if (pending) return; // ignore double presses' (L871) is the double-submit guard. After the simulated api.join resolves (1.1 s, L786-793), markJoined (L928-932) -> showSuccess (L898-913) replaces the form with the template 'You\u2019re on the list!' / 'We\u2019ll email <email> as soon as your invite is ready.' (L679-695) and focuses the title (tabindex=-1, L911). The success is persisted to storage, so it survives a reload (L882, L962-966). The failure path restores the button and shows an inline message (L885-889). Screenshots confirm both states: scratch/flow-desktop-pending.png (spinner + 'Joining\u2026') and scratch/flow-desktop-success.png. Minor: the button is not disabled (by design), and there is no live-region announcement of 'Joining\u2026'. The success title gets focus instead."
+        },
+        {
+          "text": "If animations/transitions exist, prefers-reduced-motion is handled",
+          "passed": true,
+          "evidence": "uxl_lint: none of reduced-motion-missing"
+        },
+        {
+          "text": "Final response explains key UX decisions (ideally citing the laws)",
+          "passed": true,
+          "evidence": "RESPONSE.md has a dedicated '## UX decisions' section (L7-15) with 8 bullets. Each pairs a decision with its reason and cites a law: one primary CTA style (\u00a7L28 Von Restorff, \u00a7L10 Hick); a thumb-reachable sticky mobile CTA that hides when the keyboard is open (\u00a7L07 Fitts); a forgiving email field with typo suggestions (\u00a7L24 Postel); errors only on submit and a never-disabled button (\u00a7L20, \u00a7L29); immediate feedback with a fixed-width spinner and the double-press guard (\u00a7L06 Doherty); a designed success ending (\u00a7L23 Peak-End); an interactive sample week (\u00a7L17 Mental Model); and a conventional layout (\u00a7L11 Jakob). It also has 'Where I deliberately broke a rule' (L17, \u00a7L19 Occam) and a 'Before you launch' list of honest caveats (L30-35: simulated API, placeholder content, privacy link, no invented testimonials). Small nit: some citations are bare codes (e.g. '\u00a7L20, \u00a7L29' on L11), which a non-specialist can't decode."
+        },
+        {
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "passed": true,
+          "evidence": "11 distinct laws named in RESPONSE.md: Doherty, Fitts, Flow, Hick, Jakob, Mental Model, Occam, Parkinson"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 15,
+        "failed": 0,
+        "total": 15,
+        "time_seconds": 1075.5,
+        "tokens": 245609,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Pinch-zoom is no longer disabled",
+          "passed": true,
+          "evidence": "uxl_lint: none of zoom-disabled"
+        },
+        {
+          "text": "Every field has a real label (no placeholder-only or unlabeled fields)",
+          "passed": true,
+          "evidence": "uxl_lint: none of placeholder-as-label, input-unlabeled"
+        },
+        {
+          "text": "Fields use autocomplete and correct input types/inputmode",
+          "passed": true,
+          "evidence": "uxl_lint: none of autocomplete-missing, input-type-generic"
+        },
+        {
+          "text": "Fake urgency, pre-checked paid add-on and confirmshaming are all removed",
+          "passed": true,
+          "evidence": "uxl_lint: none of dark-pattern-urgency, dark-pattern-precheck, dark-pattern-confirmshaming"
+        },
+        {
+          "text": "No alert()/confirm() interruptions; submit not disabled-until-valid",
+          "passed": true,
+          "evidence": "uxl_lint: none of native-dialog-interrupt, disabled-submit"
+        },
+        {
+          "text": "Order submission shows a pending/loading state",
+          "passed": true,
+          "evidence": "uxl_lint: none of async-no-feedback"
+        },
+        {
+          "text": "No tap-target-size violations of major/critical severity on mobile (runtime)",
+          "passed": true,
+          "evidence": "uxl_audit (mobile, >= major): none of tap-target-size"
+        },
+        {
+          "text": "No input zoom (inputs >= 16px) on mobile (runtime)",
+          "passed": true,
+          "evidence": "uxl_audit (mobile): none of input-zoom"
+        },
+        {
+          "text": "Keyboard focus is visible (runtime, desktop)",
+          "passed": true,
+          "evidence": "uxl_audit (desktop): none of focus-invisible"
+        },
+        {
+          "text": "Checkout no longer shows a 12-item navigation (nav-overload gone)",
+          "passed": true,
+          "evidence": "uxl_audit (all viewports): none of nav-overload"
+        },
+        {
+          "text": "No major CTA competition at either viewport",
+          "passed": true,
+          "evidence": "uxl_audit (all viewports, >= major): none of cta-competition"
+        },
+        {
+          "text": "Form is grouped (fieldsets) or stepped with progress (form-long / form-load gone)",
+          "passed": true,
+          "evidence": "uxl_lint+uxl_audit: none of form-long, form-load"
+        },
+        {
+          "text": "Runtime audit score >= 80",
+          "passed": true,
+          "evidence": "uxl_audit score 100/100 (min 80); counts {'critical': 0, 'major': 0, 'minor': 0}"
+        },
+        {
+          "text": "CHANGES.md exists and explains the changes",
+          "passed": true,
+          "evidence": "CHANGES.md exists (111 lines). It opens with 'The main reasons it wasn't converting' (L5-11): submit disabled until every field including the optional coupon was filled, 18 of 31 targets under 44px, 13px inputs causing iOS zoom, zoom disabled, dark patterns, alert() errors, 12-link nav. 'What changed' (L13-57) is grouped into layout/flow, form, honesty, paying/failure handling and styles, each with a why and a law citation. A before/after scanner table follows (L59-70), then 'Please check these assumptions' (L87-105, payload changes, API contract, shared styles.css side effects) and 'Recommended next' (L107-111). Spot-checked claims against the code. checkout.html L5 viewport has no zoom lock. Fieldsets are at L74/98/165. Autocomplete uses 'shipping \u2026' and 'cc-number' tokens (L106-175). 'Processing payment\u2026' is at L221. The Idempotency-Key header is at L617, the sessionStorage draft at L505-523 and the /thanks redirect at L622. There is no 'disabled' or alert( left. The original (scratch/original/checkout.html) had 'disabled' submit (L70, L93), 'No thanks, I don't like saving money' (L76), a looping timer (L103) and a carousel (L107), so the 'before' description is accurate. Caveat: the user asked for a *short* CHANGES.md, and at 111 lines / ~9.5 KB this is long. It is well structured but not short."
+        },
+        {
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "passed": true,
+          "evidence": "15 distinct laws named in CHANGES.md, RESPONSE.md: Active User, Cognitive Bias, Doherty, Fitts, Flow, Goal-Gradient, Hick, Jakob"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 1305.1,
+        "tokens": 247863,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "AppShell.tsx exists and NOTES.md exists",
+          "passed": true,
+          "evidence": "AppShell.tsx (1108 lines) and NOTES.md (71 lines) both exist. AppShell.tsx is a complete 'use client' React+TS component: a typed IA (NavId union, NavItem/NavSection, ITEMS 'satisfies Record<NavId, NavItem>', L65-133), `export default function AppShell(props: AppShellProps)` (L272), a sidebar, a mobile top bar, a tab bar, a MoreSheet (L751), a JumpToPalette (L876), a PlaceholderPage and `export function AppShellDemo` (L1100). The grader type-checked it in memory (no files written) with TypeScript 5.6.3, strict + noUnusedLocals + noUnusedParameters + isolatedModules, against @types/react 18.3.12 and lucide-react 0.460.0: 0 diagnostics. _scratch/src/AppShell.tsx is byte-identical and was built with esbuild + Tailwind v4 (_scratch/dist)."
+        },
+        {
+          "text": "Desktop navigation groups the 14 items into labelled sections or primary vs secondary tiers (chunking)",
+          "passed": true,
+          "evidence": "NAV_SECTIONS (L109-114): Dashboard at the top (unlabelled 'home'), then labelled 'Work' (Projects, Tasks, Calendar, Files), 'People' (Messages, Team, Clients) and 'Time & billing' (Timesheets, Invoices, Reports). UTILITY_SECTION (Integrations, Settings, Help, L117-122) is pinned to the bottom of the sidebar below a border (L557-561). Visible <h2> group headings render when expanded (L482-484), and each <ul> is aria-labelledby its heading (L486). In rail mode the headings become sr-only and a divider is shown (L476-480). desktop-1280x640.png and desktop-rail-tooltip.png show the labelled groups and the rail dividers."
+        },
+        {
+          "text": "Mobile uses a bottom tab bar (or equivalent) with 3\u20135 primary destinations, the rest in 'More'/sheet",
+          "passed": true,
+          "evidence": "A fixed `<nav aria-label='Primary'>` with `lg:hidden` (L651-654) holds `grid grid-cols-5` (L655): 4 tab links from MOBILE_TABS ['dashboard','projects','tasks','messages'] (L125, L656-690) plus a 'More' <button> (L691-707). More opens MoreSheet, a native <dialog> bottom sheet opened with showModal (L195-211, L795-801). It lists the other 10 pages in the same labelled groups as the sidebar (MORE_SECTIONS L131-133, L823-867). The More tab is highlighted when the current page lives inside it (L439, L697). Verified visually in mobile-360-dashboard.png and mobile-more-sheet.png."
+        },
+        {
+          "text": "Mobile nav items are >= 44px tall (e.g. h-11/min-h-11/h-12/h-14/h-16 or py giving >= 44px)",
+          "passed": true,
+          "evidence": "On phones, tabs and More use TAB_CLASS `min-h-14` (56px, L744). Sheet tiles are `min-h-12` (48px, L849). The sheet close button (L815), top-bar logo, search and avatar (L607, L622, L631) and the palette close (L1002) are `size-11` (44px). Palette rows are `min-h-11` (L950). The runtime audit (_scratch/uxl-report/report.md) reports '8 interactive, 0 undersized' on mobile. Touch tablets: below 1024px they get the phone layout (all >= 44px). At 1024px and up, sidebar rows are `min-h-11 \u2026 [@media(pointer:fine)]:min-h-9` (L456-457), so they are 44px on coarse pointers and drop to 36px only for a mouse or trackpad. The Jump-to button uses the same gating (L536), and the collapse button is always `size-11` (L591). The compiled CSS confirms the variant sits inside `@media (pointer:fine)` (dist/app.css L1096-1104). Yes, touch tablets get >= 44px rows. Caveat: hybrid touchscreen laptops whose primary pointer is fine get 36px rows."
+        },
+        {
+          "text": "Active item marked with aria-current=\"page\" and nav landmarks have aria-labels",
+          "passed": true,
+          "evidence": "`aria-current={isActive ? 'page' : undefined}` is set on sidebar links (L450), tab-bar links (L664) and More-sheet tiles (L847). When the current page is inside More, the More button adds sr-only ', current page: X' (L704). Landmarks: `<aside aria-label='Sidebar'>` (L506), desktop `<nav aria-label='Main'>` (L553), mobile `<nav aria-label='Primary'>` (L652) and the sheet's `<nav aria-label='More pages'>` (L822). The utility <ul> has aria-label 'Workspace' (L558). Both dialogs are labelled: the sheet with aria-labelledby (L797), the palette with aria-label 'Jump to a page' (L968)."
+        },
+        {
+          "text": "Nav items show text labels with icons (no icon-only primary nav on mobile)",
+          "passed": true,
+          "evidence": "Each tab renders an icon plus a visible `<span className='max-w-full truncate'>{item.label}</span>` (L678, L685), and More shows the text 'More' (L703). Sheet tiles show an icon and a label (L856-857). The expanded sidebar shows labels (L464). The collapsed rail is opt-in (default `useState(false)`, L348) and keeps sr-only labels (L464) plus fixed-position tooltips on mouse hover or focus-visible (L403-411, L728-738), as in desktop-rail-tooltip.png. Polish defect: at 360px the active 'Dashboard' tab label truncates to 'Dashbo\u2026' (mobile-360-dashboard.png). That happens because px-1 on both the grid and the tab leaves about 62px per column, and the active state is font-semibold. A label is still present, so this is not icon-only."
+        },
+        {
+          "text": "Interactive elements are real buttons/links with visible focus styles (focus-visible:ring or similar)",
+          "passed": true,
+          "evidence": "All nav items are real <a href> elements (sidebar L447, tabs L662, sheet L844, logo and profile L514, L566, L603, L628) or <button type='button'> (Jump-to L527, collapse L587, mobile search L618, More L692, the closes L812, L999). The only onClick on a non-interactive element is the dialog backdrop click (L799, L970). The FOCUS constant `focus-visible:[outline-style:solid] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700` (L172-173) is applied to every one of them (L454, L519, L535, L573, L591, L607, L622, L631, L675, L697, L815, L850, L1002, L1089). The skip link has a focus outline (L497-502). The palette input removes its outline but its wrapper gets a `focus-within:shadow-[inset_0_-2px_0_#0d9488]` underline (L973, L997). Palette options use the combobox/aria-activedescendant pattern with a visible bg-teal-50 selection (L936-951, L981-985)."
+        },
+        {
+          "text": "Static UXL scan of AppShell.tsx reports zero critical and zero major findings",
+          "passed": true,
+          "evidence": "uxl_lint: 0 finding(s) at >= major (max 0)"
+        },
+        {
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "passed": true,
+          "evidence": "14 distinct laws named in NOTES.md, RESPONSE.md: Active User, Chunking, Doherty, Fitts, Hick, Jakob, Mental Model, Miller"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.85,
+        "passed": 11,
+        "failed": 2,
+        "total": 13,
+        "time_seconds": 1124.4,
+        "tokens": 170190,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Has a responsive viewport meta tag and does not disable zoom",
+          "passed": true,
+          "evidence": "uxl_lint: none of viewport-missing, zoom-disabled"
+        },
+        {
+          "text": "Static UXL scan reports zero critical findings",
+          "passed": true,
+          "evidence": "uxl_lint: 0 finding(s) at >= critical (max 0)"
+        },
+        {
+          "text": "Static UXL scan reports at most 1 major finding",
+          "passed": true,
+          "evidence": "uxl_lint: 0 finding(s) at >= major (max 1)"
+        },
+        {
+          "text": "Email field has a real label (not placeholder-only), type=email and autocomplete=email",
+          "passed": true,
+          "evidence": "uxl_lint: none of placeholder-as-label, input-unlabeled, autocomplete-missing, input-type-generic"
+        },
+        {
+          "text": "No tap targets below 44px on the mobile render (runtime)",
+          "passed": false,
+          "evidence": "uxl_audit (mobile): tap-target-size (major, mobile): 1 of 17 interactive targets are smaller than 44\u00d744px"
+        },
+        {
+          "text": "Form inputs are >= 16px on mobile (no iOS zoom) and no horizontal overflow",
+          "passed": true,
+          "evidence": "uxl_audit (mobile): none of input-zoom, horizontal-overflow"
+        },
+        {
+          "text": "No major contrast failures at either viewport",
+          "passed": true,
+          "evidence": "uxl_audit (all viewports, >= major): none of contrast"
+        },
+        {
+          "text": "No competing filled CTAs in the first screen (cta-competition not major)",
+          "passed": true,
+          "evidence": "uxl_audit (all viewports, >= major): none of cta-competition"
+        },
+        {
+          "text": "Keyboard focus is visible on desktop",
+          "passed": true,
+          "evidence": "uxl_audit (desktop): none of focus-invisible"
+        },
+        {
+          "text": "Signup shows a pending state while submitting and a success confirmation afterwards",
+          "passed": true,
+          "evidence": "index.html setLoading(s, true) (L981) sets form data-state=\"loading\", which hides .btn-label and shows .btn-busy (spinner + 'Joining\u2026') via CSS (L244-245, markup L571-572); it also sets aria-busy on the form, aria-disabled on the button and readOnly on the input (L907-911). `if (s.form.dataset.state === 'loading') return;` (L961) blocks double submits. On resolve showSuccess() (L983) swaps both forms to .signup-success 'You're on the list!' with the email (L579-583) and focuses the title."
+        },
+        {
+          "text": "If animations/transitions exist, prefers-reduced-motion is handled",
+          "passed": true,
+          "evidence": "uxl_lint: none of reduced-motion-missing"
+        },
+        {
+          "text": "Final response explains key UX decisions (ideally citing the laws)",
+          "passed": true,
+          "evidence": "There's no dedicated rationale section, but 'How the signup works' (L10-18) explains the key choices with reasons: 'input text is 16px so iPhones don't zoom in' (L11), errors only after submit or blur (L12), the typo suggestion 'never blocks anyone' (L13), spinner plus double-submit guard (L14), and no social proof 'because made-up ones would mislead people' (L27). Cites UX laws: no. The rationale is thinner and mostly descriptive."
+        },
+        {
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "passed": false,
+          "evidence": "1 distinct laws named in RESPONSE.md: Hick"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.93,
+        "passed": 14,
+        "failed": 1,
+        "total": 15,
+        "time_seconds": 454.8,
+        "tokens": 107123,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Pinch-zoom is no longer disabled",
+          "passed": true,
+          "evidence": "uxl_lint: none of zoom-disabled"
+        },
+        {
+          "text": "Every field has a real label (no placeholder-only or unlabeled fields)",
+          "passed": true,
+          "evidence": "uxl_lint: none of placeholder-as-label, input-unlabeled"
+        },
+        {
+          "text": "Fields use autocomplete and correct input types/inputmode",
+          "passed": true,
+          "evidence": "uxl_lint: none of autocomplete-missing, input-type-generic"
+        },
+        {
+          "text": "Fake urgency, pre-checked paid add-on and confirmshaming are all removed",
+          "passed": true,
+          "evidence": "uxl_lint: none of dark-pattern-urgency, dark-pattern-precheck, dark-pattern-confirmshaming"
+        },
+        {
+          "text": "No alert()/confirm() interruptions; submit not disabled-until-valid",
+          "passed": true,
+          "evidence": "uxl_lint: none of native-dialog-interrupt, disabled-submit"
+        },
+        {
+          "text": "Order submission shows a pending/loading state",
+          "passed": true,
+          "evidence": "uxl_lint: none of async-no-feedback"
+        },
+        {
+          "text": "No tap-target-size violations of major/critical severity on mobile (runtime)",
+          "passed": true,
+          "evidence": "uxl_audit (mobile, >= major): none of tap-target-size"
+        },
+        {
+          "text": "No input zoom (inputs >= 16px) on mobile (runtime)",
+          "passed": true,
+          "evidence": "uxl_audit (mobile): none of input-zoom"
+        },
+        {
+          "text": "Keyboard focus is visible (runtime, desktop)",
+          "passed": true,
+          "evidence": "uxl_audit (desktop): none of focus-invisible"
+        },
+        {
+          "text": "Checkout no longer shows a 12-item navigation (nav-overload gone)",
+          "passed": true,
+          "evidence": "uxl_audit (all viewports): none of nav-overload"
+        },
+        {
+          "text": "No major CTA competition at either viewport",
+          "passed": true,
+          "evidence": "uxl_audit (all viewports, >= major): none of cta-competition"
+        },
+        {
+          "text": "Form is grouped (fieldsets) or stepped with progress (form-long / form-load gone)",
+          "passed": true,
+          "evidence": "uxl_lint+uxl_audit: none of form-long, form-load"
+        },
+        {
+          "text": "Runtime audit score >= 80",
+          "passed": true,
+          "evidence": "uxl_audit score 100/100 (min 80); counts {'critical': 0, 'major': 0, 'minor': 0}"
+        },
+        {
+          "text": "CHANGES.md exists and explains the changes",
+          "passed": true,
+          "evidence": "CHANGES.md (44 lines, ~1,060 words) explains each change and why. It covers the payment-blocking bugs (Pay disabled by the optional coupon field, the 10-digit phone rule, silent fetch failures; L5-9), the mobile fixes (L11-20) and the removed dark patterns with EU legal reasons (UCPD Annex I no. 7, CRD Art. 22 and 8(2); L22-27), plus open questions and testing. Spot checks match checkout.html: 'Placing your order\u2026' (L200) and the Luhn check (L241). No Laws-of-UX citations, which this assertion doesn't require. It is longer than the 'short' file that was asked for."
+        },
+        {
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "passed": false,
+          "evidence": "0 distinct laws named in CHANGES.md, RESPONSE.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.89,
+        "passed": 8,
+        "failed": 1,
+        "total": 9,
+        "time_seconds": 749.8,
+        "tokens": 143095,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "AppShell.tsx exists and NOTES.md exists",
+          "passed": true,
+          "evidence": "AppShell.tsx (936 lines) exports AppShell as both a named and default export, with typed AppShellProps. It has a sidebar with a collapsible rail, a top bar with a breadcrumb, a mobile tab bar, a More sheet, a CommandPalette and AppShellDemo. The grader compiled it with `tsc --strict --noUnusedLocals` against @types/react 18.3 and lucide-react 0.460: 0 errors. NOTES.md exists (92 lines)."
+        },
+        {
+          "text": "Desktop navigation groups the 14 items into labelled sections or primary vs secondary tiers (chunking)",
+          "passed": true,
+          "evidence": "SECTIONS (L95-101) puts Dashboard at the top, then 'Work', 'People' and 'Time & money' with visible headings (SidebarGroup <p>, L302-304; rendered at L693-712). 'Settings & help' (Integrations, Settings, Help) is pinned to the bottom with an sr-only label (L715-721)."
+        },
+        {
+          "text": "Mobile uses a bottom tab bar (or equivalent) with 3\u20135 primary destinations, the rest in 'More'/sheet",
+          "passed": true,
+          "evidence": "A fixed `<nav aria-label=\"Main\">`, `md:hidden`, with `grid grid-cols-5` (L811-815) holds 4 tabs (DEFAULT_MOBILE_TABS Dashboard/Projects/Tasks/Messages, L123) and a 'More' button (L820-839). More opens a bottom sheet with the other 10 pages in a grouped 3-column grid (L845-906)."
+        },
+        {
+          "text": "Mobile nav items are >= 44px tall (e.g. h-11/min-h-11/h-12/h-14/h-16 or py giving >= 44px)",
+          "passed": true,
+          "evidence": "Tab links and the More button are `h-16` (64px; L627, L826). Sheet tiles are `min-h-[4.75rem]` (76px, L654), and the close and search buttons are `h-11 w-11` (L392, L792, L876). Caveat: at md and up, sidebar rows are a fixed `h-9` (36px, L603) even on touch tablets \u2265768px, so NOTES' claim 'Touch targets are at least 44px' overstates it."
+        },
+        {
+          "text": "Active item marked with aria-current=\"page\" and nav landmarks have aria-labels",
+          "passed": true,
+          "evidence": "`aria-current={isActive ? \"page\" : undefined}` is set on sidebar links (L599), tabs (L625) and sheet tiles (L651). Landmarks: `<nav aria-label=\"Main\">` for the sidebar (L691) and the tab bar (L812). The sheet is a role=dialog labelled 'All pages' with labelled sections."
+        },
+        {
+          "text": "Nav items show text labels with icons (no icon-only primary nav on mobile)",
+          "passed": true,
+          "evidence": "Tabs show an icon plus a label span (L635-638), and the More tab shows 'More' (L837). Sheet tiles have an icon and a label (L659-660), and the expanded sidebar shows labels (L611). The collapsed rail keeps sr-only labels and shows fixed tooltips on hover or focus (L601, L743-751). Caveat: the rail is the default below 1280px (L177), so touch tablets start icon-only and tapping shows no tooltip."
+        },
+        {
+          "text": "Interactive elements are real buttons/links with visible focus styles (focus-visible:ring or similar)",
+          "passed": true,
+          "evidence": "Nav items are <a href> or <button>. FOCUS_RING 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500' (L135) is applied to sidebar links (L604), tabs (L627, ring-inset), More (L826), sheet tiles (L655) and the close, collapse and jump buttons (L392, L733, L779, L792, L886). The skip link has a focus ring (L673). Minor: palette options are `<li role=\"option\" onClick>` (L403-409; a valid combobox/activedescendant pattern), and the palette input has outline-none with no replacement indicator (L386)."
+        },
+        {
+          "text": "Static UXL scan of AppShell.tsx reports zero critical and zero major findings",
+          "passed": true,
+          "evidence": "uxl_lint: 0 finding(s) at >= major (max 0)"
+        },
+        {
+          "text": "Hand-off docs justify decisions with at least 3 distinct Laws of UX by name",
+          "passed": false,
+          "evidence": "0 distinct laws named in NOTES.md, RESPONSE.md"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 1131.0667,
+        "stddev": 153.9636,
+        "min": 1012.6,
+        "max": 1305.1
+      },
+      "tokens": {
+        "mean": 240171.0,
+        "stddev": 11426.627,
+        "min": 227041,
+        "max": 247863
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.89,
+        "stddev": 0.04,
+        "min": 0.85,
+        "max": 0.93
+      },
+      "time_seconds": {
+        "mean": 776.3333,
+        "stddev": 335.5876,
+        "min": 454.8,
+        "max": 1124.4
+      },
+      "tokens": {
+        "mean": 140136.0,
+        "stddev": 31637.4522,
+        "min": 107123,
+        "max": 170190
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.11",
+      "time_seconds": "+354.7",
+      "tokens": "+100035"
+    }
+  },
+  "notes": [
+    "Iteration 2 = SKILL.md changes: proportionate verification (scan, fix, re-scan once), case file folded into the hand-off when fixing, scanners treated as evidence, pointer-based target sizing. Baselines reused from iteration 1 (same condition).",
+    "Quality held: with_skill 37/37 (100%) vs baseline 33/37 (89%); scanner scores 98-100 vs 89-94.",
+    "Cost dropped vs iteration 1: time 1384s -> 1131s (-18%), tokens 274K -> 240K (-12%). Remaining overhead vs baseline: +355s, +100K tokens, spent on flow tests that caught real bugs in every run.",
+    "New statute observed in practice: nav run sized sidebar rows 44px on touch and 36px only under (pointer: fine); baseline shipped 36px icon-only rows to tablets.",
+    "Blind comparison (eval 3) again prefers with_skill; baseline has an SSR hydration mismatch (localStorage read during render).",
+    "Remaining weaknesses found by the grader (addressed after this run): long CHANGES.md despite 'short' request; 'Dashboard' tab label truncated at 360px.",
+    "Manual assertions remain non-discriminating (both configs pass); discriminating signals are scanner checks, law-cited reasoning and blind qualitative comparison."
+  ]
+}

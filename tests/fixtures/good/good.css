@@ -1,0 +1,17 @@
+:root {
+  --space-2: 8px; --space-4: 16px; --space-6: 24px; --space-8: 32px;
+  --text: #1c1917; --muted: #57534e; --accent: #166534; --surface: #ffffff; --focus: #2563eb;
+}
+body { margin: 0; font: 16px/1.5 system-ui, sans-serif; color: var(--text); background: var(--surface); }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; }
+.header nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; }
+.container { max-width: 40rem; margin: 0 auto; padding: 24px 16px; }
+.lede { color: var(--muted); font-size: 18px; }
+.field { display: grid; gap: 8px; margin-bottom: 24px; }
+input { font-size: 16px; min-height: 44px; padding: 8px 12px; }
+.hint { font-size: 14px; color: var(--muted); }
+.btn { min-height: 48px; padding: 0 24px; border-radius: 8px; transition: background-color 200ms ease-out; }
+.btn-primary { background: var(--accent); color: var(--surface); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.check { display: flex; gap: 8px; align-items: center; min-height: 44px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
