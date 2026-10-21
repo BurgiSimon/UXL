@@ -48,7 +48,7 @@ One prompt, two fresh Claude Code sessions, one difference. We asked both sessio
 | Font sizes rendered | 19–21 | **11** |
 | Time · cost | 6 min · $1.42 | 12 min · $2.91 |
 
-Both pages look launch-ready in a screenshot. Only one of them holds up under a thumb. **[See the full case with both pages live →](docs/index.html)** The showcase is in `docs/` (GitHub Pages-ready) and is built with `tools/build_demo.py`. It's one run per condition, so treat it as an illustration, not a statistic. The [benchmark](#benchmark) covers repeated evals.
+Both pages look launch-ready in a screenshot. Only one of them holds up under a thumb. **[See the full case with both pages live →](https://burgisimon.github.io/UXL/)** The showcase is served with GitHub Pages from `docs/` and is built with `tools/build_demo.py`. It's one run per condition, so treat it as an illustration, not a statistic. The [benchmark](#benchmark) covers repeated evals.
 
 ## Demo 2: the Lumenvale case, UXL with awards
 
@@ -64,7 +64,7 @@ UXL is built to work alongside other skills. In the second case, both sessions r
 | Says when you pay | no | **yes**, on both booking steps and the ticket |
 | Time · cost | 88 min · $29.95 | 105 min · $39.24 |
 
-Awards gave both pages the concept, the WebGL sky and the motion. UXL's auditor booked seats in a real browser and found 5 major issues the craft review had mostly missed, each fixed before hand-off. **[See the Lumenvale case with both pages live →](docs/lumenvale/index.html)** One run per condition, again: an illustration, not a statistic.
+Awards gave both pages the concept, the WebGL sky and the motion. UXL's auditor booked seats in a real browser and found 5 major issues the craft review had mostly missed, each fixed before hand-off. **[See the Lumenvale case with both pages live →](https://burgisimon.github.io/UXL/lumenvale/)** One run per condition, again: an illustration, not a statistic.
 
 ## What you get
 
